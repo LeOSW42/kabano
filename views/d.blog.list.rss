@@ -1,0 +1,45 @@
+<? 
+
+$ts = gmdate("D, d M Y H:i:s", time() + 60) . " GMT";
+header("Content-disposition: filename=blog.rss");
+header("Content-Type: application/xml; UTF-8");
+header("Content-Transfer-Encoding: binary");
+header("Pragma: cache");
+header("Expires: $ts");
+header("Access-Control-Allow-Origin: *");
+header("Cache-Control: max-age=60");
+
+echo ('<?xml version="1.0" encoding="UTF-8"?>'); ?>
+
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+<channel>
+	<title>Kabano</title>
+	<link><?=$config['rel_root_folder']?></link>
+	<atom:link href="<?=$config['rel_root_folder']?>blog/rss" rel="self" type="application/rss+xml" />
+	<description>L'actualité du blog officiel de Kabano : Plateforme collaborative de recensement de cabanes et refuges.</description>
+	<language>fr</language>
+	<image>
+		<url><?=$config['views_url']?>img/header_rss.svg</url>
+		<title>Kabano</title>
+		<link><?=$config['rel_root_folder']?></link>
+		<height>44</height>
+		<width>154</width>
+	</image>
+
+	<? foreach ($blogArticles_list as $row) { ?>
+
+		<item>
+			<title><?=$row->title?></title>
+			<link><?=$config['rel_root_folder']?>blog/<?=$row->url?></link>
+			<guid><?=$config['rel_root_folder']?>blog/<?=$row->url?></guid>
+			<pubDate><?=$row->lastedit?></pubDate>
+			<description><![CDATA[
+				<?=$row->content_html?>
+				]]></description>
+		</item>
+
+	<? } ?>
+
+
+</channel>
+</rss>

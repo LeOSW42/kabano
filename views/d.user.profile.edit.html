@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+	<? include('blocks/d.head.html'); ?>
+
+	<body>
+
+		<? include('blocks/d.nav.html'); ?>
+
+		<section id="profile">
+			<? if ($userProfile->id != 0) { ?>
+				<h1><?=$userProfile->name?></h1>
+				<article>
+					<? if(isset($nameError) AND $nameError==1) { ?>
+						<p style="color: #660000;">Veuillez choisir un autre nom d'utilisateur.</p>
+					<? } ?>
+					<? if(isset($nameError) AND $nameError==1) { ?>
+						<p style="color: #660000;">Veuillez choisir un autre nom d'utilisateur.</p>
+					<? } ?>
+					<? if(isset($updated) AND $updated==1) { ?>
+						<p style="color: #006600;">Le profil a été mis à jour.</p>
+					<? } ?>
+					<form action="<?=$config['rel_root_folder']?>user/p/<?=$userProfile->id?>/edit" method="post" class="edituser" enctype="multipart/form-data">
+						<aside class="<?=$userProfile->avatar=='t'?'':'no'?>avatar">
+							<div id="picturebuttonscontainer">
+								<div id="picturebuttons">
+									<a href="#" id="uploadavatar"><i class="fa fa-camera"></i></a><a <?=$userProfile->avatar=='t'?'':'style="display: none;"'?> href="#" id="deleteavatar" style="font-size: 1.1em;"><i class="fa 	fa-trash"></i></a>
+								</div>
+							</div>
+
+							<img alt="Avatar" id="profileavatar" src="<?=$config['rel_root_folder']?>medias/avatars/<?=$userProfile->id?>_p.jpg" alt="Profile picture">
+							<i id="profilenoavatar" class="fa fa-user-secret"></i>
+						</aside>
+
+						<input id="avatarcheckbox" style="display: none;" type="checkbox" name="avatar" <?=$userProfile->avatar=='t'?'checked':''?>>
+						<input type="hidden" name="MAX_FILE_SIZE" value="4194304" />
+						<input id="avatarfile" name="avatarfile" style="display: none;" type="file" accept="image/*" />
+
+							<div id="description">
+								<ul>
+									<li><label for="name">Nom d'utilisateur :</label><input name="name" id="name" type="text" value="<?=$userProfile->name?>" placeholder="Charlie"></li>
+									<li><label for="mail">Adresse mail :</label><input name="mail" id="mail" type="text" value="<?=$userProfile->mail?>" placeholder="charlie@mountain.org"></li>
+									<li><label for="password">Mot de passe :</label><input name="password" id="password" type="password" placeholder="Nouveau mot de passe"></li>
+									<li><label for="locale">Langue :</label>
+										<select name="locale" id="locale">
+											<? foreach($config['locales'] as $locale) { ?>
+												<option <?=$userProfile->locale==$locale[0]?'selected':''?> value="<?=$locale[0]?>"><?=$locale[5]?></option>
+											<? } ?>
+										</select></li>
+									<? if($user->role >= 1000) { ?>
+									<li><label for="role">Rang : </label>
+										<select name="role" id="role">
+											<? foreach($config['roles'] as $role) { ?>
+												<option <?=$userProfile->role==$role[0]?'selected':''?> value="<?=$role[0]?>"><?=$role[1]?></option>
+											<? } ?>
+										</select></li>
+									<? } ?>
+									<li><label for="website">Site internet :</label><input name="website" id="website" type="text" value="<?=$userProfile->website?>" placeholder="mountain.org"></li>
+
+									<input name="submit" id="submit" type="submit" value="Envoyer">
+								</ul>
+							</div>
+							<div style="clear:both;"></div>
+					</form>
+				</article>
+			<? } else { ?>
+				<p style="color:red;">Le profil demandé n'existe pas.</p>
+			<? } ?>
+		</section>
+
+		<? include('blocks/d.footer.html'); ?>
+
+	</body>
+</html>

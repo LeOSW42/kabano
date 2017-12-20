@@ -1,0 +1,219 @@
+/*********************************/
+/** Login page                  **/ 
+/*********************************/
+
+form.form {
+	width: 50%;
+	margin: 25px auto;
+	text-align: center;
+}
+
+form.form input, form.form textarea {
+	background: #ddd;
+	border-bottom: 2px solid #ccc;
+	width: 100%;
+	display: block;
+	margin: 10px 0 15px -10px;
+	padding: 10px;
+}
+
+form.form textarea {
+	font-size: 14px;
+}
+form.form input {
+	font-size: 18px;
+}
+
+form.form input[type=submit] {
+	width: auto;
+	margin: auto;
+	border-bottom: 2px solid blue;
+}
+
+/*********************************/
+/** Profile page                **/ 
+/*********************************/
+
+#profile article {
+	margin: 30px 0;
+}
+
+#profile aside {
+	width: 220px;
+	height: 240px;
+	background: #ddd;
+	float: left;
+	margin: 0 30px 0 0;
+	border: 1px solid #bbb;
+	text-align: center;
+	color: #999;
+	line-height: 238px;
+	overflow: hidden;
+}
+
+#profile aside img {
+	vertical-align: middle;
+	max-width: 220px;
+	max-height: 240px;
+	z-index: 1;
+	box-shadow: 0 0 15px #aaa;
+}
+
+#profile aside.noavatar #profileavatar {
+	display: none;
+}
+#profile aside.avatar #profilenoavatar {
+	display: none;
+}
+#profile aside.noavatar #profilenoavatar {
+	display: inline;
+	font-size: 150px;
+	line-height: 238px;
+}
+#profile aside.avatar #profileavatar {
+	display: inline;
+}
+
+.userrole {
+	font-variant: small-caps;
+	font-weight: 500;
+}
+
+.external-link {
+	font-size: 0.8em;
+	margin: 0 3px;
+}
+
+#profile form.form {
+	width: 90%;
+}
+
+/*********************************/
+/** Edit user page              **/ 
+/*********************************/
+
+form.edituser ul {
+	margin-left: 250px;
+}
+form.edituser ul {
+	list-style-type: none;
+}
+form.edituser label {
+	width: 150px;
+	float: left;
+	margin: 13px 15px 0 0;
+	text-align: right;
+}
+form.edituser input, form.edituser select {
+	background: #ddd;
+	border-bottom: 2px solid #ccc;
+	margin: 5px;
+	padding: 10px;
+	width: 250px;
+}
+
+form.edituser input[type=submit] {
+	width: 150px;
+	margin: 20px 0 0 170px;
+	border-bottom: 2px solid blue;
+}
+
+form.edituser #picturebuttonscontainer {
+	text-align: left;
+	height: 0;
+	top: 106px;
+	left: 0;
+	position: relative;
+	z-index: 10; 
+}
+
+form.edituser #picturebuttons {
+	text-align: center;
+	line-height: 30px;
+	height: 30px;
+	display: inline-block;
+	background: #bbb;
+}
+
+form.edituser #picturebuttons a {
+	width: 30px;
+	display: inline-block;
+}
+
+/*********************************/
+/** Member list page            **/
+/*********************************/
+
+#member_list table {
+	width: 100%;
+	margin: 30px auto;
+}
+
+#member_list table, #member_list td {
+    border: 1px solid #ccc;
+    border-collapse: collapse;
+}
+#member_list th {
+    border: 1px solid #aaa;
+    border-collapse: collapse;
+}
+#member_list th a {
+    color: inherit !important;
+}
+#member_list th i {
+    float: right;
+}
+
+#member_list td, #member_list th {
+	padding: 5px;
+}
+
+#member_list tr:nth-child(even) {
+	background: #efefef;
+}
+#member_list tr:nth-child(odd) {
+	background: #e1e1e1;
+}
+#member_list tr.first {
+	background: #ccc;
+}
+#member_list tr:hover {
+	background: #f5f5f5;
+}
+#member_list tr.first:hover {
+	background: #ccc;
+}
+
+#member_list .username {
+	font-size: 1.2em;
+}
+
+#member_list .icon {
+	border: 1px solid #999;
+	border-radius: 3px;
+	margin: 0 3px 0 0;
+	padding: 4px 0;
+	line-height: 20px;
+	text-align: center;
+	width: 28px;
+	background: #ccc;
+	vertical-align: middle;
+}
+
+#member_list .icon.avatar {
+	padding: 0;
+	height: 28px;
+}
+
+#member_list .pagebuttons {
+	text-align: center;
+}
+#member_list .pagebuttons a {
+	background: #efefef;
+    border: 1px solid #ccc;
+    padding: 5px;
+    font-size: 1.5em;
+}
+#member_list .pagebuttons .previous {
+    margin-right: -1px;
+}

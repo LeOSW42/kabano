@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+	<? include('blocks/d.head.html'); ?>
+
+	<body>
+
+		<? include('blocks/d.nav.html'); ?>
+
+		<section>
+			<? if(isset($new) AND $new==1) { ?>
+				<form class="form" action="<?=$config['rel_root_folder']?>blog/new" method="post">
+			<? } 
+			else { ?>
+				<form class="form" action="<?=$config['rel_root_folder']?>blog/<?=$blogArticle->url?>/edit" method="post">
+			<? } ?>
+			
+				<h1>
+					<select name="locale" id="locale">
+						<? foreach($config['locales'] as $locale) { ?>
+							<option <?=$blogArticle->locale==$locale[0]?'selected':''?> value="<?=$locale[0]?>"><?=$locale[5]?></option>
+						<? } ?>
+					</select>
+					<input type="text" value="<?=$blogArticle->title?>" name="title" id="title" placeholder="Titre">
+				</h1>
+
+				<? if(isset($error) AND $error=="url") { ?>
+					<p style="color: red;">L'URL sélectionnée est déjà prise.</p>
+				<? } ?>
+
+				<textarea rows="30" name="content" id="content" placeholder="Contenu de la page"><?=$blogArticle->content?></textarea>
+
+				<? if(isset($new) AND $new==1) { ?>
+					<input type="text" value="<?=$blogArticle->url?>" name="url" id="url" placeholder="URL">
+				<? } ?>
+
+				<label for="comments">
+					<input type="checkbox" name="comments" id="comments" value="comments" 
+					<? if($blogArticle->comments == 't') { ?>
+						checked
+					<? } ?>
+					/>
+					<span>Autoriser les commentaires</span>
+				</label>
+
+				<input name="submit" id="submit" type="submit" value="Envoyer">
+			</form>
+		</section>
+
+		<script type="text/javascript">
+$( "#title" ).keyup(function() {
+  url = $( "#title" ).val();
+  url = url.replace(/ /g,'_');
+  url = url.toLowerCase();
+  url = url.replace(/[^a-z0-9_]/g,'-');
+  url = url.replace(/[_$]/g,'-');
+  $( "#url" ).val(url);
+});
+$( "#title" ).change(function() {
+  url = $( "#title" ).val();
+  url = url.replace(/ /g,'_');
+  url = url.toLowerCase();
+  url = url.replace(/[^a-z0-9_]/g,'-');
+  url = url.replace(/[_$]/g,'-');
+  $( "#url" ).val(url);
+});
+		</script>
+
+		<? include('blocks/d.footer.html'); ?>
+
+	</body>
+</html>

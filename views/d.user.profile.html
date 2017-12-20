@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+	<? include('blocks/d.head.html'); ?>
+
+	<body>
+
+		<? include('blocks/d.nav.html'); ?>
+
+		<section id="profile">
+			<? if ($userProfile->id != 0) { ?>
+				<h1><?=$userProfile->name?></h1>
+				<? if($user->role >= 800 || $user->id == $userProfile->id) { ?>
+				<a class="subtitle" id="editprofile" href="<?=$config['rel_root_folder']?>user/p/<?=$userProfile->id?>/edit"><i class="fa fa-pencil"></i> Éditer les paramètres du compte</a>
+				<? } ?>
+				<article>
+					<div id="profilepart">
+						<? if(isset($mailsent) AND $mailsent==1) { ?>
+							<p style="color: #006600;">Le message a bien été envoyé.</p>
+						<? } ?>
+						<aside class="<?=$userProfile->avatar=='t'?'':'no'?>avatar">
+							<img alt="Avatar" id="profileavatar" src="<?=$config['rel_root_folder']?>medias/avatars/<?=$userProfile->id?>_p.jpg" alt="Profile picture">
+							<i id="profilenoavatar" class="fa fa-user-secret"></i>
+						</aside>
+							<div id="description">
+								<p>Langue : <?=$config['locales'][$userProfile->locale][5]?></p>
+								<p>Inscrit le <? echo strftime('%e %B %G, %kh%Mm%Ss',strtotime($userProfile->registered)) ?> <small><abbr title="Temps Universel Coordonné">UTC</abbr></small></p>
+								<p>Dernière connexion le <? echo strftime('%e %B %G, %kh%Mm%Ss',strtotime($userProfile->lastlogin)) ?> <small><abbr title="Temps Universel Coordonné">UTC</abbr></small></p>
+								<p><?=$userProfile->role()?></p>
+								<p>
+									<? if ($userProfile->website != "") { ?>
+										<a target="_blank" href="<?=$userProfile->website?>">Site internet <span class="external-link"><i class="fa fa-external-link"></i></span></a>
+									<? }
+									if ($userProfile->website != "" AND $userProfile->id != $user->id) { ?>
+										 &mdash; 
+									<? }
+									if ($userProfile->id != $user->id) { ?>
+										<a href="#" onclick="$('#profilepart').hide(0, function(){$('#contact').show('fast');});">Contacter par mail</a>
+									<? }
+									if ($user->role >= 600 AND ($userProfile->website != "" OR $userProfile->id != $user->id)) { ?>
+										 &mdash; 
+									<? }
+									if ($user->role >= 600) { ?>
+										<a href="mailto:<?=$userProfile->mail?>"><?=$userProfile->mail?></a>
+									<? } ?>
+								</p>
+							</div>
+							<div style="clear:both;"></div>
+					</div>
+						<? if ($userProfile->id != $user->id) { ?>
+							<form style="display:none;" class="form" id="contact" action="<?=$config['rel_root_folder']?>user/p/<?=$userProfile->id?>" method="post" >
+								<textarea rows="12" name="message" id="message" placeholder="Votre message"></textarea>
+								<p><i>Votre adresse email sera transmise à votre destinataire.</i></p>
+								<input type="submit" name="submit" value="Envoyer">
+							</form>
+						<? } ?>
+				</article>
+			<? } else { ?>
+				<p style="color:red;">Le profil demandé n'existe pas.</p>
+			<? } ?>
+		</section>
+
+		<? include('blocks/d.footer.html'); ?>
+
+	</body>
+</html>

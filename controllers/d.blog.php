@@ -1,0 +1,204 @@
+<?
+
+require_once($config['models_folder']."d.blog.php");
+require_once($config['models_folder']."d.users.php");
+
+$head['css'] = "d.index.css;d.blog.css";
+
+$blogArticle = new BlogArticle();
+
+// In case we are in the list of articles, we set url to switch with according parameters
+if (!isset($controller->splitted_url[1]) OR $controller->splitted_url[1]=="" OR is_numeric($controller->splitted_url[1])) {
+	$head['title'] = "Blog";
+
+	// Get the correct page number
+	if (!isset($controller->splitted_url[1]) OR $controller->splitted_url[1]=="") {
+		$page = 0;
+	} else {
+		$page = $controller->splitted_url[1] - 1;
+	}
+
+	$controller->splitted_url[1] = "list";
+	$list = "html";
+	$articles_per_pages = 5;
+}
+
+switch ($controller->splitted_url[1]) {
+	case "rss":
+		$page = 0;
+		$list = "rss";
+		$articles_per_pages = 20;
+	case "list":
+		$blogArticles = new BlogArticles();
+
+		$blogArticles->number(($user->role >= 600));
+
+		// In case the wanted page is too big
+		if($articles_per_pages * $page >= $blogArticles->number)
+			$page = 0;
+
+		$blogArticles->listArticles($page*$articles_per_pages,$articles_per_pages,($user->role >= 600));
+
+		$i = 0;
+		$blogArticles_list = array();
+		foreach ($blogArticles->ids as $row) {
+			$blogArticles_list[$i] = new BlogArticle();
+			$blogArticles_list[$i]->id = $row;
+			$blogArticles_list[$i]->populate();
+			$blogArticles_list[$i]->md2txt();
+			$tempUser = new User();
+			$tempUser->id = $blogArticles_list[$i]->author;
+			$tempUser->populate();
+			$blogArticles_list[$i]->author_name = $tempUser->name;
+			unset($tempUser);
+			$i++;
+		}
+
+		$first = $page*$articles_per_pages+1;
+		$last = (($page+1)*$articles_per_pages > $blogArticles->number ? $blogArticles->number : ($page+1)*$articles_per_pages);
+
+		if ($list == "rss") {
+			include ($config['views_folder']."d.blog.list.rss");
+		} else {
+			include ($config['views_folder']."d.blog.list.html");
+		}
+		break;
+	case "new":
+		if($user->role >= 800) {
+			if(isset($_POST['submit'])) {
+				$blogArticle->content = $_POST['content'];
+				$blogArticle->locale = $_POST['locale'];
+				$blogArticle->title = $_POST['title'];
+				$blogArticle->comments = isset($_POST['comments'])?'t':'f';
+				$blogArticle->author = $user->id;
+				if(!$blogArticle->checkUrl($_POST['url'],1)) {
+					$blogArticle->insert();
+					header('Location: '.$config['rel_root_folder']."blog/".$blogArticle->url);
+				}
+				else {
+					$head['title'] = $blogArticle->title;
+					$error = "url";
+					$new = 1;
+					include ($config['views_folder']."d.blog.edit.html");
+				}
+			}
+			else {
+				$head['title'] = "Nouvel article";
+				$new = 1;
+				include ($config['views_folder']."d.blog.edit.html");
+			}
+			break;
+		}
+	default:
+		// If the page exists
+		if ($blogArticle->checkUrl($controller->splitted_url[1],$user->role >= 600)) {
+			if (isset($controller->splitted_url[2]) && $controller->splitted_url[2] == "delete" && $user->role >= 800) {
+				$blogArticle->delete();
+				header('Location: '.$config['rel_root_folder']."blog/".$blogArticle->url);
+			}
+			else if (isset($controller->splitted_url[2]) && $controller->splitted_url[2] == "edit" && $user->role >= 800) {
+				if(isset($_POST['submit'])) {
+					$blogArticle->content = $_POST['content'];
+					$blogArticle->locale = $_POST['locale'];
+					$blogArticle->title = $_POST['title'];
+					$blogArticle->comments = isset($_POST['comments'])?'t':'f';
+					$blogArticle->author = $user->id;
+					$blogArticle->update();
+					header('Location: '.$config['rel_root_folder']."blog/".$blogArticle->url);
+				}
+				else {
+					$blogArticle->populate();
+					$head['title'] = $blogArticle->title;
+					include ($config['views_folder']."d.blog.edit.html");
+				}
+			}
+			else {
+				// Manage history of an article
+				if($user->role >= 600) {
+					$blogArticles_history = new BlogArticles();
+					$blogArticles_history->getHistory($controller->splitted_url[1]);
+
+					$i = 0;
+					foreach ($blogArticles_history->ids as $row) {
+						$blogArticles_history_list[$i] = new BlogArticle();
+						$blogArticles_history_list[$i]->id = $row;
+						$blogArticles_history_list[$i]->populate();
+						$i++;
+					}
+				}
+				if (isset($controller->splitted_url[2]) && is_numeric($controller->splitted_url[2]))
+					$blogArticle->checkUrl($controller->splitted_url[1],$user->role>=600,$controller->splitted_url[2]);
+
+				// Manage comment creation
+				if (isset($controller->splitted_url[2]) && $controller->splitted_url[2]=="new_comment") {
+					if (isset($_POST['submit']) && $user->role > 0) {
+						$blogComment = new BlogComment();
+						$blogComment->locale = $user->locale;
+						$blogComment->author = $user->id;
+						$blogComment->article = $blogArticle->id;
+						$blogComment->content = $_POST['comment'];
+						$blogComment->insert();
+					}
+				}
+
+				// Manage comment deletion
+				if (isset($controller->splitted_url[2]) && $controller->splitted_url[2]=="delete_comment") {
+					if (isset($controller->splitted_url[3]) && is_numeric($controller->splitted_url[3])) {
+						$blogComment = new BlogComment();
+						$blogComment->id = $controller->splitted_url[3];
+						$blogComment->populate();
+						if ($user->role >= 800 || $user->id == $blogComment->author)
+							$blogComment->delete();
+					}
+				}
+
+				// Manage comment undeletion
+				if (isset($controller->splitted_url[2]) && $controller->splitted_url[2]=="undelete_comment") {
+					if (isset($controller->splitted_url[3]) && is_numeric($controller->splitted_url[3])) {
+						$blogComment = new BlogComment();
+						$blogComment->id = $controller->splitted_url[3];
+						$blogComment->populate();
+						if ($user->role >= 800 || $user->id == $blogComment->author)
+							$blogComment->undelete();
+					}
+				}
+
+				$blogArticle->populate();
+				$blogArticle->md2html();
+
+				// Manage comments
+				if ($blogArticle->comments == "t") {
+					$blogArticles_comments = new BlogComments();
+					$blogArticles_comments->listComments($blogArticle->id, ($user->role>400));
+
+					$i = 0;
+					foreach ($blogArticles_comments->ids as $row) {
+						$blogArticles_comments_list[$i] = new BlogComment();
+						$blogArticles_comments_list[$i]->id = $row;
+						$blogArticles_comments_list[$i]->populate();
+						$blogArticles_comments_list[$i]->md2html();
+						$blogArticles_comments_list[$i]->author_obj = new User();
+						$blogArticles_comments_list[$i]->author_obj->id = $blogArticles_comments_list[$i]->author;
+						$blogArticles_comments_list[$i]->author_obj->populate();
+						$i++;
+					}
+				}
+
+
+				$tempUser = new User();
+				$tempUser->id = $blogArticle->author;
+				$tempUser->populate();
+				$blogArticle->author_name = $tempUser->name;
+				unset($tempUser);
+
+				$head['title'] = $blogArticle->title;
+				include ($config['views_folder']."d.blog.view.html");
+			}
+		}
+		else {
+			$notfound = 1;	
+		}
+		break;
+}
+
+?>

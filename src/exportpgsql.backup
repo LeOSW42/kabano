@@ -1,0 +1,119 @@
+COMMENT ON DATABASE kabano IS 'Kabano database';
+
+
+
+-- SEQUENCES
+
+CREATE SEQUENCE blog_articles_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+ALTER TABLE blog_articles_id_seq OWNER TO kabano;
+
+
+CREATE SEQUENCE blog_comments_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+ALTER TABLE blog_comments_id_seq OWNER TO kabano;
+
+
+CREATE SEQUENCE users_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+ALTER TABLE users_id_seq OWNER TO kabano;
+
+
+CREATE SEQUENCE wiki_id_seq
+    START WITH 5
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+ALTER TABLE wiki_id_seq OWNER TO kabano;
+
+
+
+-- TABLES
+
+CREATE TABLE blog_articles (
+    id integer DEFAULT nextval('blog_articles_id_seq'::regclass) NOT NULL,
+    url text,
+    title text,
+    content text,
+    lastedit timestamp without time zone,
+    archive boolean DEFAULT false NOT NULL,
+    locale text,
+    comments boolean DEFAULT true NOT NULL,
+    author integer
+);
+ALTER TABLE blog_articles OWNER TO kabano;
+COMMENT ON TABLE blog_articles IS 'This table contains all archived and visible blog articles';
+ALTER TABLE ONLY blog_articles
+    ADD CONSTRAINT blog_articles_pkey PRIMARY KEY (id);
+
+
+CREATE TABLE blog_comments (
+    id integer DEFAULT nextval('blog_comments_id_seq'::regclass) NOT NULL,
+    article integer,
+    lastedit timestamp without time zone,
+    author integer,
+    locale text,
+    content text,
+    archive boolean DEFAULT false NOT NULL
+);
+ALTER TABLE blog_comments OWNER TO kabano;
+COMMENT ON TABLE blog_comments IS 'This table contains all blog comments';
+ALTER TABLE ONLY blog_comments
+    ADD CONSTRAINT blog_comments_pkey PRIMARY KEY (id);
+
+
+CREATE TABLE users (
+    id integer DEFAULT nextval('users_id_seq'::regclass) NOT NULL,
+    name text,
+    password text,
+    locale text,
+    lastlogin timestamp without time zone,
+    mail text,
+    website text,
+    role integer DEFAULT 400 NOT NULL,
+    avatar boolean DEFAULT false NOT NULL
+);
+ALTER TABLE users OWNER TO kabano;
+COMMENT ON TABLE users IS 'This user database contains all users informations';
+ALTER TABLE ONLY users
+    ADD CONSTRAINT users_pkey PRIMARY KEY (id);
+
+
+CREATE TABLE wiki (
+    id integer DEFAULT nextval('wiki_id_seq'::regclass) NOT NULL,
+    url text,
+    title text,
+    content text,
+    lastedit timestamp without time zone,
+    archive boolean DEFAULT false NOT NULL,
+    locale text
+);
+ALTER TABLE wiki OWNER TO kabano;
+COMMENT ON TABLE wiki IS 'This wiki database contains all archived and displayed wiki pages';
+ALTER TABLE ONLY wiki
+    ADD CONSTRAINT wiki_pkey PRIMARY KEY (id);
+
+
+
+-- Foreign keys
+
+ALTER TABLE ONLY blog_articles
+    ADD CONSTRAINT blog_articles_author_fkey FOREIGN KEY (author) REFERENCES users(id);
+ALTER TABLE ONLY blog_comments
+    ADD CONSTRAINT blog_comments_article_fkey FOREIGN KEY (article) REFERENCES blog_articles(id);
+ALTER TABLE ONLY blog_comments
+    ADD CONSTRAINT blog_comments_author_fkey FOREIGN KEY (author) REFERENCES users(id);
+

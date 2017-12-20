@@ -1,0 +1,46 @@
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, height=device-height">
+		<link rel="shortcut icon" href="<?=$config['views_url']?>img/favicon.png">
+<?	if (isset($head['css'])) { 
+		foreach(explode(";",$head['css']) as $css) { ?>
+			<link rel="stylesheet" href="<?=$config['views_url']?>css/<?=$css?>"/>
+<?		}
+	}
+	else { ?>
+		<link rel="stylesheet" href="<?=$config['views_url']?>css/d.index.css"/>
+<?	} ?>
+		<link rel="stylesheet" href="<?=$config['views_url']?>third/font-awesome-4.7.0/css/font-awesome.min.css"/>
+
+		<script type="text/javascript" src="<?=$config['views_url']?>third/jquery-3.1.1.min.js"></script>
+<?	if (isset($head['third'])) { 
+		foreach(explode(";",$head['third']) as $third) { ?>
+			<script type="text/javascript" src="<?=$config['views_url']?>third/<?=$third?>"></script>
+<?		}
+	} ?>
+		<script type="text/javascript" src="<?=$config['views_url']?>js/d.header.js"></script>
+<?	if (isset($head['js'])) { 
+		foreach(explode(";",$head['js']) as $js) { ?>
+			<script type="text/javascript" src="<?=$config['views_url']?>js/<?=$js?>"></script>
+<?		}
+	} ?>
+
+<?	if (isset($head['title'])) { ?>
+		<title><?=$head['title']?> &mdash; Kabano</title>
+<?	}
+	else { ?>
+		<title>Cabanes et bivouac en montagne</title>
+<?	} ?>
+<?	if (isset($head['description'])) { ?>
+		<meta name="description" content="<?=$head['description']?>">
+?	}
+	else { ?>
+		<meta name="description" content="Annuaire collaboratif des hébergements pour les activitées de plein air : cabanes, refuges, campings...">
+<?	} ?>
+<?	if (isset($head['keywords'])) { ?>
+		<meta name="keywords" content="<?=$head['keywords']?>">
+<?	}
+	else { ?>
+		<meta name="keywords" content="kabano, huts, mountain, hiking, cabanes, refuges, bivouac, montagne, randonnée">
+<?	} ?>
+	</head>

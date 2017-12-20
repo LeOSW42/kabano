@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+	<? include('blocks/d.head.html'); ?>
+
+	<body>
+
+		<? include('blocks/d.nav.html'); ?>
+
+		<section id="blog_article" <?=$blogArticle->archive=="t"?'class="archive"':''?>>
+			<h1><?=$blogArticle->title?>.</h1>
+				<? if($user->role >= 600) { ?>
+					<span class="subtitle">
+					<? if(isset($blogArticles_history_list)) { ?>
+						<select id="bloghistory">
+							<? $i = 0;
+							foreach ($blogArticles_history_list as $row) { ?>
+								<option <?=$row->id==$blogArticle->id?'selected':''?> value="<?=$i?>"><?=$row->archive=="f"?'&bull; ':''?><? echo strftime('%d/%m/%Y %H:%M:%S',strtotime($row->lastedit)) ?></option>
+							<? $i++;
+							} ?>
+						</select>
+					<? } 
+					if ($user->role >= 800 && isset($blogArticles_history_list)) { ?>
+						 &mdash; 
+					<? }
+					if ($user->role >= 800) { ?>
+						<a href="<?=$config['rel_root_folder']?>blog/<?=$blogArticle->url?>/edit"><i class="fa fa-pencil"></i> Éditer l'article</a>
+						<? if ($blogArticle->archive == 'f') { ?>
+							 &mdash; 
+							<a href="<?=$config['rel_root_folder']?>blog/<?=$blogArticle->url?>/delete"><i class="fa fa-trash"></i> Effacer l'article</a>
+						<? } ?>
+					<? } ?>
+					</span>
+				<? } ?>
+
+			<div id="blogContent">
+				<?=$blogArticle->content_html?>
+			</div>
+
+			<p id="blogTimestamp">Article écrit par 
+			<? if ($user->role > 0) { ?>
+				<a href="<?=$config['rel_root_folder']?>user/p/<?=$blogArticle->author?>"><?=$blogArticle->author_name?></a>
+			<? } 
+			else { ?>
+				<?=$blogArticle->author_name?> 
+			<? } ?>
+			le <? echo strftime('%e %B %G, %kh%Mm%Ss',strtotime($blogArticle->lastedit)) ?> <small><abbr title="Temps Universel Coordonné">UTC</abbr></small></p>
+
+			<!-- COMMENTS -->
+
+			<? if ($blogArticle->comments == "t" && $blogArticle->archive == "f") { ?>
+				<div id="new_comment">
+					<form class="form" action="<?=$config['rel_root_folder']?>blog/<?=$blogArticle->url?>/new_comment" method="post">
+						<div id="new_comment_label" <?=$user->role==0?"class='sent' ":""?>>
+							<? if ($user->role > 0) { ?>
+								<input name="submit" type="submit" value="Envoyer">
+								<p>Ajouter un nouveau commentaire</p>
+							<? } else { ?>
+								<p>Veuillez vous connecter pour ajouter un commentaire</p>
+							<? } ?>
+						</div>
+						<div id="new_comment_form">
+							<textarea id="comment" name="comment" rows="5" placeholder="Votre commentaire"></textarea>
+						</div>
+					</form>
+				</div>
+
+				<? if(isset($blogArticles_comments_list)) {
+					foreach ($blogArticles_comments_list as $row) { ?>
+
+						<article <? if($row->archive == 't') echo 'class="comment_archive" '; ?>>
+							<div class="comment_title">
+								<? if ($row->author_obj->avatar=='t') { ?>
+									<img alt="Avatar" class="icon avatar" src="<?=$config['rel_root_folder']?>medias/avatars/<?=$row->author_obj->id?>_s.jpg">
+								<? } else { ?>
+									<i class="icon fa fa-user-secret"></i>
+								<? } ?>
+								<? if ($user->role > 0) { ?>
+								<a class="username" href="<?=$config['rel_root_folder']?>user/p/<?=$row->author_obj->id?>"><?=$row->author_obj->name?></a>
+								<? } else { ?>
+									<?=$row->author_obj->name?>
+								<? } ?>
+								le <? echo strftime('%e %B %G, %kh%Mm%Ss',strtotime($row->lastedit)) ?> <small><abbr title="Temps Universel Coordonné">UTC</abbr></small>
+								<? if (($user->role >= 800 || $user->id == $row->author) && $row->archive == 'f') { ?>
+									<span class="delete_link"><a href="<?=$config['rel_root_folder']?>blog/<?=$blogArticle->url?>/delete_comment/<?=$row->id?>"><i class="fa fa-trash"></i> Effacer le commentaire</a></span>
+								<? } ?>
+								<? if (($user->role >= 800 || $user->id == $row->author) && $row->archive == 't') { ?>
+									<span class="delete_link"><a href="<?=$config['rel_root_folder']?>blog/<?=$blogArticle->url?>/undelete_comment/<?=$row->id?>"><i class="fa fa-eye"></i> Réafficher le commentaire</a></span>
+								<? } ?>
+							</div>
+							<div class="comment_content">
+								<?=$row->content_html?>
+							</div>
+						</article>
+
+					<? }
+				}
+			} ?>
+
+			<br>
+			<br>
+			<div style="clear: both;"> </div>
+		</section>
+
+<? if($user->role >= 600) { ?>
+		<script type="text/javascript">
+$( "#bloghistory" ).change(function() {
+  window.location.href = "<?=$config['rel_root_folder']?>blog/<?=$blogArticle->url?>/"+$( this ).val();
+});
+		</script>
+<? } ?>
+<? if($user->role > 0) { ?>
+		<script type="text/javascript">
+$( "#new_comment_label" ).click(function() {
+  $( "#new_comment_form" ).show(400);
+  $( "#new_comment_label input" ).show(0);
+  $( "#new_comment_label").addClass('sent');
+});
+		</script>
+<? } ?>
+
+		<? include('blocks/d.footer.html'); ?>
+
+	</body>
+</html>

@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+	<? include('blocks/d.head.html'); ?>
+
+	<body>
+
+		<? include('blocks/d.nav.html'); ?>
+
+		<section>
+			<h1>Logs.</h1>
+				<span class="subtitle">
+					<select id="logfile">
+						<? $i = 0;
+						foreach ($files_list as $row) {
+							if ($row != "." && $row != "..") { ?>
+								<option <?=$i==$filenb?'selected':''?> value="<?=$i?>"><? echo $row; ?></option>
+							<? $i++;
+							} ?>
+						<? } ?>
+					</select>
+				</span>
+			<br>
+			<br>
+			<pre><?
+			foreach($output as $line) {
+					echo $line."<br>";
+				}
+			?></pre>
+		</section>
+
+		<script type="text/javascript">
+$( "#logfile" ).change(function() {
+  window.location.href = "<?=$config['rel_root_folder']?>admin/logs/"+$( this ).val();
+});
+		</script>
+
+		<? include('blocks/d.footer.html'); ?>
+
+	</body>
+</html>

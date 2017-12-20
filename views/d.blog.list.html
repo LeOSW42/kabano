@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+	<? include('blocks/d.head.html'); ?>
+
+	<body>
+
+		<? include('blocks/d.nav.html'); ?>
+
+		<section id="blog_list">
+			<h1>Blog.</h1>
+			<p class="subtitle">
+				<? if ($user->role >= 800) { ?>
+					<a href="<?=$config['rel_root_folder']?>blog/new"><i class="fa fa-plus"></i> Nouvel article</a> &mdash; 
+				<? } ?>
+				<a href="<?=$config['rel_root_folder']?>blog/rss"><i class="fa fa-rss" aria-hidden="true"></i> Flux RSS</a> &mdash; 
+				Articles <?=$first?> à <?=$last?> sur <?=$blogArticles->number?>
+			</p>
+
+			<div id="articles_list">
+
+				<? foreach ($blogArticles_list as $row) { ?>
+
+					<article <? if($row->archive == 't') echo 'class="article_archive" '; ?>>
+						<h2 class="article_title"><?=$row->title?>.</h2>
+						<div class="article_content"><?=mb_substr($row->content_txt,0,200)?>...</div>
+						<p class="article_legend">
+							<a class="article_link" href="<?=$config['rel_root_folder']?>blog/<?=$row->url?>">Lire la suite...</a>
+							<span class="article_infos">
+								Le <? echo strftime('%e %B %G',strtotime($row->lastedit)) ?> par 
+								<? if ($user->role > 0) { ?>
+									<a href="<?=$config['rel_root_folder']?>user/p/<?=$row->author?>"><?=$row->author_name?></a>
+								<? } 
+								else { ?>
+									<?=$row->author_name?>
+								<? } ?>
+							</span>
+						</p>
+					</article>
+
+				<? } ?>
+
+			</div>
+			
+			<div class="pagebuttons">
+				<? if ($page != 0) { ?><a class="previous" href="<?=$config['rel_root_folder']?>blog/<?=$page?>"><i class="fa fa-chevron-left fa-fw"></i></a><? }
+				if (($page+1)*$articles_per_pages < $blogArticles->number) { ?><a class="next" href="<?=$config['rel_root_folder']?>blog/<?=$page+2?>"><i class="fa fa-chevron-right fa-fw"></i></a><? } ?>
+			</div>
+
+		</section>
+
+		<? include('blocks/d.footer.html'); ?>
+
+	</body>
+</html>

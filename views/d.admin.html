@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+	<? include('blocks/d.head.html'); ?>
+
+	<body>
+
+		<? include('blocks/d.nav.html'); ?>
+
+		<section>
+			<h1>Administration.</h1>
+			<br>
+			<? if($user->role >= 1000) { ?>
+				<a href="<?=$config['rel_root_folder']?>admin/git-pull" class="button"><i class="fa fa-refresh"></i> Mettre à jour</a> <small>Met à jour le logiciel depuis le dépôt GIT.</small><br><br>
+			<? } ?>
+			<? if($user->role >= 800) { ?>
+				<a href="<?=$config['rel_root_folder']?>admin/logs" class="button"><i class="fa fa-history"></i> Voir les logs</a> <small>Permet d'accéder aux 200 dernières lignes des logs bruts des actions sur la base de données.</small><br><br>
+			<? } ?>
+		</section>
+
+		<? include('blocks/d.footer.html'); ?>
+
+	</body>
+</html>

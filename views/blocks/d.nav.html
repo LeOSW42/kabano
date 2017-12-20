@@ -1,0 +1,52 @@
+		<header>
+			<div id="Hcontent">
+				<a href="<?=$config['rel_root_folder']?>" id="logo">
+					<img alt="Kabano logo" src="<?=$config['views_url'].'img/'?>header.svg">
+				</a>
+				<nav>
+					<ul>
+						<li class="on-bar"><a class="on-bar" href="<?=$config['rel_root_folder']?>map">Carte</a></li>
+						<li class="on-bar"><a class="on-bar" href="<?=$config['rel_root_folder']?>search">Recherche</a></li>
+						<li class="on-bar"><a class="on-bar" href="<?=$config['rel_root_folder']?>news">Nouveautés</a></li>
+						<li class="on-bar"><a class="on-bar" href="<?=$config['rel_root_folder']?>community">Contribuer</a></li>
+						<li class="on-bar has-sub">
+							<? if (isset($user->avatar) AND $user->avatar=='t') { ?>
+							<a class="on-bar" href="#"><img alt="Avatar" class="icon avatar" src="<?=$config['rel_root_folder']?>medias/avatars/<?=$user->id?>_s.jpg"></a>
+							<? } elseif (isset($user->avatar) AND $user->avatar=='f') { ?>
+							<a class="on-bar" href="#"><i class="icon fa fa-user-secret"></i></a>
+							<? } else { ?>
+							<a class="on-bar" href="#"><i class="icon fa fa-user"></i></a>
+							<? } ?>
+							<ul>
+								<? if($user->role == 0) { ?>
+								<li id="connectform">
+									<form action="<?=$config['rel_root_folder']?>user/login" method="post">
+										<input type="text" name="login" placeholder="Nom d'utilisateur">
+										<input type="password" name="password" placeholder="Mot de passe">
+										<input type="submit" name="submit" value="Se connecter">
+									</form>
+								</li>
+								<li><a href="<?=$config['rel_root_folder']?>user/signin">S'inscrire</a></li>
+								<? } else { ?>
+								<li><a href="<?=$config['rel_root_folder']?>user/p">Mon profil</a></li>
+								<li><a href="<?=$config['rel_root_folder']?>user/member_list">Liste des membres</a></li>
+								<? if($user->role >= 800) { ?>
+								<li><a href="<?=$config['rel_root_folder']?>admin">Administration</a></li>
+								<? } ?>
+								<li><a href="<?=$config['rel_root_folder']?>user/logout">Se déconnecter</a></li>
+								<? } ?>
+							</ul>
+						</li>
+						<li class="on-bar has-sub"><a class="on-bar" href="#"><i class="icon fa fa-question"></i></a>
+							<ul>
+								<li><a href="<?=$config['rel_root_folder']?>wiki/help">Aide</a></li>
+								<li><a href="<?=$config['rel_root_folder']?>blog">Blog</a></li>
+								<li><a href="<?=$config['rel_root_folder']?>contact">Contact</a></li>
+								<li><a href="<?=$config['rel_root_folder']?>wiki/api">API Développeurs</a></li>
+								<li><a href="<?=$config['rel_root_folder']?>wiki/about">À propos</a></li>
+							</ul>
+						</li>
+					</ul>
+				</nav>
+			</div>
+		</header>

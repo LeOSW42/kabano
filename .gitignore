@@ -1,0 +1,5 @@
+/includes/config.php
+/medias/*
+*.sublime-project
+*.sublime-workspace
+*.log

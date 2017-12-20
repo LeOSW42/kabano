@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+	<? include('blocks/d.head.html'); ?>
+
+	<body>
+
+		<? include('blocks/d.nav.html'); ?>
+
+		<section id="wiki_page" <?=$wikiPage->archive=="t"?'class="archive"':''?>>
+			<h1><?=$wikiPage->title?>.</h1>
+				<? if($user->role >= 600) { ?>
+					<span class="subtitle">
+					<? if(isset($wikiHistory_list)) { ?>
+						<select id="wikihistory">
+							<? $i = 0;
+							foreach ($wikiHistory_list as $row) { ?>
+								<option <?=$row->id==$wikiPage->id?'selected':''?> value="<?=$i?>"><?=$row->archive=="f"?'&bull; ':''?><? echo strftime('%d/%m/%Y %H:%M:%S',strtotime($row->lastedit)) ?></option>
+							<? $i++;
+							} ?>
+						</select>
+					<? } 
+					if ($user->role >= 800 && isset($wikiHistory_list)) { ?>
+						 &mdash; 
+					<? }
+					if ($user->role >= 800) { ?>
+						<a href="<?=$config['rel_root_folder']?>wiki/<?=$wikiPage->url?>/edit"><i class="fa fa-pencil"></i> Éditer la page</a>
+						<? if ($wikiPage->archive == 'f') { ?>
+							 &mdash; 
+							<a href="<?=$config['rel_root_folder']?>wiki/<?=$wikiPage->url?>/delete"><i class="fa fa-trash"></i> Effacer la page</a>
+						<? } ?>
+					<? } ?>
+					</span>
+				<? } ?>
+
+			<div id="wikiContent">
+				<?=$wikiPage->content_html?>
+			</div>
+
+			<p id="wikiTimestamp">Page mise à jour le <? echo strftime('%e %B %G, %kh%Mm%Ss',strtotime($wikiPage->lastedit)) ?> <small><abbr title="Temps Universel Coordonné">UTC</abbr></small></p>
+
+			<div style="clear: both;"> </div>
+		</section>
+
+<? if($user->role >= 600) { ?>
+		<script type="text/javascript">
+$( "#wikihistory" ).change(function() {
+  window.location.href = "<?=$config['rel_root_folder']?>wiki/<?=$wikiPage->url?>/"+$( this ).val();
+});
+		</script>
+<? } ?>
+
+		<? include('blocks/d.footer.html'); ?>
+
+	</body>
+</html>

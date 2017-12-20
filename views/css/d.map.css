@@ -1,0 +1,173 @@
+/* Custom configuration for the map page */
+
+html {
+	height: 100%;
+}
+body {
+	height: calc(100% - 65px);
+}
+footer {
+	position: absolute;
+	bottom: 0;
+	left: calc(50% - 425px);
+	z-index: 10000;
+}
+
+/*****************************************
+ Controls of the map
+*****************************************/
+
+/* General */
+
+.leaflet-control-container {
+	position: absolute !important;
+	width: 850px !important;
+	height: 100%;
+	left: calc(50% - 425px) !important;
+	font-family: "Fira Sans", "Open Sans",Helvetica,Arial,sans-serif !important;
+}
+.leaflet-fullscreen-on .leaflet-control-container {
+	position: absolute !important;
+	width: 100% !important;
+	left: 0 !important;
+}
+
+.leaflet-bottom.leaflet-left {
+	margin-bottom: 60px !important;
+}
+.leaflet-fullscreen-on .leaflet-bottom.leaflet-left {
+	margin-bottom: 15px !important;
+	margin-left: 15px !important;
+}
+
+.leaflet-bottom.leaflet-right {
+	margin-bottom: 60px !important;
+}
+.leaflet-fullscreen-on .leaflet-bottom.leaflet-right {
+	margin-bottom: 15px !important;
+	margin-right: 15px !important;
+}
+
+.leaflet-control {
+	clear: none !important;
+	padding: 0 !important;
+	border-radius: 0 !important;
+	box-shadow: none !important;
+	color: #c1c1c1 !important;
+}
+.leaflet-right .leaflet-control {
+	margin: 0 0 0 15px !important;
+}
+.leaflet-left .leaflet-control {
+	margin: 0 15px 0 0 !important;
+}
+
+.leaflet-control a, .leaflet-control button {
+	display: inline-block !important;
+	float: none !important;
+	border: none !important;
+	background-color: #212121 !important;
+	border-radius: 0 !important;
+	color: #c1c1c1 !important;
+	border-right: 1px #3e3e3e solid !important;
+}
+.leaflet-control a:last-child, .leaflet-control button:last-child {
+	border-right: none !important;
+}
+
+/* Zoom */
+
+.leaflet-control-zoom-in, .leaflet-control-zoom-out {
+	font-size: 10px !important;
+}
+.leaflet-disabled {
+	background-color: rgba(33, 33, 33, 0.8) !important;
+	opacity: 0.8 !important;
+}
+
+/* Fullscreen */
+
+.leaflet-control-fullscreen a {
+	background: #212121 !important;
+}
+.leaflet-control-fullscreen a:before {
+	content: "\f065";
+	font-family: FontAwesome;
+	background: none !important;
+}
+.leaflet-fullscreen-on .leaflet-control-fullscreen a:before {
+	content: "\f066";
+	font-family: FontAwesome;
+}
+
+/* Baselayers */
+
+.leaflet-control-layers a {
+	background: #212121 !important;
+	width: 26px !important;
+	height: 26px !important;
+	line-height: 26px !important;
+	text-align: center !important;
+	border-right: none !important;
+}
+.leaflet-control-layers a:before {
+	content: "\f279";
+	font-family: FontAwesome;
+	background: none !important;
+}
+.leaflet-control-layers-expanded a {
+	display: none !important;
+}
+.leaflet-control-layers-list {
+	padding: 3px 8px !important;
+	color: white !important;
+	background: #212121 !important;
+}
+
+/* Credit / Legend */
+
+.leaflet-control button {
+	font-size: 12px !important;
+}
+
+#footer-credits, #footer-legend {
+	background: #212121;
+	width: 820px;
+	padding: 15px;
+	margin: 15px auto 0 auto;
+	color: #c1c1c1;
+	text-align: left;
+	position: absolute;
+	bottom: 0;
+	left: calc(50% - 425px);
+	z-index: 10000;
+}
+
+#footer-credits .close-link, #footer-legend .close-link {
+	float: right;
+	color: white;
+	padding: 0 8px;
+	cursor: pointer;
+}
+
+#footer-credits a, #footer-legend a {
+	color: white;
+}
+#footer-credits a:hover, #footer-legend a:hover {
+	color: white;
+}
+
+/* Scale */
+
+.leaflet-control-scale-line {
+	height: 26px !important;
+	background: #212121 !important;
+	color: #c1c1c1 !important;
+	text-align: center !important;
+	border: none !important;
+	font-size: 12px !important;
+	line-height: 20px !important;
+}
+.leaflet-control-scale {
+	opacity: 0.8 !important;
+}

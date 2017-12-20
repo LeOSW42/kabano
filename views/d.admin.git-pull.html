@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+	<? include('blocks/d.head.html'); ?>
+
+	<body>
+
+		<? include('blocks/d.nav.html'); ?>
+
+		<section>
+			<h1>Mise à jour.</h1>
+			<br>
+			<pre><?
+			foreach($output as $line) {
+					echo $line."<br>";
+				}
+			?></pre>
+		</section>
+
+		<? include('blocks/d.footer.html'); ?>
+
+	</body>
+</html>

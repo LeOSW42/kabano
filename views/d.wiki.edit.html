@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+	<? include('blocks/d.head.html'); ?>
+
+	<body>
+
+		<? include('blocks/d.nav.html'); ?>
+
+		<section>
+			<form class="form" action="<?=$config['rel_root_folder']?>wiki/<?=$wikiPage->url?>/edit" method="post">
+				<h1>
+					<select name="locale" id="locale">
+						<? foreach($config['locales'] as $locale) { ?>
+							<option <?=$wikiPage->locale==$locale[0]?'selected':''?> value="<?=$locale[0]?>"><?=$locale[5]?></option>
+						<? } ?>
+					</select>
+					<input type="text" value="<?=$wikiPage->title?>" name="title" id="title" placeholder="Titre">
+				</h1>
+
+				<textarea rows="30" name="content" id="content" placeholder="Contenu de la page"><?=$wikiPage->content?></textarea>
+
+				<input name="submit" id="submit" type="submit" value="Envoyer">
+			</form>
+		</section>
+
+		<? include('blocks/d.footer.html'); ?>
+
+	</body>
+</html>

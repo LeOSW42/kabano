@@ -1,0 +1,240 @@
+/*********************************/
+/** Blog list page             **/ 
+/*********************************/
+
+#blog_list article {
+	margin: 40px auto 0 auto;
+	width: 90%;
+	background: #efefef;
+	border: 1px solid #ccc;
+	border-bottom: 2px solid #ccc;
+	border-bottom-right-radius: 5px;
+	border-bottom-left-radius: 5px;
+}
+#blog_list #articles_list article:first-child {
+	margin-top: 80px;
+}
+
+#blog_list .article_title {
+	background: #ccc;
+	padding: 5px 10px;
+}
+
+#blog_list .article_content {
+	padding: 20px 10px 5px 10px;
+	white-space: pre-line;
+}
+
+#blog_list .article_legend {
+	font-style: italic;
+	padding: 0 10px;
+}
+#blog_list .article_link {
+	font-weight: 500;
+}
+#blog_list .article_infos {
+	float: right;
+}
+
+#blog_list .article_archive {
+	opacity: 0.5;
+}
+
+#blog_list .pagebuttons {
+	text-align: center;
+	margin: 40px 0 30px 0;
+}
+#blog_list .pagebuttons a {
+	background: #efefef;
+    border: 1px solid #ccc;
+    padding: 5px;
+    font-size: 1.5em;
+}
+#blog_list .pagebuttons .previous {
+    margin-right: -1px;
+}
+
+/*********************************/
+/** Blog view article page      **/ 
+/*********************************/
+
+
+#blogTimestamp {
+	font-size: 0.8em;
+	font-weight: 500;
+	float: right;
+	font-style: italic;
+}
+
+#blogContent {
+	margin: 50px 0 20px 0;
+}
+
+#blogContent h2 { margin: .75em 0 }
+#blogContent h3 { margin: .83em 0 }
+#blogContent h4, #blogContent p, #blogContent blockquote, #blogContent ul, #blogContent fieldset, #blogContent form, #blogContent ol, #blogContent dl { margin: 1.12em 0 }
+#blogContent h5 { margin: 1.5em 0 }
+#blogContent h6 { margin: 1.67em 0 }
+#blogContent blockquote { margin-left: 40px; margin-right: 40px }
+#blogContent ol, #blogContent ul, #blogContent dd { margin-left: 40px }
+#blogContent ol ul, #blogContent ul ol, #blogContent ul ul, #blogContent ol ol { margin-top: 0; margin-bottom: 0 }
+
+#blogContent .footnotes {
+	font-size: 0.8em;
+}
+#blogContent .footnotes p {
+	margin: 0.4em 0;
+}
+#blogContent hr {
+	border: 1px inset;
+}
+
+#new_comment {
+	clear: both;
+	margin: 100px auto 0 auto;
+	width: 90%;
+	background: #efefef;
+	border: 1px solid #ccc;
+	border-bottom: 3px solid #ccc;
+}
+#new_comment_label {
+	background: #ccc;
+	padding: 15px 10px;
+	cursor: pointer;
+	font-weight: 500;
+	font-size: 1.1em;
+}
+#new_comment_label p {
+	margin: 0;
+}
+#new_comment_label input {
+	display: none;
+	margin: -2px;
+	float: right;
+	padding: 5px 10px;
+	position: relative;
+	top: -7px;
+	width: 140px;
+}
+#new_comment_form {
+	display: none;
+}
+#new_comment_form textarea {
+	margin: 0;
+	border: 0;
+}
+#new_comment_label.sent {
+	cursor: default;
+}
+
+#blog_article article {
+	margin: 40px auto 0 auto;
+	width: 90%;
+	background: #efefef;
+	border: 1px solid #ccc;
+	border-bottom: 2px solid #ccc;
+	border-bottom-right-radius: 5px;
+	border-bottom-left-radius: 5px;	
+}
+#blog_article .comment_title {
+	background: #ccc;
+	padding: 5px 10px;
+}
+
+#blog_article .delete_link {
+	font-variant: small-caps;
+	font-weight: 500;
+	padding: 4px 0;
+	float: right;
+}
+
+#blog_article .icon {
+	border: 1px solid #999;
+	border-radius: 3px;
+	margin: 0 3px 0 3px;
+	padding: 4px 0;
+	line-height: 20px;
+	text-align: center;
+	width: 28px;
+	background: #ccc;
+	vertical-align: middle;
+}
+
+#blog_article .icon.avatar {
+	padding: 0;
+	height: 28px;
+}
+#blog_article .comment_content {
+	padding: 5px 10px;
+}
+#blog_article article.comment_archive {
+	opacity: 0.5;
+}
+
+#blog_article.archive {
+	opacity: 0.5;
+}
+
+/*********************************/
+/** Blog edit article page      **/ 
+/*********************************/
+
+form.form input[type="checkbox"] {
+	display:none;
+}
+
+form.form input[type="checkbox"] + span:before {
+	font-family: 'FontAwesome';
+	vertical-align: middle;
+	padding: 2px 4px 0px 5px;
+	margin-right: 10px;
+	display: inline-block;
+	width: 21px;
+	background: #ddd;
+	font-size: 25px;
+}
+
+form.form input[type="checkbox"] + span:before {
+	content: "\f096"; /* check-empty */
+}
+
+form.form input[type="checkbox"]:checked + span:before {
+	content: "\f046"; /* check */
+}
+
+/* Also used for new comment form in the view page */
+form.form input, form.form textarea, #locale {
+	background: #ddd;
+	border-bottom: 2px solid #ccc;
+	display: block;
+	padding: 10px;
+}
+
+form.form textarea {
+	font-size: 14px;
+	margin: 10px 0 10px 0px;
+	width: calc(100% - 20px);
+}
+form.form input {
+	width: 58%;
+	margin: 10px 0 10px 0px;
+	vertical-align: middle;
+	font-size: 18px;
+}
+form.form label {
+	font-size: 18px;
+}
+#locale {
+	width: 38%;
+	float: right;
+	font-size: 17px;
+}
+#url {
+	width: calc(100% - 20px);
+}
+
+form.form input[type=submit] {
+	width: auto;
+	margin: auto;
+	border-bottom: 2px solid blue;
+}
