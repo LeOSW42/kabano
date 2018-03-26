@@ -1,6 +1,13 @@
 # Database structure for kabano.org open-source project
 # This file is designed to be imported in quickdatabasediagrams.com
 
+
+locale
+-
+id PK int
+name string
+code string
+
 user
 -
 id PK int
@@ -9,7 +16,7 @@ mail string
 password string
 is_avatar_present boolean
 website NULL string
-locale string
+locale string FK >- locale.id
 role int # 200: blocked; 400: registered; 600: premium; 800: moderator; 1000: admin
 last_login_date date
 register_date date
@@ -26,7 +33,7 @@ object_locale
 -
 id PK int
 object_id int FK >- object.id
-locale string
+locale string FK >- locale.id
 
 object_revision # Note: restoring an old version is done by creating a new revision
 -
@@ -36,3 +43,31 @@ object_locale_id int FK >- object_locale.id
 contributor_id int FK >- user.id
 name string
 content text?
+
+object_wiki
+-
+id PK int
+revision_id int FK >- object_revision.id
+
+object_forum_thread
+-
+id PK int
+revision_id int FK >- object_revision.id
+category int FK >- forum_category.id
+
+forum_category
+-
+id PK int
+
+forum_category_locale
+-
+id PK int
+category_id int FK >- forum_category.id
+locale string FK >- locale.id
+name string
+
+object_poi
+-
+id PK int
+revision_id int FK >- object_revision.id
+coordinates geo
