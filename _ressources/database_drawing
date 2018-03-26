@@ -1,0 +1,38 @@
+# Database structure for kabano.org open-source project
+# This file is designed to be imported in quickdatabasediagrams.com
+
+user
+-
+id PK int
+name string
+mail string
+password string
+is_avatar_present boolean
+website NULL string
+locale string
+role int # 200: blocked; 400: registered; 600: premium; 800: moderator; 1000: admin
+last_login_date date
+register_date date
+
+object
+-
+id PK int
+creation_date date
+author_id int FK >- user.id
+is_public bool
+type int # 0: wiki_page; 1: forum_thread; 2: refuge; 3: hut...
+
+object_locale
+-
+id PK int
+object_id int FK >- object.id
+locale string
+
+object_revision # Note: restoring an old version is done by creating a new revision
+-
+id PK int
+revision_date date
+object_locale_id int FK >- object_locale.id
+contributor_id int FK >- user.id
+name string
+content text?
