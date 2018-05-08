@@ -1,73 +1,65 @@
 # Database structure for kabano.org open-source project
 # This file is designed to be imported in quickdatabasediagrams.com
 
-
-locale
+locales
 -
-id PK int
-name string
-code string
+name PK varchar(32)
+display_name UNIQUE varchar(255)
+flag_name UNIQUE varchar(32)
 
-user
+users
 -
-id PK int
-name string
-mail string
-password string
+id PK int4
+name UNIQUE varchar(255) # The unique constraint is done with version
+version UNIQUE int4 # The unique constraint is done with name
+email UNIQUE varchar(255)
+password varchar(255)
+rank rank_enum # blocked; registered; premium; moderator; admin
+website NULL varchar(255)
 is_avatar_present boolean
-website NULL string
-locale string FK >- locale.id
-role int # 200: blocked; 400: registered; 600: premium; 800: moderator; 1000: admin
-last_login_date date
-register_date date
+is_archive INDEX boolean
+locale varchar(32) FK >- locales.name
+timezone varchar(8)
+visit_date timestamp
+register_date INDEX timestamp
 
-object
+pois
 -
-id PK int
-creation_date date
-author_id int FK >- user.id
-is_public bool
-type int # 0: wiki_page; 1: forum_thread; 2: refuge; 3: hut...
+id PK int4
+permalink UNIQUE varchar(255) # The unique constraint is done with version
+version UNIQUE int4 # The unique constraint is done with permalink
+creation_date timestamp
+update_date timestamp
+author int4 FK >- users.id
+is_public INDEX boolean
+is_archive INDEX boolean
+type INDEX poi_type_enum # basic_hut; wilderness_hut; alpine_hut; hostel; bivouac; campsite
+is_destroyed INDEX boolean
+name varchar(255)
+alt_names NULL varchar(255)
+source NULL varchar(3) FK >- poi_sources.id
+position geometry # Contains elevation data
+parameters jsonb
 
-object_locale
+poi_localised
 -
-id PK int
-object_id int FK >- object.id
-locale string FK >- locale.id
+id PK int4
+poi UNIQUE int4 FK >- pois.id # The unique constraint is done with locale
+locale UNIQUE varchar(32) FK >- locales.name # The unique constraint is done with poi
+key INDEX poi_key_enum # description; access
+value text
 
-object_revision # Note: restoring an old version is done by creating a new revision
+poi_sources
 -
-id PK int
-revision_date date
-object_locale_id int FK >- object_locale.id
-contributor_id int FK >- user.id
-name string
-content text?
+id PK varchar(3)
+display_name UNIQUE varchar(255)
+icon_name NULL varchar(255)
+website NULL varchar(255)
+license_name NULL varchar(255)
+license_url NULL varchar(255)
 
-object_wiki
+poi_contributors
 -
-id PK int
-revision_id int FK >- object_revision.id
-
-object_forum_thread
--
-id PK int
-revision_id int FK >- object_revision.id
-category int FK >- forum_category.id
-
-forum_category
--
-id PK int
-
-forum_category_locale
--
-id PK int
-category_id int FK >- forum_category.id
-locale string FK >- locale.id
-name string
-
-object_poi
--
-id PK int
-revision_id int FK >- object_revision.id
-coordinates geo
+id PK int4
+poi UNIQUE int4 FK >- pois.id # The unique constraint is done with contributor
+contributor UNIQUE int4 FK >- users.id # The unique constraint is done with poi
