@@ -38,6 +38,7 @@ is_destroyed INDEX boolean
 name varchar(255)
 alt_names NULL varchar(255)
 source NULL varchar(3) FK >- poi_sources.id
+source_id NULL varchar(255)
 position geometry # Contains elevation data
 parameters jsonb
 
@@ -63,3 +64,39 @@ poi_contributors
 id PK int4
 poi UNIQUE int4 FK >- pois.id # The unique constraint is done with contributor
 contributor UNIQUE int4 FK >- users.id # The unique constraint is done with poi
+
+contents
+-
+id PK int4
+permalink UNIQUE varchar(255) # The unique constraint is done with version and locale
+version UNIQUE int4 # The unique constraint is done with permalink and locale
+locale UNIQUE varchar(32) FK >- locales.name # The unique constraint is done with permalink and version
+creation_date timestamp
+update_date timestamp
+author int4 FK >- users.id
+is_public INDEX boolean
+is_archive INDEX boolean
+is_commentable boolean
+type INDEX content_type_enum # wiki, blog, forum
+name varchar(255)
+content text
+
+content_contributors
+-
+id PK int4
+content UNIQUE int4 FK >- contents.id # The unique constraint is done with contributor
+contributor UNIQUE int4 FK >- users.id # The unique constraint is done with content
+
+content_comments
+-
+id PK int4
+permalink UNIQUE varchar(255) # The unique constraint is done with version
+version UNIQUE int4 # The unique constraint is done with permalink
+creation_date timestamp
+update_date timestamp
+author int4 FK >- users.id
+is_public INDEX boolean
+is_archive INDEX boolean
+content int4 FK >- contents.id
+comment text
+locale varchar(32) FK >- locales.name
