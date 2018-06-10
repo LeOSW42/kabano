@@ -5,7 +5,7 @@ locales
 -
 name PK varchar(32)
 display_name UNIQUE varchar(255)
-flag_name UNIQUE varchar(32)
+flag_name UNIQUE NULL varchar(32)
 
 users
 -
@@ -14,10 +14,10 @@ name UNIQUE varchar(255) # The unique constraint is done with version
 version UNIQUE int4 # The unique constraint is done with name
 email UNIQUE varchar(255)
 password varchar(255)
-rank rank_enum # blocked; registered; premium; moderator; admin
 website NULL varchar(255)
 is_avatar_present boolean
 is_archive INDEX boolean
+rank user_rank_enum # blocked; registered; premium; moderator; admin
 locale varchar(32) FK >- locales.name
 timezone varchar(8)
 visit_date timestamp
