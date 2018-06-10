@@ -65,6 +65,20 @@ id PK int4
 poi UNIQUE int4 FK >- pois.id # The unique constraint is done with contributor
 contributor UNIQUE int4 FK >- users.id # The unique constraint is done with poi
 
+poi_comments
+-
+id PK int4
+permalink UNIQUE varchar(255) # The unique constraint is done with version
+version UNIQUE int4 # The unique constraint is done with permalink
+creation_date timestamp
+update_date timestamp
+author int4 FK >- users.id
+is_public INDEX boolean
+is_archive INDEX boolean
+poi int4 FK >- pois.id
+comment text
+locale varchar(32) FK >- locales.name
+
 contents
 -
 id PK int4
