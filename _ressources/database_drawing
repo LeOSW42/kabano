@@ -33,21 +33,21 @@ update_date timestamp
 author int4 FK >- users.id
 is_public INDEX boolean
 is_archive INDEX boolean
-type INDEX poi_type_enum # basic_hut; wilderness_hut; alpine_hut; hostel; bivouac; campsite
+type INDEX poi_type_enum # basic_hut; wilderness_hut; alpine_hut; halt; bivouac; campsite
 is_destroyed INDEX boolean
 name varchar(255)
 alt_names NULL varchar(255)
 source NULL varchar(3) FK >- poi_sources.id
 source_id NULL varchar(255)
 position geometry # Contains elevation data
-parameters jsonb
+parameters NULL jsonb
 
 poi_localised
 -
 id PK int4
-poi UNIQUE int4 FK >- pois.id # The unique constraint is done with locale
-locale UNIQUE varchar(32) FK >- locales.name # The unique constraint is done with poi
-key INDEX poi_key_enum # description; access
+poi UNIQUE int4 FK >- pois.id # The unique constraint is done with locale, key
+locale UNIQUE varchar(32) FK >- locales.name # The unique constraint is done with poi, key
+key UNIQUE poi_key_enum # description; access # The unique constraint is done with poi, locale
 value text
 
 poi_sources
