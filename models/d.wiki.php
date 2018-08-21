@@ -12,12 +12,18 @@ require_once($config['third_folder']."Md/MarkdownExtra.inc.php");
 
 class WikiPage
 {
-	public $id = 0;
-	public $title = NULL;
-	public $url = NULL;
-	public $locale = NULL;
-	public $lastedit = NULL;
-	public $archive = NULL;
+	private $id = 0;
+	private $permalink = 0;
+	private $version = 0;
+	private $locale = NULL;
+	private $creation_date = NULL;
+	private $update_date = NULL;
+	private $author = NULL;
+	private $is_public = NULL;
+	private $is_archive = NULL;
+	private $is_commentable = NULL;
+	private $type = "wiki";
+	public $name = NULL;
 	public $content = NULL;
 
 	/*****
@@ -29,11 +35,11 @@ class WikiPage
 		$con = pg_connect("host=".$config['SQL_host']." dbname=".$config['SQL_db']." user=".$config['SQL_user']." password=".$config['SQL_pass'])
 			or die ("Could not connect to server\n");
 
-		$query = "SELECT id FROM wiki WHERE url=$1";
+		$query = "SELECT * FROM contents WHERE permalink=$1";
 		if($withArchive==0) {
-			$query .= " AND archive=FALSE";
+			$query .= " AND is_archive=FALSE AND is_public=FALSE";
 		}
-		$query .= " ORDER BY lastedit DESC LIMIT 1 OFFSET $2";
+		$query .= " ORDER BY update_date DESC LIMIT 1 OFFSET $2";
 
 		pg_prepare($con, "prepare1", $query) 
 			or die ("Cannot prepare statement\n");
@@ -43,13 +49,11 @@ class WikiPage
 		pg_close($con);
 
 		if(pg_num_rows($result) == 1) {
-			$wiki = pg_fetch_assoc($result);
-			$this->id = $wiki['id'];
-			$this->url = $url;
+			$row = pg_fetch_assoc($result);
+			$this->populate($row);
 			return 1;
 		}
 		else {
-			$this->url = $url;
 			return 0;
 		}
 	}
@@ -57,34 +61,19 @@ class WikiPage
 	/*****
 	** Populate the object using its ID
 	*****/
-	public function populate() {
-		global $config;
-		
-		if($this->id != 0) {
-			$con = pg_connect("host=".$config['SQL_host']." dbname=".$config['SQL_db']." user=".$config['SQL_user']." password=".$config['SQL_pass'])
-				or die ("Could not connect to server\n");
-
-			$query = "SELECT * FROM wiki WHERE id=$1";
-
-			pg_prepare($con, "prepare1", $query) 
-				or die ("Cannot prepare statement\n");
-			$result = pg_execute($con, "prepare1", array($this->id))
-				or die ("Cannot execute statement\n");
-
-			pg_close($con);
-
-			$wiki = pg_fetch_assoc($result);
-
-			$this->title = $wiki['title'];
-			$this->url = $wiki['url'];
-			$this->locale = $wiki['locale'];
-			$this->lastedit = $wiki['lastedit'];
-			$this->archive = $wiki['archive'];
-			$this->content = $wiki['content'];
-		}
-		else {
-			die("Cannot populate a wiki page without ID");
-		}
+	private function populate($row) {
+		$this->permalink = $row['permalink'];
+		$this->version = $row['version'];
+		$this->locale = $row['locale'];
+		$this->creation_date = $row['creation_date'];
+		$this->update_date = $row['update_date'];
+		$this->author = $row['author'];
+		$this->is_public = $row['is_public'];
+		$this->is_archive = $row['is_archive'];
+		$this->is_commentable = $row['is_commentable'];
+		$this->type = $row['type'];
+		$this->name = $row['name'];
+		$this->content = $row['content'];
 	}
 
 	/*****
