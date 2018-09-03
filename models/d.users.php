@@ -10,16 +10,19 @@
 
 class User
 {
-	public $id = 0;
-	public $name = NULL;
-	public $avatar = NULL;
-	public $locale = NULL;
-	public $role = NULL;
-	public $lastlogin = NULL;
-	public $mail = NULL;
-	public $website = NULL;
-	public $password = NULL;
-	public $registered = NULL;
+    private $id = 0;
+    public $name = NULL;
+    private $version = NULL;
+    public $email = NULL;
+    private $password = NULL;
+    public $website = NULL;
+    private $is_avatar_present = NULL;
+    private $is_archive = NULL;
+    public $rank = NULL;
+    private $locale = NULL;
+    private $timezone = NULL;
+    private $visit_date = NULL;
+    private $register_date = NULL;
 
 	/*****
 	** Connect to correct account using ID and stores its ID
@@ -30,7 +33,7 @@ class User
 		$con = pg_connect("host=".$config['SQL_host']." dbname=".$config['SQL_db']." user=".$config['SQL_user']." password=".$config['SQL_pass'])
 			or die ("Could not connect to server\n");
 
-		$query = "SELECT id FROM users WHERE id=$1";
+		$query = "SELECT * FROM users WHERE id=$1";
 
 		pg_prepare($con, "prepare1", $query) 
 			or die ("Cannot prepare statement\n");
@@ -40,13 +43,15 @@ class User
 		pg_close($con);
 
 		if(pg_num_rows($result) == 1) {
-			$this->id = $id;
+			$row = pg_fetch_assoc($result);
+			$this->populate($row);
 			return 1;
 		}
 		else {
 			return 0;
 		}
 	}
+
 	/*****
 	** Connect to correct account using user/pass and stores its ID
 	*****/
@@ -56,7 +61,7 @@ class User
 		$con = pg_connect("host=".$config['SQL_host']." dbname=".$config['SQL_db']." user=".$config['SQL_user']." password=".$config['SQL_pass'])
 			or die ("Could not connect to server\n");
 
-		$query = "SELECT id FROM users WHERE name=$1 AND password=$2";
+		$query = "SELECT * FROM users WHERE name=$1 AND password=$2";
 
 		pg_prepare($con, "prepare1", $query) 
 			or die ("Cannot prepare statement\n");
@@ -66,44 +71,73 @@ class User
 		pg_close($con); 
 
 		if(pg_num_rows($result) == 1) {
-			$user = pg_fetch_assoc($result);
-			$this->id = $user['id'];
+			$row = pg_fetch_assoc($result);
+			$this->populate($row);
+			return 1;
 		}
 	}
+
 	/*****
-	** Populate the object using its ID
+	** Populate the object using raw data from SQL
 	*****/
-	public function populate() {
-		global $config;
-		
-		if($this->id != 0) {
-			$con = pg_connect("host=".$config['SQL_host']." dbname=".$config['SQL_db']." user=".$config['SQL_user']." password=".$config['SQL_pass'])
-				or die ("Could not connect to server\n");
+	private function populate($row) {
+	    $this->name = $row['name'];
+	    $this->version = $row['version'];
+	    $this->email = $row['email'];
+	    $this->password = $row['password'];
+	    $this->website = $row['website'];
+	    $this->is_avatar_present = $row['is_avatar_present'];
+	    $this->is_archive = $row['is_archive'];
+	    $this->rank = $row['rank'];
+	    $this->locale = $row['locale'];
+	    $this->timezone = $row['timezone'];
+	    $this->visit_date = $row['visit_date'];
+	    $this->register_date = $row['register_date'];
+	}
 
-			$query = "SELECT * FROM users WHERE id=$1";
+	/*****
+	** Populate the object using raw data from SQL
+	*****/
+	public function get_id() {
+	    return $this->id;
+	}
 
-			pg_prepare($con, "prepare1", $query) 
-				or die ("Cannot prepare statement\n");
-			$result = pg_execute($con, "prepare1", array($this->id))
-				or die ("Cannot execute statement\n");
-
-			pg_close($con);
-
-			$user = pg_fetch_assoc($result);
-
-			$this->name = $user['name'];
-			$this->avatar = $user['avatar'];
-			$this->locale = $user['locale'];
-			$this->role = $user['role'];
-			$this->lastlogin = $user['lastlogin'];
-			$this->mail = $user['mail'];
-			$this->website = $user['website'];
-			$this->registered = $user['registered'];
+	public function rank_is_higher($rank) {
+		if( $rank == 'blocked' ) {
+			return true;
+		}
+		else if( $rank == 'visitor' ) {
+			if( $this->rank == 'blocked' )
+				return false;
+			else
+				return true;
+		}
+		else if( $rank == 'registered' ) {
+			if( $this->rank == 'blocked' || $this->rank == 'visitor' )
+				return false;
+			else
+				return true;
+		}
+		else if( $rank == 'premium' ) {
+			if( $this->rank == 'premium' || $this->rank == 'moderator' || $this->rank == 'administrator' )
+				return true;
+			else
+				return false;
+		}
+		else if( $rank == 'moderator' ) {
+			if( $this->rank == 'moderator' || $this->rank == 'administrator' )
+				return true;
+			else
+				return false;
 		}
 		else {
-			die("Cannot populate an User without ID");
+			if( $this->rank == 'administrator' )
+				return true;
+			else
+				return false;
 		}
 	}
+
 	/*****
 	** Checks if the user's name is available or not
 	*****/

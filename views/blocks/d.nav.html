@@ -18,7 +18,7 @@
 							<a class="on-bar" href="#"><i class="icon fa fa-user"></i></a>
 							<? } ?>
 							<ul>
-								<? if($user->role == 0) { ?>
+								<? if($user->rank == 'visitor') { ?>
 								<li id="connectform">
 									<form action="<?=$config['rel_root_folder']?>user/login" method="post">
 										<input type="text" name="login" placeholder="Nom d'utilisateur">
@@ -30,7 +30,7 @@
 								<? } else { ?>
 								<li><a href="<?=$config['rel_root_folder']?>user/p">Mon profil</a></li>
 								<li><a href="<?=$config['rel_root_folder']?>user/member_list">Liste des membres</a></li>
-								<? if($user->role >= 800) { ?>
+								<? if($user->rank_is_higher('moderator')) { ?>
 								<li><a href="<?=$config['rel_root_folder']?>admin">Administration</a></li>
 								<? } ?>
 								<li><a href="<?=$config['rel_root_folder']?>user/logout">Se déconnecter</a></li>

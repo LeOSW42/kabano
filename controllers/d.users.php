@@ -12,11 +12,10 @@ if(isset($controller->splitted_url[1])) {
 				if (isset($_POST['submit'])) {
 					// PROCESS DATA FROM FORM
 					$user = new User();
-					$user->login($_POST['login'], $_POST['password']);
 
-					if($user->id != 0) {
+					if($user->login($_POST['login'], $_POST['password'])) {
 						// SUCESSFULL LOGIN
-						$_SESSION['userid'] = $user->id;
+						$_SESSION['userid'] = $user->get_id();
 						header('Location: '.$_SERVER['HTTP_REFERER']);
 					}
 					else {
