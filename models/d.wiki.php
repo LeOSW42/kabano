@@ -27,7 +27,7 @@ class WikiPage
 	public $content = NULL;
 
 	/*****
-	** Checks if a page at this URL exists and return the ID
+	** Checks if a page at this URL exists and return the populated element
 	*****/
 	public function checkUrl($url, $withArchive=0, $elementNb=0) {
 		global $config;
@@ -37,7 +37,7 @@ class WikiPage
 
 		$query = "SELECT * FROM contents WHERE permalink=$1";
 		if($withArchive==0) {
-			$query .= " AND is_archive=FALSE AND is_public=FALSE";
+			$query .= " AND is_archive=FALSE AND is_public=TRUE";
 		}
 		$query .= " ORDER BY update_date DESC LIMIT 1 OFFSET $2";
 
@@ -59,7 +59,7 @@ class WikiPage
 	}
 
 	/*****
-	** Populate the object using its ID
+	** Populate the object using raw data from SQL
 	*****/
 	private function populate($row) {
 		$this->permalink = $row['permalink'];
@@ -74,6 +74,20 @@ class WikiPage
 		$this->type = $row['type'];
 		$this->name = $row['name'];
 		$this->content = $row['content'];
+	}
+
+	/*****
+	** Return archive status
+	*****/
+	public function is_archive() {
+		return $this->is_archive;
+	}
+
+	/*****
+	** Return archive status
+	*****/
+	public function update_date() {
+		return $this->update_date;
 	}
 
 	/*****

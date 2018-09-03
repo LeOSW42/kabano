@@ -61,10 +61,9 @@ if($notfound) {
     require_once($config['models_folder']."d.wiki.php");
     $wikiPage = new WikiPage();
     $wikiPage->checkUrl('404');
-    $wikiPage->populate();
     $wikiPage->md2html();
     $head['css'] = "d.index.css;d.wiki.css";
-    $head['title'] = $wikiPage->title;
+    $head['title'] = $wikiPage->name;
     include ($config['views_folder']."d.wiki.view.html");
 }
 

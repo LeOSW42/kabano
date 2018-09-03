@@ -7,15 +7,15 @@
 
 		<? include('blocks/d.nav.html'); ?>
 
-		<section id="wiki_page" <?=$wikiPage->archive=="t"?'class="archive"':''?>>
-			<h1><?=$wikiPage->title?>.</h1>
+		<section id="wiki_page" <?=!$wikiPage->is_archive()?'class="archive"':''?>>
+			<h1><?=$wikiPage->name?>.</h1>
 				<? if($user->role >= 600) { ?>
 					<span class="subtitle">
 					<? if(isset($wikiHistory_list)) { ?>
 						<select id="wikihistory">
 							<? $i = 0;
 							foreach ($wikiHistory_list as $row) { ?>
-								<option <?=$row->id==$wikiPage->id?'selected':''?> value="<?=$i?>"><?=$row->archive=="f"?'&bull; ':''?><? echo strftime('%d/%m/%Y %H:%M:%S',strtotime($row->lastedit)) ?></option>
+								<option <?=$row->id==$wikiPage->id?'selected':''?> value="<?=$i?>"><?=$row->is_archive=="f"?'&bull; ':''?><? echo strftime('%d/%m/%Y %H:%M:%S',strtotime($row->lastedit)) ?></option>
 							<? $i++;
 							} ?>
 						</select>
@@ -25,7 +25,7 @@
 					<? }
 					if ($user->role >= 800) { ?>
 						<a href="<?=$config['rel_root_folder']?>wiki/<?=$wikiPage->url?>/edit"><i class="fa fa-pencil"></i> Éditer la page</a>
-						<? if ($wikiPage->archive == 'f') { ?>
+						<? if (!$wikiPage->is_archive()) { ?>
 							 &mdash; 
 							<a href="<?=$config['rel_root_folder']?>wiki/<?=$wikiPage->url?>/delete"><i class="fa fa-trash"></i> Effacer la page</a>
 						<? } ?>
@@ -37,7 +37,7 @@
 				<?=$wikiPage->content_html?>
 			</div>
 
-			<p id="wikiTimestamp">Page mise à jour le <? echo strftime('%e %B %G, %kh%Mm%Ss',strtotime($wikiPage->lastedit)) ?> <small><abbr title="Temps Universel Coordonné">UTC</abbr></small></p>
+			<p id="wikiTimestamp">Page mise à jour le <? echo strftime('%e %B %G, %kh%Mm%Ss',strtotime($wikiPage->update_date())) ?> <small><abbr title="Temps Universel Coordonné">UTC</abbr></small></p>
 
 			<div style="clear: both;"> </div>
 		</section>

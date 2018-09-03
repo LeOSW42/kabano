@@ -64,7 +64,6 @@ else if(isset($controller->splitted_url[1]) && $wikiPage->checkUrl($controller->
 		if (isset($controller->splitted_url[2]) && is_numeric($controller->splitted_url[2]))
 			$wikiPage->checkUrl($controller->splitted_url[1],$user->role>=600, $controller->splitted_url[2]);
 
-		$wikiPage->populate();
 		$wikiPage->md2html();
 		$head['title'] = $wikiPage->title;
 		include ($config['views_folder']."d.wiki.view.html");
