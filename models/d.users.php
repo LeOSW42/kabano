@@ -81,6 +81,7 @@ class User
 	** Populate the object using raw data from SQL
 	*****/
 	private function populate($row) {
+	    $this->id = $row['id'];
 	    $this->name = $row['name'];
 	    $this->version = $row['version'];
 	    $this->email = $row['email'];
@@ -306,16 +307,16 @@ class User
 	public function updateLoginDate() {
 		global $config;
 
-		$this->lastlogin = date('r');
+		$this->visit_date = date('r');
 
 		$con = pg_connect("host=".$config['SQL_host']." dbname=".$config['SQL_db']." user=".$config['SQL_user']." password=".$config['SQL_pass'])
 			or die ("Could not connect to server\n");
 
-		$query = "UPDATE users SET lastlogin = $1 WHERE id = $2";
+		$query = "UPDATE users SET visit_date = $1 WHERE id = $2";
 
 		pg_prepare($con, "prepare1", $query) 
 			or die ("Cannot prepare statement\n");
-		pg_execute($con, "prepare1", array($this->lastlogin, $this->id))
+		pg_execute($con, "prepare1", array($this->visit_date, $this->id))
 			or die ("Cannot execute statement\n");
 
 		pg_close($con);

@@ -8,7 +8,7 @@ if(isset($controller->splitted_url[1])) {
 	switch ($controller->splitted_url[1]) {
 		case 'login':
 			$head['title'] = "Connexion";
-			if ($user->role == 0) {
+			if ($user->rank == "visitor") {
 				if (isset($_POST['submit'])) {
 					// PROCESS DATA FROM FORM
 					$user = new User();
@@ -34,14 +34,14 @@ if(isset($controller->splitted_url[1])) {
 		case 'signin':
 			$head['js'] = "d.captcha.js";
 			$head['title'] = "Création de compte";
-			if ($user->role == 0) {
+			if ($user->rank == "visitor") {
 				if (isset($_POST['submit'])) {
 					// PROCESS DATA FROM FORM
 					$user = new User();
 					$user->password = sha1($_POST['password']);
 					$user->name = $_POST['login'];
 					$user->mail = strtolower($_POST['mail']);
-					$user->role = 400;
+					$user->rank = "registered";
 					$user->avatar = 'f';
 					$user->locale = "fr";
 
@@ -75,7 +75,7 @@ if(isset($controller->splitted_url[1])) {
 			break;
 		case 'password_lost':
 			$head['title'] = "Récupération de mot de passe";
-			if ($user->role == 0) {
+			if ($user->rank == "visitor") {
 				if (isset($_POST['submit'])) {
 					// PROCESS DATA FROM FORM
 					$user = new User();
@@ -95,7 +95,7 @@ if(isset($controller->splitted_url[1])) {
 			}
 			break;
 		case 'p':
-			if ($user->role >= 200) {
+			if ($user->rank_is_higher("registered")) {
 				$userProfile = new User();
 				if (!isset($controller->splitted_url[2]) OR $controller->splitted_url[2]=="") {
 					// WE DISPLAY THE CONNECTED USER PROFILE
@@ -111,7 +111,7 @@ if(isset($controller->splitted_url[1])) {
 				}
 
 				// If we are editing the profile
-				if(isset($controller->splitted_url[3]) && $controller->splitted_url[3]=="edit" && ($user->role >= 800 || $user->id == $userProfile->id)) {
+				if(isset($controller->splitted_url[3]) && $controller->splitted_url[3]=="edit" && ($user->rank_is_higher("moderator") || $user->id == $userProfile->id)) {
 					$head['js'] = "d.avatar.js";
 					if (isset($_POST['submit'])) {
 						$receivedUser = new User();
@@ -128,8 +128,8 @@ if(isset($controller->splitted_url[1])) {
 						if($_POST['password']!='')
 							$userProfile->password=sha1($_POST['password']);
 						$userProfile->locale=$_POST['locale'];
-						if($user->role>=1000)
-							$userProfile->role = $_POST['role'];
+						if($user->rank_is_higher("administrator"))
+							$userProfile->rank = $_POST['rank'];
 						$userProfile->website=$_POST['website'];
 
 						// Is the file correctly sent to the server ?
@@ -164,7 +164,7 @@ if(isset($controller->splitted_url[1])) {
 				}
 				// If we are displaying the profile
 				else {
-					if (isset($_POST['submit']) && $user->role >= 400) {
+					if (isset($_POST['submit']) && $user->rank_is_higher("registered")) {
 						// PROCESS DATA FROM CONTACT FORM
 						$message = $_POST['message'];
 						
@@ -179,7 +179,7 @@ if(isset($controller->splitted_url[1])) {
 			}
 			break;
 		case 'member_list':
-			if ($user->role >= 200) {
+			if ($user->rank_is_higher("registered")) {
 				$rows_per_pages = 50;
 				// Get the correct page number
 				if (!isset($controller->splitted_url[2]) OR $controller->splitted_url[2]=="" OR $controller->splitted_url[2]=="0" OR !is_numeric($controller->splitted_url[2])) {
