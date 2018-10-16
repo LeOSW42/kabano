@@ -38,18 +38,15 @@ if(isset($controller->splitted_url[1])) {
 				if (isset($_POST['submit'])) {
 					// PROCESS DATA FROM FORM
 					$user = new User();
-					$user->password = sha1($_POST['password']);
 					$user->name = $_POST['login'];
-					$user->mail = strtolower($_POST['mail']);
+					$user->email = strtolower($_POST['mail']);
 					$user->rank = "registered";
-					$user->avatar = 'f';
-					$user->locale = "fr";
 
 					if($_POST['captcha'] == -2) {
 						if($user->availableName()) {
 							if($user->availableMail()) {
-								if($user->password != "" AND $user->name != "" AND $user->mail != "") {
-									$user->create();
+								if($_POST['password'] AND $user->name != "" AND $user->email != "") {
+									$user->create(sha1($_POST['password']));
 									header('Location: '.$config['rel_root_folder'].'user/login?status=created');
 								}
 								else {

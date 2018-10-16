@@ -103,6 +103,9 @@ class User
 	    return $this->id;
 	}
 
+	/*****
+	** Returns true if user permissions are higher than $rank
+	*****/
 	public function rank_is_higher($rank) {
 		if( $rank == 'blocked' ) {
 			return true;
@@ -168,6 +171,7 @@ class User
 			return 0;
 		}
 	}
+
 	/*****
 	** Checks if the user's mail address exists in the database
 	*****/
@@ -177,11 +181,11 @@ class User
 		$con = pg_connect("host=".$config['SQL_host']." dbname=".$config['SQL_db']." user=".$config['SQL_user']." password=".$config['SQL_pass'])
 			or die ("Could not connect to server\n");
 
-		$query = "SELECT id FROM users WHERE lower(mail)=$1";
+		$query = "SELECT id FROM users WHERE lower(email)=$1";
 
 		pg_prepare($con, "prepare1", $query) 
 			or die ("Cannot prepare statement\n");
-		$result = pg_execute($con, "prepare1", array(strtolower($this->mail)))
+		$result = pg_execute($con, "prepare1", array(strtolower($this->email)))
 			or die ("Cannot execute statement\n");
 
 		pg_close($con);
@@ -197,31 +201,33 @@ class User
 			return 0;
 		}
 	}
+
 	/*****
-	** Creates a new user.
+	** Creates a new user giving a sha1 password
 	*****/
-	public function create() {
+	public function create($password) {
 		global $config;
 
 		$regex = '/^(https?:\/\/)/';
 		if (!preg_match($regex, $this->website) && $this->website!="")
 			$this->website = "http://".$this->website;
+		$this->visit_date = date('r');
+		$this->register_date = date('r');
 		
 		$con = pg_connect("host=".$config['SQL_host']." dbname=".$config['SQL_db']." user=".$config['SQL_user']." password=".$config['SQL_pass'])
 			or die ("Could not connect to server\n");
 
-		$query = "INSERT INTO users (name, password, avatar, locale, role, lastlogin, mail, website, registered) VALUES
-			($1, $2, $3, $4, $5, $6, $7, $8, $9)";
+		$query = "INSERT INTO users (name, version, email, password, website, is_avatar_present, is_archive, rank, locale, timezone, visit_date, register_date) VALUES
+			($1, '0', $2, $3, $4, 'f', 'f', 'registered', $5, $6, $7, $8)";
 
 		pg_prepare($con, "prepare1", $query) 
 			or die ("Cannot prepare statement\n");
-		pg_execute($con, "prepare1", array($this->name, $this->password, $this->avatar, $this->locale, $this->role, $this->lastlogin, $this->mail, $this->website, date('r')))
+		pg_execute($con, "prepare1", array($this->name, $this->email, $password, $this->website, $this->locale, $this->timezone, $this->visit_date, $this->register_date))
 			or die ("Cannot execute statement\n");
 
 		pg_close($con);
-	
-		$this->updateLoginDate();
 	}
+
 	/*****
 	** Update the user profile
 	*****/
@@ -258,6 +264,7 @@ class User
 			3,
 			$config['logs_folder'].'users.log');
 	}
+
 	/*****
 	** Generates a random passwords, update the base and send the new password by mail.
 	*****/
@@ -301,6 +308,7 @@ class User
 
 		mail($this->mail, 'Kabano - Nouveau mot de passe', $message, $headers);
 	}
+
 	/*****
 	** Update the last login date
 	*****/
@@ -321,6 +329,7 @@ class User
 
 		pg_close($con);
 	}
+
 	/*****
 	** Outputs the role of the user
 	*****/
@@ -328,6 +337,7 @@ class User
 		global $config;
 		return '<span class="userrole" style="color: '.$config['roles'][$this->role][2].';">'.$config['roles'][$this->role][1].'</span>';
 	}
+
 	/*****
 	** Sends an email to the user from an other user
 	*****/
