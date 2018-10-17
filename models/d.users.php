@@ -97,10 +97,16 @@ class User
 	}
 
 	/*****
-	** Populate the object using raw data from SQL
+	** Simple return only functions
 	*****/
 	public function get_id() {
 	    return $this->id;
+	}
+	public function get_avatar() {
+		if( $this->is_avatar_present )
+			return $this->id;
+		else
+		    return NULL;
 	}
 
 	/*****
@@ -151,7 +157,7 @@ class User
 		$con = pg_connect("host=".$config['SQL_host']." dbname=".$config['SQL_db']." user=".$config['SQL_user']." password=".$config['SQL_pass'])
 			or die ("Could not connect to server\n");
 
-		$query = "SELECT id FROM users WHERE lower(name)=$1";
+		$query = "SELECT * FROM users WHERE lower(name)=$1";
 
 		pg_prepare($con, "prepare1", $query) 
 			or die ("Cannot prepare statement\n");
@@ -165,8 +171,8 @@ class User
 		}
 		else {
 			if(pg_num_rows($result)==1) {
-				$user = pg_fetch_assoc($result);
-				$this->id = $user['id'];
+				$row = pg_fetch_assoc($result);
+				$this->populate($row);
 			}
 			return 0;
 		}
@@ -181,7 +187,7 @@ class User
 		$con = pg_connect("host=".$config['SQL_host']." dbname=".$config['SQL_db']." user=".$config['SQL_user']." password=".$config['SQL_pass'])
 			or die ("Could not connect to server\n");
 
-		$query = "SELECT id FROM users WHERE lower(email)=$1";
+		$query = "SELECT * FROM users WHERE lower(email)=$1";
 
 		pg_prepare($con, "prepare1", $query) 
 			or die ("Cannot prepare statement\n");
@@ -195,8 +201,8 @@ class User
 		}
 		else {
 			if(pg_num_rows($result)==1) {
-				$user = pg_fetch_assoc($result);
-				$this->id = $user['id'];
+				$row = pg_fetch_assoc($result);
+				$this->populate($row);
 			}
 			return 0;
 		}
@@ -279,17 +285,16 @@ class User
 		$con = pg_connect("host=".$config['SQL_host']." dbname=".$config['SQL_db']." user=".$config['SQL_user']." password=".$config['SQL_pass'])
 			or die ("Could not connect to server\n");
 
-		$query = "UPDATE users SET password = $1 WHERE mail = $2";
+		$query = "UPDATE users SET password = $1 WHERE email = $2";
 
 		pg_prepare($con, "prepare1", $query) 
 			or die ("Cannot prepare statement\n");
-		pg_execute($con, "prepare1", array($this->password, $this->mail))
+		pg_execute($con, "prepare1", array($this->password, $this->email))
 			or die ("Cannot execute statement\n");
 
 		pg_close($con);
 
-		$this->availableMail();
-		$this->populate();
+		$this->availableMail(); // Retreive user data from email
 
 		$url = "http://".$_SERVER['SERVER_NAME'].$config['rel_root_folder'];
 
@@ -308,7 +313,7 @@ class User
 		'MIME-Version: 1.0' . "\r\n" .
 		'Content-type: text/html; charset=UTF-8' . "\r\n"; 
 
-		mail($this->mail, 'Kabano - Nouveau mot de passe', $message, $headers);
+		mail($this->email, 'Kabano - Nouveau mot de passe', $message, $headers);
 	}
 
 	/*****

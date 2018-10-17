@@ -76,7 +76,7 @@ if(isset($controller->splitted_url[1])) {
 				if (isset($_POST['submit'])) {
 					// PROCESS DATA FROM FORM
 					$user = new User();
-					$user->mail = strtolower($_POST['mail']);
+					$user->email = strtolower($_POST['mail']);
 
 					if($user->availableMail()) {
 						header('Location: '.$config['rel_root_folder'].'user/password_lost?error=1');
@@ -102,8 +102,7 @@ if(isset($controller->splitted_url[1])) {
 					$userProfile->checkID(intval($controller->splitted_url[2]));
 				}
 				$head['title'] = "Profil inexistant";
-				if($userProfile->id != 0) {
-					$userProfile->populate();
+				if($userProfile->get_id() != 0) {
 					$head['title'] = "Profil de ".$userProfile->name;
 				}
 

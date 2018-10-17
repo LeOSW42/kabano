@@ -8,18 +8,18 @@
 		<? include('blocks/d.nav.html'); ?>
 
 		<section id="profile">
-			<? if ($userProfile->id != 0) { ?>
+			<? if ($userProfile->get_id() != 0) { ?>
 				<h1><?=$userProfile->name?></h1>
-				<? if($user->role >= 800 || $user->id == $userProfile->id) { ?>
-				<a class="subtitle" id="editprofile" href="<?=$config['rel_root_folder']?>user/p/<?=$userProfile->id?>/edit"><i class="fa fa-pencil"></i> Éditer les paramètres du compte</a>
+				<? if($user->rank_is_higher("moderator") || $user->get_id() == $userProfile->get_id()) { ?>
+				<a class="subtitle" id="editprofile" href="<?=$config['rel_root_folder']?>user/p/<?=$userProfile->get_id()?>/edit"><i class="fa fa-pencil-alt"></i> Éditer les paramètres du compte</a>
 				<? } ?>
 				<article>
 					<div id="profilepart">
 						<? if(isset($mailsent) AND $mailsent==1) { ?>
 							<p style="color: #006600;">Le message a bien été envoyé.</p>
 						<? } ?>
-						<aside class="<?=$userProfile->avatar=='t'?'':'no'?>avatar">
-							<img alt="Avatar" id="profileavatar" src="<?=$config['rel_root_folder']?>medias/avatars/<?=$userProfile->id?>_p.jpg" alt="Profile picture">
+						<aside class="<?=$userProfile->get_avatar()!=NULL?'':'no'?>avatar">
+							<img alt="Avatar" id="profileavatar" src="<?=$config['rel_root_folder']?>medias/avatars/<?=$userProfile->get_id()?>_p.jpg" alt="Profile picture">
 							<i id="profilenoavatar" class="fa fa-user-secret"></i>
 						</aside>
 							<div id="description">
