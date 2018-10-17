@@ -399,7 +399,6 @@ class User
 		global $config;
 		global $user;
 
-		$this->populate();
 		$url = "http://".$_SERVER['SERVER_NAME'].$config['rel_root_folder'];
 
 		$message = "Bonjour ".$this->name.",<br>\r\n";
@@ -413,16 +412,16 @@ class User
 		$message .= "L'équipe Kabano.<br>\r\n";
 		$message .= "<small style='color:#777;'><i>Fait avec ♥ depuis Toulouse.</i></small><br>\r\n";
 
-		$headers = 'From: '. $from->mail . "\r\n" .
-		'Reply-To: '. $from->mail . "\r\n" .
+		$headers = 'From: '. $from->email . "\r\n" .
+		'Reply-To: '. $from->email . "\r\n" .
 		'X-Mailer: PHP/' . phpversion() . "\r\n" .
 		'MIME-Version: 1.0' . "\r\n" .
 		'Content-type: text/html; charset=UTF-8' . "\r\n"; 
 
-		mail($this->mail, 'Kabano - Nouveau message privé', $message, $headers);
+		mail($this->email, 'Kabano - Nouveau message privé', $message, $headers);
 
 		error_log(
-			date('r')." \t".$user->name." (".$user->id.") \tMAIL \tMail sent to ".$this->name." (".$this->id.")\r\n",
+			date('r')." \t".$user->name." (".$user->get_id().") \tMAIL \tMail sent to ".$this->name." (".$this->id.")\r\n",
 			3,
 			$config['logs_folder'].'users.log');
 	}
