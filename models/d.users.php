@@ -213,6 +213,8 @@ class User
 			$this->website = "http://".$this->website;
 		$this->visit_date = date('r');
 		$this->register_date = date('r');
+		$this->locale = "fr_FR";
+		$this->timezone = "CEST";
 		
 		$con = pg_connect("host=".$config['SQL_host']." dbname=".$config['SQL_db']." user=".$config['SQL_user']." password=".$config['SQL_pass'])
 			or die ("Could not connect to server\n");
