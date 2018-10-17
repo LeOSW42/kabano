@@ -102,11 +102,66 @@ class User
 	public function get_id() {
 	    return $this->id;
 	}
+	public function get_rank() {
+		if( $this->rank == 'blocked' ) {
+			return '<span class="userrole" style="color: #aaa;">Membre bloqué</span>';
+		}
+		else if( $this->rank == 'visitor' ) {
+			return '<span class="userrole" style="color: black;">Visiteur</span>';
+		}
+		else if( $this->rank == 'registered' ) {
+			return '<span class="userrole" style="color: green;">Membre</span>';
+		}
+		else if( $this->rank == 'premium' ) {
+			return '<span class="userrole" style="color: orange;">Membre premium</span>';
+		}
+		else if( $this->rank == 'moderator' ) {
+			return '<span class="userrole" style="color: orangered;">Modérateur</span>';
+		}
+		else {
+			return '<span class="userrole" style="color: red;">Administrateur</span>';
+		}
+	}
 	public function get_avatar() {
-		if( $this->is_avatar_present )
+		if( $this->is_avatar_present == 't')
 			return $this->id;
 		else
 		    return NULL;
+	}
+	public function get_locale() {
+		if( isset($this->locale_loaded) ) {
+			return $this->locale_display_name;
+		}
+		else {
+			global $config;
+			
+			$con = pg_connect("host=".$config['SQL_host']." dbname=".$config['SQL_db']." user=".$config['SQL_user']." password=".$config['SQL_pass'])
+				or die ("Could not connect to server\n");
+
+			$query = "SELECT * FROM locales WHERE name=$1";
+
+			pg_prepare($con, "prepare1", $query) 
+				or die ("Cannot prepare statement\n");
+			$result = pg_execute($con, "prepare1", array($this->locale))
+				or die ("Cannot execute statement\n");
+
+			pg_close($con);
+
+			if(pg_num_rows($result) == 1) {
+				$row = pg_fetch_assoc($result);
+				$this->locale_loaded = true;
+				$this->locale_display_name = $row['display_name'];
+				$this->locale_flag_name = $row['flag_name'];
+				return $this->locale_display_name;
+			}
+			return false;
+		}
+	}
+	public function get_visit_date() {
+	    return $this->visit_date;
+	}
+	public function get_register_date() {
+	    return $this->register_date;
 	}
 
 	/*****
@@ -335,14 +390,6 @@ class User
 			or die ("Cannot execute statement\n");
 
 		pg_close($con);
-	}
-
-	/*****
-	** Outputs the role of the user
-	*****/
-	public function role() {
-		global $config;
-		return '<span class="userrole" style="color: '.$config['roles'][$this->role][2].';">'.$config['roles'][$this->role][1].'</span>';
 	}
 
 	/*****
