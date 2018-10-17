@@ -1,1 +1,0 @@
-INSERT INTO wiki (id, url, title, content, lastedit, archive, locale) VALUES (1, '404', 'Erreur 404', 'Le page recherchée n''existe pas', '2016-03-30 08:42:11', true, 'fr');
