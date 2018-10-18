@@ -45,10 +45,7 @@ class Locale
 	/*****
 	** Populate the object using raw data from SQL
 	*****/
-	private function populate($row) {
-	    $this->forcePopulate($row);
-	}
-	public function forcePopulate($row) {
+	public function populate($row) {
 	    $this->name = $row['name'];
 	    $this->display_name = $row['display_name'];
 	    $this->flag_name = $row['flag_name'];
@@ -98,7 +95,7 @@ class Locales
 		for($i = 0; $i < $this->number; $i++) {
 			$locale = pg_fetch_assoc($result, $i);
 			$this->objs[$i] = new Locale;
-			$this->objs[$i]->forcePopulate($locale);
+			$this->objs[$i]->populate($locale);
 		}
 	}
 }

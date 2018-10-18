@@ -208,8 +208,7 @@ if(isset($controller->splitted_url[1])) {
 				$i = 0;
 				foreach ($users->ids as $row) {
 					$user_list[$i] = new User();
-					$user_list[$i]->id = $row;
-					$user_list[$i]->populate();
+					$user_list[$i]->checkID($row);
 					$i++;
 				}
 

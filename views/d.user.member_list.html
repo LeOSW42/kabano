@@ -15,41 +15,41 @@
 				<tr class="first">
 					<th>
 						<a href="<?=$config['rel_root_folder']?>user/member_list/<?=$page+1?>?orderby=name&amp;order=<?=$order=='ASC'?'DESC':'ASC'?>">Nom d'utilisateur</a>
-						<?=$orderby=='name'?$order=='ASC'?'<i class="fa fa-caret-down" aria-hidden="true"></i>':'<i class="fa fa-caret-up" aria-hidden="true"></i>':''?>
+						<?=$orderby=='name'?$order=='ASC'?'<i class="fas fa-caret-down" aria-hidden="true"></i>':'<i class="fas fa-caret-up" aria-hidden="true"></i>':''?>
 					</th>
 					<th>
-						<a href="<?=$config['rel_root_folder']?>user/member_list/<?=$page+1?>?orderby=role&amp;order=<?=$order=='ASC'?'DESC':'ASC'?>">Rôle</a>
-						<?=$orderby=='role'?$order=='ASC'?'<i class="fa fa-caret-down" aria-hidden="true"></i>':'<i class="fa fa-caret-up" aria-hidden="true"></i>':''?>
+						<a href="<?=$config['rel_root_folder']?>user/member_list/<?=$page+1?>?orderby=rank&amp;order=<?=$order=='ASC'?'DESC':'ASC'?>">Rôle</a>
+						<?=$orderby=='rank'?$order=='ASC'?'<i class="fas fa-caret-down" aria-hidden="true"></i>':'<i class="fas fa-caret-up" aria-hidden="true"></i>':''?>
 					</th>
 					<th>
-						<a href="<?=$config['rel_root_folder']?>user/member_list/<?=$page+1?>?orderby=registered&amp;order=<?=$order=='ASC'?'DESC':'ASC'?>">Inscription</a>
-						<?=$orderby=='registered'?$order=='ASC'?'<i class="fa fa-caret-down" aria-hidden="true"></i>':'<i class="fa fa-caret-up" aria-hidden="true"></i>':''?>
+						<a href="<?=$config['rel_root_folder']?>user/member_list/<?=$page+1?>?orderby=register_date&amp;order=<?=$order=='ASC'?'DESC':'ASC'?>">Inscription</a>
+						<?=$orderby=='register_date'?$order=='ASC'?'<i class="fas fa-caret-down" aria-hidden="true"></i>':'<i class="fas fa-caret-up" aria-hidden="true"></i>':''?>
 					</th>
 					<th>
-						<a href="<?=$config['rel_root_folder']?>user/member_list/<?=$page+1?>?orderby=lastlogin&amp;order=<?=$order=='ASC'?'DESC':'ASC'?>">Dernière visite</a>
-						<?=$orderby=='lastlogin'?$order=='ASC'?'<i class="fa fa-caret-down" aria-hidden="true"></i>':'<i class="fa fa-caret-up" aria-hidden="true"></i>':''?>
+						<a href="<?=$config['rel_root_folder']?>user/member_list/<?=$page+1?>?orderby=visit_date&amp;order=<?=$order=='ASC'?'DESC':'ASC'?>">Dernière visite</a>
+						<?=$orderby=='visit_date'?$order=='ASC'?'<i class="fas fa-caret-down" aria-hidden="true"></i>':'<i class="fas fa-caret-up" aria-hidden="true"></i>':''?>
 					</th>
 					<th>
 						<a href="<?=$config['rel_root_folder']?>user/member_list/<?=$page+1?>?orderby=website&amp;order=<?=$order=='ASC'?'DESC':'ASC'?>">Site internet</a>
-						<?=$orderby=='website'?$order=='ASC'?'<i class="fa fa-caret-down" aria-hidden="true"></i>':'<i class="fa fa-caret-up" aria-hidden="true"></i>':''?>
+						<?=$orderby=='website'?$order=='ASC'?'<i class="fas fa-caret-down" aria-hidden="true"></i>':'<i class="fas fa-caret-up" aria-hidden="true"></i>':''?>
 					</th>
 				</tr>
 			<? foreach ($user_list as $row) { ?>
 				<tr>
 					<td>
-						<? if ($row->avatar=='t') { ?>
+						<? if ($row->is_avatar_present=='t') { ?>
 							<img alt="Avatar" class="icon avatar" src="<?=$config['rel_root_folder']?>medias/avatars/<?=$row->id?>_s.jpg">
 						<? } else { ?>
-							<i class="icon fa fa-user-secret"></i>
+							<i class="icon fas fa-user-secret"></i>
 						<? } ?>
 						<a class="username" href="<?=$config['rel_root_folder']?>user/p/<?=$row->id?>"><?=$row->name?></a>
 					</td>
-					<td><?=$row->role()?></td>
-					<td><? echo strftime('%e %B %G',strtotime($row->registered)) ?></td>
-					<td><? echo strftime('%e %B %G',strtotime($row->lastlogin)) ?></td>
+					<td><?=$row->get_rank()?></td>
+					<td><? echo strftime('%e %B %G',strtotime($row->register_date)) ?></td>
+					<td><? echo strftime('%e %B %G',strtotime($row->visit_date)) ?></td>
 					<td>
 						<? if ($row->website != "") { ?>
-						<a target="_blank" href="<?=$row->website?>">Site internet <span class="external-link"><i class="fa fa-external-link"></i></span></a>
+						<a target="_blank" href="<?=$row->website?>">Site internet <span class="external-link"><i class="fas fa-external-link-alt"></i></span></a>
 						<? } ?>
 					</td>
 				</tr>
@@ -57,8 +57,8 @@
 			</table> 
 
 			<div class="pagebuttons">
-				<? if ($page != 0) { ?><a class="previous" href="<?=$config['rel_root_folder']?>user/member_list/<?=$page?>?orderby=<?=$orderby?>&amp;order=<?=$order?>"><i class="fa fa-chevron-left fa-fw"></i></a><? }
-				if (($page+1)*$rows_per_pages < $users->number) { ?><a class="next" href="<?=$config['rel_root_folder']?>user/member_list/<?=$page+2?>?orderby=<?=$orderby?>&amp;order=<?=$order?>"><i class="fa fa-chevron-right fa-fw"></i></a><? } ?>
+				<? if ($page != 0) { ?><a class="previous" href="<?=$config['rel_root_folder']?>user/member_list/<?=$page?>?orderby=<?=$orderby?>&amp;order=<?=$order?>"><i class="fas fa-chevron-left fa-fw"></i></a><? }
+				if (($page+1)*$rows_per_pages < $users->number) { ?><a class="next" href="<?=$config['rel_root_folder']?>user/member_list/<?=$page+2?>?orderby=<?=$orderby?>&amp;order=<?=$order?>"><i class="fas fa-chevron-right fa-fw"></i></a><? } ?>
 			</div>
 
 
