@@ -46,20 +46,4 @@ $config['SQL_db'] = "postgres";
 $config['admin_mail'] = "leo@lstronic.com";
 $config['bot_mail'] = "robot@kabano.com";
 
-/*****
-** Locales configuration
-*****/
-
-$config['locales'] = array(
-	"fr" => array("fr","fr_FR.UTF8","french","fr_FR","fr_FR.UTF-8", "Français")
-	);
-$config['roles'] = array(
-	1000 => array(1000,"Administrateur", "red"),
-	800 => array(800,"Modérateur", "orangered"),
-	600 => array(600,"Membre premium", "orange"),
-	400 => array(400,"Utilisateur", "green"),
-	200 => array(200,"Membre archivé", "#aaa"),
-	0 => array(0,"Visiteur", "black")
-	);
-
 ?>

@@ -8,6 +8,15 @@
 ***********************************************************
 **********************************************************/
 
+$ranks = array(
+	"administrator"	=> array(1000,"Administrateur", "red"),
+	"moderator" 	=> array(800,"Modérateur", "orangered"),
+	"premium" 		=> array(600,"Membre premium", "orange"),
+	"registered"	=> array(400,"Utilisateur", "green"),
+	"blocked"		=> array(200,"Membre archivé", "#aaa"),
+	"visitor"		=> array(0,"Visiteur", "black")
+);
+
 class User
 {
     private $id = 0;
@@ -103,24 +112,9 @@ class User
 	    return $this->id;
 	}
 	public function get_rank() {
-		if( $this->rank == 'blocked' ) {
-			return '<span class="userrole" style="color: #aaa;">Membre bloqué</span>';
-		}
-		else if( $this->rank == 'visitor' ) {
-			return '<span class="userrole" style="color: black;">Visiteur</span>';
-		}
-		else if( $this->rank == 'registered' ) {
-			return '<span class="userrole" style="color: green;">Membre</span>';
-		}
-		else if( $this->rank == 'premium' ) {
-			return '<span class="userrole" style="color: orange;">Membre premium</span>';
-		}
-		else if( $this->rank == 'moderator' ) {
-			return '<span class="userrole" style="color: orangered;">Modérateur</span>';
-		}
-		else {
-			return '<span class="userrole" style="color: red;">Administrateur</span>';
-		}
+		global $ranks;
+
+		return '<span class="userrole" style="color: '.$ranks[$this->rank][2].';">'.$ranks[$this->rank][1].'</span>';
 	}
 	public function get_avatar() {
 		if( $this->is_avatar_present == 't')
@@ -168,39 +162,9 @@ class User
 	** Returns true if user permissions are higher than $rank
 	*****/
 	public function rank_is_higher($rank) {
-		if( $rank == 'blocked' ) {
-			return true;
-		}
-		else if( $rank == 'visitor' ) {
-			if( $this->rank == 'blocked' )
-				return false;
-			else
-				return true;
-		}
-		else if( $rank == 'registered' ) {
-			if( $this->rank == 'blocked' || $this->rank == 'visitor' )
-				return false;
-			else
-				return true;
-		}
-		else if( $rank == 'premium' ) {
-			if( $this->rank == 'premium' || $this->rank == 'moderator' || $this->rank == 'administrator' )
-				return true;
-			else
-				return false;
-		}
-		else if( $rank == 'moderator' ) {
-			if( $this->rank == 'moderator' || $this->rank == 'administrator' )
-				return true;
-			else
-				return false;
-		}
-		else {
-			if( $this->rank == 'administrator' )
-				return true;
-			else
-				return false;
-		}
+		global $ranks;
+
+		return $ranks[$this->rank][0] >= $ranks[$rank][0];
 	}
 
 	/*****
