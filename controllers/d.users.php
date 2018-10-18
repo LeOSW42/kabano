@@ -92,7 +92,7 @@ if(isset($controller->splitted_url[1])) {
 			}
 			break;
 		case 'p':
-			if ($user->rank_is_higher("registered")) {
+			if ($user->rankIsHigher("registered")) {
 				$userProfile = new User();
 				if (!isset($controller->splitted_url[2]) OR $controller->splitted_url[2]=="") {
 					// WE DISPLAY THE CONNECTED USER PROFILE
@@ -107,7 +107,7 @@ if(isset($controller->splitted_url[1])) {
 				}
 
 				// If we are editing the profile
-				if(isset($controller->splitted_url[3]) && $controller->splitted_url[3]=="edit" && ($user->rank_is_higher("moderator") || $user->id == $userProfile->id)) {
+				if(isset($controller->splitted_url[3]) && $controller->splitted_url[3]=="edit" && ($user->rankIsHigher("moderator") || $user->id == $userProfile->id)) {
 					$head['js'] = "d.avatar.js";
 					if (isset($_POST['submit'])) {
 						$receivedUser = new User();
@@ -124,7 +124,7 @@ if(isset($controller->splitted_url[1])) {
 						if($_POST['password']!='')
 							$userProfile->password=sha1($_POST['password']);
 						$userProfile->locale=$_POST['locale'];
-						if($user->rank_is_higher("administrator"))
+						if($user->rankIsHigher("administrator"))
 							$userProfile->rank = $_POST['rank'];
 						$userProfile->website=$_POST['website'];
 
@@ -160,7 +160,7 @@ if(isset($controller->splitted_url[1])) {
 				}
 				// If we are displaying the profile
 				else {
-					if (isset($_POST['submit']) && $user->rank_is_higher("registered")) {
+					if (isset($_POST['submit']) && $user->rankIsHigher("registered")) {
 						// PROCESS DATA FROM CONTACT FORM
 						$message = $_POST['message'];
 						
@@ -175,7 +175,7 @@ if(isset($controller->splitted_url[1])) {
 			}
 			break;
 		case 'member_list':
-			if ($user->rank_is_higher("registered")) {
+			if ($user->rankIsHigher("registered")) {
 				$rows_per_pages = 50;
 				// Get the correct page number
 				if (!isset($controller->splitted_url[2]) OR $controller->splitted_url[2]=="" OR $controller->splitted_url[2]=="0" OR !is_numeric($controller->splitted_url[2])) {

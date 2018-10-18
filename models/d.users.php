@@ -8,6 +8,8 @@
 ***********************************************************
 **********************************************************/
 
+require_once($config['models_folder']."d.locales.php");
+
 $ranks = array(
 	"administrator"	=> array(1000,"Administrateur", "red"),
 	"moderator" 	=> array(800,"Modérateur", "orangered"),
@@ -111,10 +113,13 @@ class User
 	public function get_id() {
 	    return $this->id;
 	}
-	public function get_rank() {
+	public function get_rank( $no_html = false ) {
 		global $ranks;
 
-		return '<span class="userrole" style="color: '.$ranks[$this->rank][2].';">'.$ranks[$this->rank][1].'</span>';
+		if( $no_html )
+			return $ranks[$this->rank][1];
+		else
+			return '<span class="userrole" style="color: '.$ranks[$this->rank][2].';">'.$ranks[$this->rank][1].'</span>';
 	}
 	public function get_avatar() {
 		if( $this->is_avatar_present == 't')
@@ -124,31 +129,15 @@ class User
 	}
 	public function get_locale() {
 		if( isset($this->locale_loaded) ) {
-			return $this->locale_display_name;
+			return $this->locale_obj->display_name;
 		}
 		else {
-			global $config;
-			
-			$con = pg_connect("host=".$config['SQL_host']." dbname=".$config['SQL_db']." user=".$config['SQL_user']." password=".$config['SQL_pass'])
-				or die ("Could not connect to server\n");
-
-			$query = "SELECT * FROM locales WHERE name=$1";
-
-			pg_prepare($con, "prepare1", $query) 
-				or die ("Cannot prepare statement\n");
-			$result = pg_execute($con, "prepare1", array($this->locale))
-				or die ("Cannot execute statement\n");
-
-			pg_close($con);
-
-			if(pg_num_rows($result) == 1) {
-				$row = pg_fetch_assoc($result);
-				$this->locale_loaded = true;
-				$this->locale_display_name = $row['display_name'];
-				$this->locale_flag_name = $row['flag_name'];
-				return $this->locale_display_name;
-			}
-			return false;
+			$this->locale_obj = new Locale;
+			$this->locale_loaded = true;
+			if( $this->locale_obj->checkName($this->locale) )
+				return $this->locale_obj->display_name;
+			else
+				return false;
 		}
 	}
 	public function get_visit_date() {
@@ -161,7 +150,7 @@ class User
 	/*****
 	** Returns true if user permissions are higher than $rank
 	*****/
-	public function rank_is_higher($rank) {
+	public function rankIsHigher($rank) {
 		global $ranks;
 
 		return $ranks[$this->rank][0] >= $ranks[$rank][0];

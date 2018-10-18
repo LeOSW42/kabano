@@ -6,8 +6,8 @@ $head['css'] = "d.index.css;d.wiki.css";
 
 $wikiPage = new WikiPage();
 // Page doesn't exists
-if(isset($controller->splitted_url[1]) && !$wikiPage->checkUrl($controller->splitted_url[1],$user->rank_is_higher('premium')) && $controller->splitted_url[1]!="") {
-	if($user->rank_is_higher('moderator')) {
+if(isset($controller->splitted_url[1]) && !$wikiPage->checkUrl($controller->splitted_url[1],$user->rankIsHigher('premium')) && $controller->splitted_url[1]!="") {
+	if($user->rankIsHigher('moderator')) {
 		// Create new page
 		if(isset($_POST['submit'])) {
 			$wikiPage->content = $_POST['content'];
@@ -27,8 +27,8 @@ if(isset($controller->splitted_url[1]) && !$wikiPage->checkUrl($controller->spli
 	}
 }
 // Page exists
-else if(isset($controller->splitted_url[1]) && $wikiPage->checkUrl($controller->splitted_url[1],$user->rank_is_higher('premium'))) {
-	if (isset($controller->splitted_url[2]) && $controller->splitted_url[2]=="edit" && $user->rank_is_higher('administrator')) {
+else if(isset($controller->splitted_url[1]) && $wikiPage->checkUrl($controller->splitted_url[1],$user->rankIsHigher('premium'))) {
+	if (isset($controller->splitted_url[2]) && $controller->splitted_url[2]=="edit" && $user->rankIsHigher('administrator')) {
 		// Edit page
 		if(isset($_POST['submit'])) {
 			$wikiPage->content = $_POST['content'];
@@ -43,13 +43,13 @@ else if(isset($controller->splitted_url[1]) && $wikiPage->checkUrl($controller->
 			$head['title'] = $wikiPage->title;
 			include ($config['views_folder']."d.wiki.edit.html");
 		}
-	} else if (isset($controller->splitted_url[2]) && $controller->splitted_url[2]=="delete" && $user->rank_is_higher('moderator')) {
+	} else if (isset($controller->splitted_url[2]) && $controller->splitted_url[2]=="delete" && $user->rankIsHigher('moderator')) {
 		// Delete page
 		$wikiPage->delete();
 		header('Location: '.$config['rel_root_folder']."wiki/".$wikiPage->url);
 	} else {
 		// Display page
-		if($user->rank_is_higher('premium')) {
+		if($user->rankIsHigher('premium')) {
 			$wikiHistory = new WikiPages();
 			$wikiHistory->getHistory($controller->splitted_url[1]);
 
@@ -62,7 +62,7 @@ else if(isset($controller->splitted_url[1]) && $wikiPage->checkUrl($controller->
 			}
 		}
 		if (isset($controller->splitted_url[2]) && is_numeric($controller->splitted_url[2]))
-			$wikiPage->checkUrl($controller->splitted_url[1], $user->rank_is_higher('premium'), $controller->splitted_url[2]);
+			$wikiPage->checkUrl($controller->splitted_url[1], $user->rankIsHigher('premium'), $controller->splitted_url[2]);
 
 		$wikiPage->md2html();
 		$head['title'] = $wikiPage->title;

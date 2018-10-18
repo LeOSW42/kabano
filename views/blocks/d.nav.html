@@ -30,7 +30,7 @@
 								<? } else { ?>
 								<li><a href="<?=$config['rel_root_folder']?>user/p">Mon profil</a></li>
 								<li><a href="<?=$config['rel_root_folder']?>user/member_list">Liste des membres</a></li>
-								<? if($user->rank_is_higher('moderator')) { ?>
+								<? if($user->rankIsHigher('moderator')) { ?>
 								<li><a href="<?=$config['rel_root_folder']?>admin">Administration</a></li>
 								<? } ?>
 								<li><a href="<?=$config['rel_root_folder']?>user/logout">Se déconnecter</a></li>

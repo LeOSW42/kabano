@@ -10,7 +10,7 @@
 		<section id="profile">
 			<? if ($userProfile->get_id() != 0) { ?>
 				<h1><?=$userProfile->name?></h1>
-				<? if($user->rank_is_higher("moderator") || $user->get_id() == $userProfile->get_id()) { ?>
+				<? if($user->rankIsHigher("moderator") || $user->get_id() == $userProfile->get_id()) { ?>
 				<a class="subtitle" id="editprofile" href="<?=$config['rel_root_folder']?>user/p/<?=$userProfile->get_id()?>/edit"><i class="fas fa-pencil-alt"></i> Éditer les paramètres du compte</a>
 				<? } ?>
 				<article>
@@ -37,10 +37,10 @@
 									if ($userProfile->get_id() != $user->get_id()) { ?>
 										<a href="#" onclick="$('#profilepart').hide(0, function(){$('#contact').show('fast');});">Contacter par mail</a>
 									<? }
-									if ($user->rank_is_higher("premium") AND ($userProfile->website != "" OR $userProfile->get_id() != $user->get_id())) { ?>
+									if ($user->rankIsHigher("premium") AND ($userProfile->website != "" OR $userProfile->get_id() != $user->get_id())) { ?>
 										 &mdash; 
 									<? }
-									if ($user->rank_is_higher("premium")) { ?>
+									if ($user->rankIsHigher("premium")) { ?>
 										<a href="mailto:<?=$userProfile->email?>"><?=$userProfile->email?></a>
 									<? } ?>
 								</p>

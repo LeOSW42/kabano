@@ -9,7 +9,7 @@
 
 		<section id="wiki_page" <?=!$wikiPage->is_archive()?'class="archive"':''?>>
 			<h1><?=$wikiPage->name?>.</h1>
-				<? if($user->rank_is_higher('premium')) { ?>
+				<? if($user->rankIsHigher('premium')) { ?>
 					<span class="subtitle">
 					<? if(isset($wikiHistory_list)) { ?>
 						<select id="wikihistory">
@@ -20,10 +20,10 @@
 							} ?>
 						</select>
 					<? } 
-					if ($user->rank_is_higher('moderator') && isset($wikiHistory_list)) { ?>
+					if ($user->rankIsHigher('moderator') && isset($wikiHistory_list)) { ?>
 						 &mdash; 
 					<? }
-					if ($user->rank_is_higher('moderator')) { ?>
+					if ($user->rankIsHigher('moderator')) { ?>
 						<a href="<?=$config['rel_root_folder']?>wiki/<?=$wikiPage->url?>/edit"><i class="fa fa-pencil"></i> Éditer la page</a>
 						<? if (!$wikiPage->is_archive()) { ?>
 							 &mdash; 
@@ -42,7 +42,7 @@
 			<div style="clear: both;"> </div>
 		</section>
 
-<? if($user->rank_is_higher('premium')) { ?>
+<? if($user->rankIsHigher('premium')) { ?>
 		<script type="text/javascript">
 $( "#wikihistory" ).change(function() {
   window.location.href = "<?=$config['rel_root_folder']?>wiki/<?=$wikiPage->url?>/"+$( this ).val();
