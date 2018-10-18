@@ -205,13 +205,6 @@ if(isset($controller->splitted_url[1])) {
 
 				$users->list_users($page*$rows_per_pages,$rows_per_pages,$orderby,$order);
 
-				$i = 0;
-				foreach ($users->ids as $row) {
-					$user_list[$i] = new User();
-					$user_list[$i]->checkID($row);
-					$i++;
-				}
-
 				$first = $page*$rows_per_pages+1;
 				$last = (($page+1)*$rows_per_pages > $users->number ? $users->number : ($page+1)*$rows_per_pages);
 				

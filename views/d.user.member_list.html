@@ -34,7 +34,7 @@
 						<?=$orderby=='website'?$order=='ASC'?'<i class="fas fa-caret-down" aria-hidden="true"></i>':'<i class="fas fa-caret-up" aria-hidden="true"></i>':''?>
 					</th>
 				</tr>
-			<? foreach ($user_list as $row) { ?>
+			<? foreach ($users->objs as $row) { ?>
 				<tr>
 					<td>
 						<? if ($row->is_avatar_present=='t') { ?>

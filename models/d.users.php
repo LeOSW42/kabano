@@ -383,7 +383,7 @@ function randomPassword() {
 
 class Users
 {
-	public $ids = array();
+	public $objs = array();
 	public $number = NULL;
 
 	/*****
@@ -421,9 +421,9 @@ class Users
 		$orderbysafe=$orders[$key];
 
 		if ($order == 'ASC')
-			$query = "SELECT id FROM users ORDER BY $orderbysafe ASC LIMIT $1 OFFSET $2";
+			$query = "SELECT * FROM users ORDER BY $orderbysafe ASC LIMIT $1 OFFSET $2";
 		else
-			$query = "SELECT id FROM users ORDER BY $orderbysafe DESC LIMIT $1 OFFSET $2";
+			$query = "SELECT * FROM users ORDER BY $orderbysafe DESC LIMIT $1 OFFSET $2";
 		
 
 		pg_prepare($con, "prepare1", $query) 
@@ -435,7 +435,8 @@ class Users
 
 		for($i = 0; $i < pg_num_rows($result); $i++) {
 			$row = pg_fetch_assoc($result, $i);
-			$this->ids[$i] = $row['id'];
+			$this->objs[$i] = new User;
+			$this->objs[$i]->populate($row);
 		}
 	}
 }
