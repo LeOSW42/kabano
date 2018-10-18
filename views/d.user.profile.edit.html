@@ -8,7 +8,7 @@
 		<? include('blocks/d.nav.html'); ?>
 
 		<section id="profile">
-			<? if ($userProfile->get_id() != 0) { ?>
+			<? if ($userProfile->id != 0) { ?>
 				<h1><?=$userProfile->name?></h1>
 				<article>
 					<? if(isset($nameError) AND $nameError==1) { ?>
@@ -20,19 +20,19 @@
 					<? if(isset($updated) AND $updated==1) { ?>
 						<p style="color: #006600;">Le profil a été mis à jour.</p>
 					<? } ?>
-					<form action="<?=$config['rel_root_folder']?>user/p/<?=$userProfile->get_id()?>/edit" method="post" class="edituser" enctype="multipart/form-data">
-						<aside class="<?=$userProfile->get_avatar()!=NULL?'':'no'?>avatar">
+					<form action="<?=$config['rel_root_folder']?>user/p/<?=$userProfile->id?>/edit" method="post" class="edituser" enctype="multipart/form-data">
+						<aside class="<?=$userProfile->is_avatar_present=='t'?'':'no'?>avatar">
 							<div id="picturebuttonscontainer">
 								<div id="picturebuttons">
-									<a href="#" id="uploadavatar"><i class="fas fa-camera"></i></a><a <?=$userProfile->get_avatar()!=NULL?'':'style="display: none;"'?> href="#" id="deleteavatar" style="font-size: 1.1em;"><i class="fas fa-trash"></i></a>
+									<a href="#" id="uploadavatar"><i class="fas fa-camera"></i></a><a <?=$userProfile->is_avatar_present=='t'?'':'style="display: none;"'?> href="#" id="deleteavatar" style="font-size: 1.1em;"><i class="fas fa-trash"></i></a>
 								</div>
 							</div>
 
-							<img alt="Avatar" id="profileavatar" src="<?=$config['rel_root_folder']?>medias/avatars/<?=$userProfile->get_id()?>_p.jpg" alt="Profile picture">
+							<img alt="Avatar" id="profileavatar" src="<?=$config['rel_root_folder']?>medias/avatars/<?=$userProfile->id?>_p.jpg" alt="Profile picture">
 							<i id="profilenoavatar" class="fas fa-user-secret"></i>
 						</aside>
 
-						<input id="avatarcheckbox" style="display: none;" type="checkbox" name="avatar" <?=$userProfile->get_avatar()!=NULL?'checked':''?>>
+						<input id="avatarcheckbox" style="display: none;" type="checkbox" name="avatar" <?=$userProfile->is_avatar_present=='t'?'checked':''?>>
 						<input type="hidden" name="MAX_FILE_SIZE" value="4194304" />
 						<input id="avatarfile" name="avatarfile" style="display: none;" type="file" accept="image/*" />
 
@@ -51,7 +51,7 @@
 								<li><label for="rank">Rang : </label>
 									<select name="rank" id="rank">
 										<? foreach($ranks as $rank) { ?>
-											<option <?=$userProfile->get_rank(true)==$rank[3]?'selected':''?> value="<?=$rank[0]?>"><?=$rank[1]?></option>
+											<option <?=$userProfile->rank==$rank[3]?'selected':''?> value="<?=$rank[3]?>"><?=$rank[1]?></option>
 										<? } ?>
 									</select></li>
 								<? } ?>

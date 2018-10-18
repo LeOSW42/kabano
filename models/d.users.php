@@ -21,19 +21,19 @@ $ranks = array(
 
 class User
 {
-    private $id = 0;
+    public $id = 0;
     public $name = NULL;
-    private $version = NULL;
+    public $version = NULL;
     public $email = NULL;
-    private $password = NULL;
+    public $password = NULL;
     public $website = NULL;
-    private $is_avatar_present = NULL;
-    private $is_archive = NULL;
+    public $is_avatar_present = NULL;
+    public $is_archive = NULL;
     public $rank = NULL;
-    private $locale = NULL;
-    private $timezone = NULL;
-    private $visit_date = NULL;
-    private $register_date = NULL;
+    public $locale = NULL;
+    public $timezone = NULL;
+    public $visit_date = NULL;
+    public $register_date = NULL;
 
 	/*****
 	** Connect to correct account using ID and stores its ID
@@ -91,7 +91,7 @@ class User
 	/*****
 	** Populate the object using raw data from SQL
 	*****/
-	private function populate($row) {
+	public function populate($row) {
 	    $this->id = $row['id'];
 	    $this->name = $row['name'];
 	    $this->version = $row['version'];
@@ -110,22 +110,10 @@ class User
 	/*****
 	** Simple return only functions
 	*****/
-	public function get_id() {
-	    return $this->id;
-	}
-	public function get_rank( $no_html = false ) {
+	public function get_rank() {
 		global $ranks;
 
-		if( $no_html )
-			return $this->rank;
-		else
-			return '<span class="userrole" style="color: '.$ranks[$this->rank][2].';">'.$ranks[$this->rank][1].'</span>';
-	}
-	public function get_avatar() {
-		if( $this->is_avatar_present == 't')
-			return $this->id;
-		else
-		    return NULL;
+		return '<span class="userrole" style="color: '.$ranks[$this->rank][2].';">'.$ranks[$this->rank][1].'</span>';
 	}
 	public function get_locale() {
 		if( isset($this->locale_loaded) ) {
@@ -139,12 +127,6 @@ class User
 			else
 				return false;
 		}
-	}
-	public function get_visit_date() {
-	    return $this->visit_date;
-	}
-	public function get_register_date() {
-	    return $this->register_date;
 	}
 
 	/*****
@@ -259,17 +241,17 @@ class User
 			or die ("Could not connect to server\n");
 
 		if($this->password=='') {
-			$query = "UPDATE users SET name = $1, avatar = $2, locale = $3, role = $4, mail = $5, website = $6 WHERE id = $7";
+			$query = "UPDATE users SET name = $1, is_avatar_present = $2, locale = $3, rank = $4, email = $5, website = $6 WHERE id = $7";
 			pg_prepare($con, "prepare1", $query) 
 				or die ("Cannot prepare statement\n");
-			pg_execute($con, "prepare1", array($this->name, $this->avatar, $this->locale, $this->role, $this->mail, $this->website, $this->id))
+			pg_execute($con, "prepare1", array($this->name, $this->is_avatar_present, $this->locale, $this->rank, $this->email, $this->website, $this->id))
 				or die ("Cannot execute statement\n");
 		}
 		else {
-			$query = "UPDATE users SET name = $1, avatar = $2, locale = $3, role = $4, mail = $5, website = $6, password = $7 WHERE id = $8";
+			$query = "UPDATE users SET name = $1, is_avatar_present = $2, locale = $3, rank = $4, email = $5, website = $6, password = $7 WHERE id = $8";
 			pg_prepare($con, "prepare1", $query) 
 				or die ("Cannot prepare statement\n");
-			pg_execute($con, "prepare1", array($this->name, $this->avatar, $this->locale, $this->role, $this->mail, $this->website, $this->password, $this->id))
+			pg_execute($con, "prepare1", array($this->name, $this->is_avatar_present, $this->locale, $this->rank, $this->email, $this->website, $this->password, $this->id))
 				or die ("Cannot execute statement\n");
 		}
 
@@ -374,7 +356,7 @@ class User
 		mail($this->email, 'Kabano - Nouveau message privé', $message, $headers);
 
 		error_log(
-			date('r')." \t".$user->name." (".$user->get_id().") \tMAIL \tMail sent to ".$this->name." (".$this->id.")\r\n",
+			date('r')." \t".$user->name." (".$user->id.") \tMAIL \tMail sent to ".$this->name." (".$this->id.")\r\n",
 			3,
 			$config['logs_folder'].'users.log');
 	}

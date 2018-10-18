@@ -10,12 +10,12 @@
 						<li class="on-bar"><a class="on-bar" href="<?=$config['rel_root_folder']?>news">Nouveautés</a></li>
 						<li class="on-bar"><a class="on-bar" href="<?=$config['rel_root_folder']?>community">Contribuer</a></li>
 						<li class="on-bar has-sub">
-							<? if ($user->get_id() == 0) { ?>
+							<? if ($user->id == 0) { ?>
 							<a class="on-bar" href="#"><i class="icon fas fa-user"></i></a>
-							<? } elseif ($user->get_avatar() == NULL) { ?>
-							<a class="on-bar" href="#"><i class="icon fas fa-user-secret"></i></a>
+							<? } elseif ($user->is_avatar_present == 't') { ?>
+							<a class="on-bar" href="#"><img alt="Avatar" class="icon avatar" src="<?=$config['rel_root_folder']?>medias/avatars/<?=$user->id?>_s.jpg"></a>
 							<? } else { ?>
-							<a class="on-bar" href="#"><img alt="Avatar" class="icon avatar" src="<?=$config['rel_root_folder']?>medias/avatars/<?=$user->get_avatar()?>_s.jpg"></a>
+							<a class="on-bar" href="#"><i class="icon fas fa-user-secret"></i></a>
 							<? } ?>
 							<ul>
 								<? if($user->rank == 'visitor') { ?>

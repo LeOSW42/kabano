@@ -8,36 +8,36 @@
 		<? include('blocks/d.nav.html'); ?>
 
 		<section id="profile">
-			<? if ($userProfile->get_id() != 0) { ?>
+			<? if ($userProfile->id != 0) { ?>
 				<h1><?=$userProfile->name?></h1>
-				<? if($user->rankIsHigher("moderator") || $user->get_id() == $userProfile->get_id()) { ?>
-				<a class="subtitle" id="editprofile" href="<?=$config['rel_root_folder']?>user/p/<?=$userProfile->get_id()?>/edit"><i class="fas fa-pencil-alt"></i> Éditer les paramètres du compte</a>
+				<? if($user->rankIsHigher("moderator") || $user->id == $userProfile->id) { ?>
+				<a class="subtitle" id="editprofile" href="<?=$config['rel_root_folder']?>user/p/<?=$userProfile->id?>/edit"><i class="fas fa-pencil-alt"></i> Éditer les paramètres du compte</a>
 				<? } ?>
 				<article>
 					<div id="profilepart">
 						<? if(isset($mailsent) AND $mailsent==1) { ?>
 							<p style="color: #006600;">Le message a bien été envoyé.</p>
 						<? } ?>
-						<aside class="<?=$userProfile->get_avatar()!=NULL?'':'no'?>avatar">
-							<img alt="Avatar" id="profileavatar" src="<?=$config['rel_root_folder']?>medias/avatars/<?=$userProfile->get_id()?>_p.jpg" alt="Profile picture">
+						<aside class="<?=$userProfile->is_avatar_present=='t'?'':'no'?>avatar">
+							<img alt="Avatar" id="profileavatar" src="<?=$config['rel_root_folder']?>medias/avatars/<?=$userProfile->id?>_p.jpg" alt="Profile picture">
 							<i id="profilenoavatar" class="fas fa-user-secret"></i>
 						</aside>
 							<div id="description">
 								<p>Langue : <?=$userProfile->get_locale()?></p>
-								<p>Inscrit le <? echo strftime('%e %B %G, %kh%Mm%Ss',strtotime($userProfile->get_register_date())) ?> <small><abbr title="Temps Universel Coordonné">UTC</abbr></small></p>
-								<p>Dernière connexion le <? echo strftime('%e %B %G, %kh%Mm%Ss',strtotime($userProfile->get_visit_date())) ?> <small><abbr title="Temps Universel Coordonné">UTC</abbr></small></p>
+								<p>Inscrit le <? echo strftime('%e %B %G, %kh%Mm%Ss',strtotime($userProfile->register_date)) ?> <small><abbr title="Temps Universel Coordonné">UTC</abbr></small></p>
+								<p>Dernière connexion le <? echo strftime('%e %B %G, %kh%Mm%Ss',strtotime($userProfile->visit_date)) ?> <small><abbr title="Temps Universel Coordonné">UTC</abbr></small></p>
 								<p><?=$userProfile->get_rank()?></p>
 								<p>
 									<? if ($userProfile->website != "") { ?>
 										<a target="_blank" href="<?=$userProfile->website?>">Site internet <span class="external-link"><i class="fas fa-external-link-alt"></i></span></a>
 									<? }
-									if ($userProfile->website != "" AND $userProfile->get_id() != $user->get_id()) { ?>
+									if ($userProfile->website != "" AND $userProfile->id != $user->id) { ?>
 										 &mdash; 
 									<? }
-									if ($userProfile->get_id() != $user->get_id()) { ?>
+									if ($userProfile->id != $user->id) { ?>
 										<a href="#" onclick="$('#profilepart').hide(0, function(){$('#contact').show('fast');});">Contacter par mail</a>
 									<? }
-									if ($user->rankIsHigher("premium") AND ($userProfile->website != "" OR $userProfile->get_id() != $user->get_id())) { ?>
+									if ($user->rankIsHigher("premium") AND ($userProfile->website != "" OR $userProfile->id != $user->id)) { ?>
 										 &mdash; 
 									<? }
 									if ($user->rankIsHigher("premium")) { ?>
@@ -47,8 +47,8 @@
 							</div>
 							<div style="clear:both;"></div>
 					</div>
-						<? if ($userProfile->get_id() != $user->get_id()) { ?>
-							<form style="display:none;" class="form" id="contact" action="<?=$config['rel_root_folder']?>user/p/<?=$userProfile->get_id()?>" method="post" >
+						<? if ($userProfile->id != $user->id) { ?>
+							<form style="display:none;" class="form" id="contact" action="<?=$config['rel_root_folder']?>user/p/<?=$userProfile->id?>" method="post" >
 								<textarea rows="12" name="message" id="message" placeholder="Votre message"></textarea>
 								<p><i>Votre adresse email sera transmise à votre destinataire.</i></p>
 								<input type="submit" name="submit" value="Envoyer">

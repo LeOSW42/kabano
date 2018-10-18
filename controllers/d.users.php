@@ -15,7 +15,7 @@ if(isset($controller->splitted_url[1])) {
 
 					if($user->login($_POST['login'], $_POST['password'])) {
 						// SUCESSFULL LOGIN
-						$_SESSION['userid'] = $user->get_id();
+						$_SESSION['userid'] = $user->id;
 						header('Location: '.$_SERVER['HTTP_REFERER']);
 					}
 					else {
@@ -102,7 +102,7 @@ if(isset($controller->splitted_url[1])) {
 					$userProfile->checkID(intval($controller->splitted_url[2]));
 				}
 				$head['title'] = "Profil inexistant";
-				if($userProfile->get_id() != 0) {
+				if($userProfile->id != 0) {
 					$head['title'] = "Profil de ".$userProfile->name;
 				}
 
@@ -144,13 +144,13 @@ if(isset($controller->splitted_url[1])) {
 							if(file_exists($pathToFile."_s.jpg")) unlink($pathToFile."_s.jpg");
 							generate_image_thumbnail($pathToFile, $pathToFile."_s.jpg", 28, 28);
 
-							$userProfile->avatar = 't';
+							$userProfile->is_avatar_present = 't';
 						}
 						elseif (!isset($_POST['avatar'])) {
 							if(file_exists($pathToFile)) unlink($pathToFile);
 							if(file_exists($pathToFile."_p.jpg")) unlink($pathToFile."_p.jpg");
 							if(file_exists($pathToFile."_s.jpg")) unlink($pathToFile."_s.jpg");
-							$userProfile->avatar = 'f';
+							$userProfile->is_avatar_present = 'f';
 						}
 
 						$userProfile->update();
