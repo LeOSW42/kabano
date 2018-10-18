@@ -108,6 +108,8 @@ if(isset($controller->splitted_url[1])) {
 
 				// If we are editing the profile
 				if(isset($controller->splitted_url[3]) && $controller->splitted_url[3]=="edit" && ($user->rankIsHigher("moderator") || $user->id == $userProfile->id)) {
+					$locales = new Locales;
+					$locales->getAll();
 					$head['js'] = "d.avatar.js";
 					if (isset($_POST['submit'])) {
 						$receivedUser = new User();

@@ -43,8 +43,8 @@
 								<li><label for="password">Mot de passe :</label><input name="password" id="password" type="password" placeholder="Nouveau mot de passe"></li>
 								<li><label for="locale">Langue :</label>
 									<select name="locale" id="locale">
-										<? foreach($config['locales'] as $locale) { ?>
-											<option <?=$userProfile->locale==$locale[0]?'selected':''?> value="<?=$locale[0]?>"><?=$locale[5]?></option>
+										<? foreach($locales->objs as $locale) { ?>
+											<option <?=$userProfile->get_locale()==$locale->display_name?'selected':''?> value="<?=$locale->get_name()?>"><?=$locale->display_name?></option>
 										<? } ?>
 									</select></li>
 								<? if($user->rankIsHigher("administrator")) { ?>

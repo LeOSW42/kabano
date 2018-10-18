@@ -46,6 +46,9 @@ class Locale
 	** Populate the object using raw data from SQL
 	*****/
 	private function populate($row) {
+	    $this->forcePopulate($row);
+	}
+	public function forcePopulate($row) {
 	    $this->name = $row['name'];
 	    $this->display_name = $row['display_name'];
 	    $this->flag_name = $row['flag_name'];
@@ -54,8 +57,49 @@ class Locale
 	/*****
 	** Simple return only functions
 	*****/
-	public function get_id() {
-	    return $this->id;
+	public function get_name() {
+	    return $this->name;
+	}
+}
+
+/**********************************************************
+***********************************************************
+**  
+**  This class is to manage Locales list object
+**  
+***********************************************************
+**********************************************************/
+
+class Locales
+{
+    public $number = 0;
+    public $objs = array();
+
+    /*****
+	** Get all locales
+	*****/
+	public function getAll() {
+		global $config;
+		
+		$con = pg_connect("host=".$config['SQL_host']." dbname=".$config['SQL_db']." user=".$config['SQL_user']." password=".$config['SQL_pass'])
+			or die ("Could not connect to server\n");
+
+		$query = "SELECT * FROM locales";
+
+		pg_prepare($con, "prepare1", $query) 
+			or die ("Cannot prepare statement\n");
+		$result = pg_execute($con, "prepare1", array())
+			or die ("Cannot execute statement\n");
+
+		pg_close($con);
+
+		$this->number = pg_num_rows($result);
+
+		for($i = 0; $i < $this->number; $i++) {
+			$locale = pg_fetch_assoc($result, $i);
+			$this->objs[$i] = new Locale;
+			$this->objs[$i]->forcePopulate($locale);
+		}
 	}
 }
 
