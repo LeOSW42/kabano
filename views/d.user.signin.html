@@ -13,7 +13,7 @@
 				<? if(isset($_GET['error']) AND $_GET['error']=="name") { ?>
 					<p style="color: red;">Veuillez choisir un autre nom d'utilisateur.</p>
 				<? } ?>
-				<? if(isset($_GET['error']) AND $_GET['error']=="mail") { ?>
+				<? if(isset($_GET['error']) AND $_GET['error']=="email") { ?>
 					<p style="color: red;">Cette adresse mail est déjà prise.</p>
 				<? } ?>
 				<? if(isset($_GET['error']) AND $_GET['error']=="empty") { ?>
@@ -25,7 +25,7 @@
 				<? } ?>
 				<input type="text" name="login" id="login" placeholder="Nom d'utilisateur">
 				<input type="password" name="password" id="password" placeholder="Mot de passe">
-				<input type="text" name="mail" id="mail" placeholder="Adresse mail">
+				<input type="text" name="email" id="email" placeholder="Adresse mail">
 				<p id="captcha">
 					<input type="hidden" id="captchahidden" name="captcha" value="10">
 					<span id="captchatext">Merci d'attendre <b id="captchasec">10 s</b> avant de pouvoir vous inscrire.<br>

@@ -11,12 +11,12 @@
 require_once($config['models_folder']."d.locales.php");
 
 $ranks = array(
-	"administrator"	=> array(1000,"Administrateur", "red"),
-	"moderator" 	=> array(800,"Modérateur", "orangered"),
-	"premium" 		=> array(600,"Membre premium", "orange"),
-	"registered"	=> array(400,"Utilisateur", "green"),
-	"blocked"		=> array(200,"Membre archivé", "#aaa"),
-	"visitor"		=> array(0,"Visiteur", "black")
+	"administrator"	=> array(1000,"Administrateur", "red", "administrator"),
+	"moderator" 	=> array(800,"Modérateur", "orangered", "moderator"),
+	"premium" 		=> array(600,"Membre premium", "orange", "premium"),
+	"registered"	=> array(400,"Utilisateur", "green", "registered"),
+	"blocked"		=> array(200,"Membre archivé", "#aaa", "blocked"),
+	"visitor"		=> array(0,"Visiteur", "black", "visitor")
 );
 
 class User
@@ -117,7 +117,7 @@ class User
 		global $ranks;
 
 		if( $no_html )
-			return $ranks[$this->rank][1];
+			return $this->rank;
 		else
 			return '<span class="userrole" style="color: '.$ranks[$this->rank][2].';">'.$ranks[$this->rank][1].'</span>';
 	}

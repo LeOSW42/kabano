@@ -39,7 +39,7 @@ if(isset($controller->splitted_url[1])) {
 					// PROCESS DATA FROM FORM
 					$user = new User();
 					$user->name = $_POST['login'];
-					$user->email = strtolower($_POST['mail']);
+					$user->email = strtolower($_POST['email']);
 					$user->rank = "registered";
 
 					if($_POST['captcha'] == -2) {
@@ -54,7 +54,7 @@ if(isset($controller->splitted_url[1])) {
 								}
 							}
 							else {
-								header('Location: '.$config['rel_root_folder'].'user/signin?error=mail');
+								header('Location: '.$config['rel_root_folder'].'user/signin?error=email');
 							}
 						}
 						else {
@@ -76,7 +76,7 @@ if(isset($controller->splitted_url[1])) {
 				if (isset($_POST['submit'])) {
 					// PROCESS DATA FROM FORM
 					$user = new User();
-					$user->email = strtolower($_POST['mail']);
+					$user->email = strtolower($_POST['email']);
 
 					if($user->availableMail()) {
 						header('Location: '.$config['rel_root_folder'].'user/password_lost?error=1');
@@ -116,11 +116,11 @@ if(isset($controller->splitted_url[1])) {
 							$userProfile->name = $receivedUser->name;
 						else if($receivedUser->name != $userProfile->name)
 							$nameError=1;
-						$receivedUser->mail = strtolower($_POST['mail']);
-						if($receivedUser->mail != $userProfile->mail && $receivedUser->availableMail())
-							$userProfile->mail = $receivedUser->mail;
-						else if ($receivedUser->mail != $userProfile->mail)
-							$mailError=1;
+						$receivedUser->email = strtolower($_POST['email']);
+						if($receivedUser->email != $userProfile->email && $receivedUser->availableMail())
+							$userProfile->email = $receivedUser->email;
+						else if ($receivedUser->email != $userProfile->email)
+							$emailError=1;
 						if($_POST['password']!='')
 							$userProfile->password=sha1($_POST['password']);
 						$userProfile->locale=$_POST['locale'];

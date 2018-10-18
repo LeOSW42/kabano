@@ -11,9 +11,9 @@
 						<li class="on-bar"><a class="on-bar" href="<?=$config['rel_root_folder']?>community">Contribuer</a></li>
 						<li class="on-bar has-sub">
 							<? if ($user->get_id() == 0) { ?>
-							<a class="on-bar" href="#"><i class="icon fa fa-user"></i></a>
+							<a class="on-bar" href="#"><i class="icon fas fa-user"></i></a>
 							<? } elseif ($user->get_avatar() == NULL) { ?>
-							<a class="on-bar" href="#"><i class="icon fa fa-user-secret"></i></a>
+							<a class="on-bar" href="#"><i class="icon fas fa-user-secret"></i></a>
 							<? } else { ?>
 							<a class="on-bar" href="#"><img alt="Avatar" class="icon avatar" src="<?=$config['rel_root_folder']?>medias/avatars/<?=$user->get_avatar()?>_s.jpg"></a>
 							<? } ?>
@@ -37,7 +37,7 @@
 								<? } ?>
 							</ul>
 						</li>
-						<li class="on-bar has-sub"><a class="on-bar" href="#"><i class="icon fa fa-question"></i></a>
+						<li class="on-bar has-sub"><a class="on-bar" href="#"><i class="icon fas fa-question"></i></a>
 							<ul>
 								<li><a href="<?=$config['rel_root_folder']?>wiki/help">Aide</a></li>
 								<li><a href="<?=$config['rel_root_folder']?>blog">Blog</a></li>
