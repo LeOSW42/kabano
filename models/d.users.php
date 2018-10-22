@@ -238,15 +238,16 @@ class User
 		$regex = '/^(https?:\/\/)/';
 		if (!preg_match($regex, $this->website) && $this->website!="")
 			$this->website = "http://".$this->website;
+		$this->version++;
 
 		$con = pg_connect("host=".$config['SQL_host']." dbname=".$config['SQL_db']." user=".$config['SQL_user']." password=".$config['SQL_pass'])
 			or die ("Could not connect to server\n");
 
 		if($this->password=='') {
-			$query = "UPDATE users SET name = $1, is_avatar_present = $2, locale = $3, rank = $4, email = $5, website = $6 WHERE id = $7";
+			$query = "UPDATE users SET version = $1, name = $2, is_avatar_present = $3, locale = $4, rank = $5, email = $6, website = $7 WHERE id = $8";
 			pg_prepare($con, "prepare1", $query) 
 				or die ("Cannot prepare statement\n");
-			pg_execute($con, "prepare1", array($this->name, $this->is_avatar_present, $this->locale, $this->rank, $this->email, $this->website, $this->id))
+			pg_execute($con, "prepare1", array($this->version, $this->name, $this->is_avatar_present, $this->locale, $this->rank, $this->email, $this->website, $this->id))
 				or die ("Cannot execute statement\n");
 		}
 		else {
