@@ -11,8 +11,8 @@ if(isset($_POST['submit'])) {
 	$message .= "<hr>\r\n";
 	$message .= "<pre style='padding: 10px; background: #ccc;'>".strip_tags(post('message'))."</pre><br>\r\n";
 
-	$headers = 'From: '. post('mail') . "\r\n" .
-	'Reply-To: '. post('mail') . "\r\n" .
+	$headers = 'From: '. post('email') . "\r\n" .
+	'Reply-To: '. post('email') . "\r\n" .
 	'X-Mailer: PHP/' . phpversion() . "\r\n" .
 	'MIME-Version: 1.0' . "\r\n" .
 	'Content-type: text/html; charset=UTF-8' . "\r\n"; 
@@ -27,8 +27,8 @@ if(isset($_POST['submit'])) {
 			$error = "subject";
 			$send = false;
 		}
-		if(post('mail') == '') {
-			$error = "mail";
+		if(post('email') == '') {
+			$error = "email";
 			$send = false;
 		}
 		if(post('message') == '') {
@@ -50,17 +50,17 @@ if(isset($_POST['submit'])) {
 
 if(post('name') != '')
 	$contact['name'] = post('name');
-else if($user->role > 0)
+else if($user->rankIsHigher("registered"))
 	$contact['name'] = $user->name;
 else
 	$contact['name'] = '';
 
-if(post('mail') != '')
-	$contact['mail'] = post('mail');
-else if($user->role > 0)
-	$contact['mail'] = $user->mail;
+if(post('email') != '')
+	$contact['email'] = post('email');
+else if($user->rankIsHigher("registered"))
+	$contact['email'] = $user->email;
 else
-	$contact['mail'] = '';
+	$contact['email'] = '';
 
 $contact['subject'] = post('subject');
 $contact['message'] = post('message');

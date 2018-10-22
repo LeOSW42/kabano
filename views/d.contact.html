@@ -16,7 +16,7 @@
 				<? if($error=="subject") { ?>
 					<p style="color: red;">Veuillez renseigner un sujet.</p>
 				<? } ?>
-				<? if($error=="mail") { ?>
+				<? if($error=="email") { ?>
 					<p style="color: red;">Veuillez renseigner une adresse mail.</p>
 				<? } ?>
 				<? if($error=="message") { ?>
@@ -33,10 +33,10 @@
 					<p style="color: green;">Message bien envoyé.</p>
 				<? } ?>
 				<input type="text" name="name" id="name" placeholder="Nom" value="<?=$contact['name']?>">
-				<input type="text" name="mail" id="mail" placeholder="Adresse mail" value="<?=$contact['mail']?>">
+				<input type="text" name="email" id="email" placeholder="Adresse mail" value="<?=$contact['email']?>">
 				<input type="text" name="subject" id="subject" placeholder="Sujet" value="<?=$contact['subject']?>">
 				<textarea name="message" id="message" rows="12" placeholder="Contenu de votre message"><?=$contact['message']?></textarea>
-				<? if($user->role >= 200) { ?>
+				<? if($user->rankIsHigher("registered")) { ?>
 					<input type="hidden" name="captcha" value="-2">
 					<input type="submit" name="submit" value="Envoyer">
 				<? } 
