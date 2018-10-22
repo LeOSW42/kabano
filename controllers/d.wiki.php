@@ -4,7 +4,7 @@ require_once($config['models_folder']."d.wiki.php");
 
 $head['css'] = "d.index.css;d.wiki.css";
 
-$wikiPage = new WikiPage();
+$wikiPage = new Kabano\WikiPage();
 // Page doesn't exists
 if(isset($controller->splitted_url[1]) && !$wikiPage->checkUrl($controller->splitted_url[1],$user->rankIsHigher('premium')) && $controller->splitted_url[1]!="") {
 	if($user->rankIsHigher('moderator')) {
@@ -50,12 +50,12 @@ else if(isset($controller->splitted_url[1]) && $wikiPage->checkUrl($controller->
 	} else {
 		// Display page
 		if($user->rankIsHigher('premium')) {
-			$wikiHistory = new WikiPages();
+			$wikiHistory = new Kabano\WikiPages();
 			$wikiHistory->getHistory($controller->splitted_url[1]);
 
 			$i = 0;
 			foreach ($wikiHistory->ids as $row) {
-				$wikiHistory_list[$i] = new WikiPage();
+				$wikiHistory_list[$i] = new Kabano\WikiPage();
 				$wikiHistory_list[$i]->id = $row;
 				$wikiHistory_list[$i]->populate();
 				$i++;

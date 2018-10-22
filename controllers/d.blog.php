@@ -5,7 +5,7 @@ require_once($config['models_folder']."d.users.php");
 
 $head['css'] = "d.index.css;d.blog.css";
 
-$blogArticle = new BlogArticle();
+$blogArticle = new Kabano\BlogArticle();
 
 // In case we are in the list of articles, we set url to switch with according parameters
 if (!isset($controller->splitted_url[1]) OR $controller->splitted_url[1]=="" OR is_numeric($controller->splitted_url[1])) {
@@ -29,7 +29,7 @@ switch ($controller->splitted_url[1]) {
 		$list = "rss";
 		$articles_per_pages = 20;
 	case "list":
-		$blogArticles = new BlogArticles();
+		$blogArticles = new Kabano\BlogArticles();
 
 		$blogArticles->number(($user->role >= 600));
 
@@ -42,11 +42,11 @@ switch ($controller->splitted_url[1]) {
 		$i = 0;
 		$blogArticles_list = array();
 		foreach ($blogArticles->ids as $row) {
-			$blogArticles_list[$i] = new BlogArticle();
+			$blogArticles_list[$i] = new Kabano\BlogArticle();
 			$blogArticles_list[$i]->id = $row;
 			$blogArticles_list[$i]->populate();
 			$blogArticles_list[$i]->md2txt();
-			$tempUser = new User();
+			$tempUser = new Kabano\User();
 			$tempUser->id = $blogArticles_list[$i]->author;
 			$tempUser->populate();
 			$blogArticles_list[$i]->author_name = $tempUser->name;
@@ -115,12 +115,12 @@ switch ($controller->splitted_url[1]) {
 			else {
 				// Manage history of an article
 				if($user->role >= 600) {
-					$blogArticles_history = new BlogArticles();
+					$blogArticles_history = new Kabano\BlogArticles();
 					$blogArticles_history->getHistory($controller->splitted_url[1]);
 
 					$i = 0;
 					foreach ($blogArticles_history->ids as $row) {
-						$blogArticles_history_list[$i] = new BlogArticle();
+						$blogArticles_history_list[$i] = new Kabano\BlogArticle();
 						$blogArticles_history_list[$i]->id = $row;
 						$blogArticles_history_list[$i]->populate();
 						$i++;
@@ -132,7 +132,7 @@ switch ($controller->splitted_url[1]) {
 				// Manage comment creation
 				if (isset($controller->splitted_url[2]) && $controller->splitted_url[2]=="new_comment") {
 					if (isset($_POST['submit']) && $user->role > 0) {
-						$blogComment = new BlogComment();
+						$blogComment = new Kabano\BlogComment();
 						$blogComment->locale = $user->locale;
 						$blogComment->author = $user->id;
 						$blogComment->article = $blogArticle->id;
@@ -144,7 +144,7 @@ switch ($controller->splitted_url[1]) {
 				// Manage comment deletion
 				if (isset($controller->splitted_url[2]) && $controller->splitted_url[2]=="delete_comment") {
 					if (isset($controller->splitted_url[3]) && is_numeric($controller->splitted_url[3])) {
-						$blogComment = new BlogComment();
+						$blogComment = new Kabano\BlogComment();
 						$blogComment->id = $controller->splitted_url[3];
 						$blogComment->populate();
 						if ($user->role >= 800 || $user->id == $blogComment->author)
@@ -155,7 +155,7 @@ switch ($controller->splitted_url[1]) {
 				// Manage comment undeletion
 				if (isset($controller->splitted_url[2]) && $controller->splitted_url[2]=="undelete_comment") {
 					if (isset($controller->splitted_url[3]) && is_numeric($controller->splitted_url[3])) {
-						$blogComment = new BlogComment();
+						$blogComment = new Kabano\BlogComment();
 						$blogComment->id = $controller->splitted_url[3];
 						$blogComment->populate();
 						if ($user->role >= 800 || $user->id == $blogComment->author)
@@ -168,16 +168,16 @@ switch ($controller->splitted_url[1]) {
 
 				// Manage comments
 				if ($blogArticle->comments == "t") {
-					$blogArticles_comments = new BlogComments();
+					$blogArticles_comments = new Kabano\BlogComments();
 					$blogArticles_comments->listComments($blogArticle->id, ($user->role>400));
 
 					$i = 0;
 					foreach ($blogArticles_comments->ids as $row) {
-						$blogArticles_comments_list[$i] = new BlogComment();
+						$blogArticles_comments_list[$i] = new Kabano\BlogComment();
 						$blogArticles_comments_list[$i]->id = $row;
 						$blogArticles_comments_list[$i]->populate();
 						$blogArticles_comments_list[$i]->md2html();
-						$blogArticles_comments_list[$i]->author_obj = new User();
+						$blogArticles_comments_list[$i]->author_obj = new Kabano\User();
 						$blogArticles_comments_list[$i]->author_obj->id = $blogArticles_comments_list[$i]->author;
 						$blogArticles_comments_list[$i]->author_obj->populate();
 						$i++;
@@ -185,7 +185,7 @@ switch ($controller->splitted_url[1]) {
 				}
 
 
-				$tempUser = new User();
+				$tempUser = new Kabano\User();
 				$tempUser->id = $blogArticle->author;
 				$tempUser->populate();
 				$blogArticle->author_name = $tempUser->name;

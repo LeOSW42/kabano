@@ -59,7 +59,7 @@ if($view->name != "") {
 if($notfound) {
     require_once('session.php');
     require_once($config['models_folder']."d.wiki.php");
-    $wikiPage = new WikiPage();
+    $wikiPage = new Kabano\WikiPage();
     $wikiPage->checkUrl('404');
     $wikiPage->md2html();
     $head['css'] = "d.index.css;d.wiki.css";

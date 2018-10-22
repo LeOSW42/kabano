@@ -11,7 +11,7 @@ if(isset($controller->splitted_url[1])) {
 			if ($user->rank == "visitor") {
 				if (isset($_POST['submit'])) {
 					// PROCESS DATA FROM FORM
-					$user = new User();
+					$user = new Kabano\User();
 
 					if($user->login($_POST['login'], $_POST['password'])) {
 						// SUCESSFULL LOGIN
@@ -37,7 +37,7 @@ if(isset($controller->splitted_url[1])) {
 			if ($user->rank == "visitor") {
 				if (isset($_POST['submit'])) {
 					// PROCESS DATA FROM FORM
-					$user = new User();
+					$user = new Kabano\User();
 					$user->name = $_POST['login'];
 					$user->email = strtolower($_POST['email']);
 					$user->rank = "registered";
@@ -75,7 +75,7 @@ if(isset($controller->splitted_url[1])) {
 			if ($user->rank == "visitor") {
 				if (isset($_POST['submit'])) {
 					// PROCESS DATA FROM FORM
-					$user = new User();
+					$user = new Kabano\User();
 					$user->email = strtolower($_POST['email']);
 
 					if($user->availableMail()) {
@@ -93,7 +93,7 @@ if(isset($controller->splitted_url[1])) {
 			break;
 		case 'p':
 			if ($user->rankIsHigher("registered")) {
-				$userProfile = new User();
+				$userProfile = new Kabano\User();
 				if (!isset($controller->splitted_url[2]) OR $controller->splitted_url[2]=="") {
 					// WE DISPLAY THE CONNECTED USER PROFILE
 					$userProfile = $user;
@@ -108,11 +108,11 @@ if(isset($controller->splitted_url[1])) {
 
 				// If we are editing the profile
 				if(isset($controller->splitted_url[3]) && $controller->splitted_url[3]=="edit" && ($user->rankIsHigher("moderator") || $user->id == $userProfile->id)) {
-					$locales = new Locales;
+					$locales = new Kabano\Locales();
 					$locales->getAll();
 					$head['js'] = "d.avatar.js";
 					if (isset($_POST['submit'])) {
-						$receivedUser = new User();
+						$receivedUser = new Kabano\User();
 						$receivedUser->name = $_POST['name'];
 						if($receivedUser->name != $userProfile->name && $receivedUser->availableName())
 							$userProfile->name = $receivedUser->name;
@@ -187,7 +187,7 @@ if(isset($controller->splitted_url[1])) {
 				}
 				$head['title'] = "Liste des membres";
 
-				$users = new Users();
+				$users = new Kabano\Users();
 				$users->number();
 
 				// In case the wanted page is too big
