@@ -19,18 +19,18 @@ SET row_security = off;
 
 --
 -- TOC entry 7 (class 2615 OID 17905)
--- Name: topology; Type: SCHEMA; Schema: -; Owner: postgres
+-- Name: topology; Type: SCHEMA; Schema: -; Owner: kabano
 --
 
 CREATE SCHEMA topology;
 
 
-ALTER SCHEMA topology OWNER TO postgres;
+ALTER SCHEMA topology OWNER TO kabano;
 
 --
 -- TOC entry 3890 (class 0 OID 0)
 -- Dependencies: 7
--- Name: SCHEMA topology; Type: COMMENT; Schema: -; Owner: postgres
+-- Name: SCHEMA topology; Type: COMMENT; Schema: -; Owner: kabano
 --
 
 COMMENT ON SCHEMA topology IS 'PostGIS Topology schema';
@@ -150,7 +150,7 @@ ALTER TYPE public.user_rank_enum OWNER TO kabano;
 
 --
 -- TOC entry 237 (class 1259 OID 18332)
--- Name: content_comments_sequence; Type: SEQUENCE; Schema: public; Owner: postgres
+-- Name: content_comments_sequence; Type: SEQUENCE; Schema: public; Owner: kabano
 --
 
 CREATE SEQUENCE public.content_comments_sequence
@@ -161,7 +161,7 @@ CREATE SEQUENCE public.content_comments_sequence
     CACHE 1;
 
 
-ALTER TABLE public.content_comments_sequence OWNER TO postgres;
+ALTER TABLE public.content_comments_sequence OWNER TO kabano;
 
 SET default_tablespace = '';
 
