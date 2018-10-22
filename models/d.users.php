@@ -218,7 +218,7 @@ class User
 			or die ("Could not connect to server\n");
 
 		$query = "INSERT INTO users (name, version, email, password, website, is_avatar_present, is_archive, rank, locale, timezone, visit_date, register_date) VALUES
-			($1, '0', $2, $3, $4, 'f', 'f', 'registered', $5, $6, $7, $8)";
+			($1, '0', $2, $3, $4, FALSE, FALSE, 'registered', $5, $6, $7, $8)";
 
 		pg_prepare($con, "prepare1", $query) 
 			or die ("Cannot prepare statement\n");

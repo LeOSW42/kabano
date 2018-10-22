@@ -12,7 +12,7 @@ namespace Kabano;
 
 class Locale
 {
-    private $name = 0;
+    public $name = 0;
     public $display_name = NULL;
     public $flag_name = NULL;
 
@@ -51,13 +51,6 @@ class Locale
 	    $this->name = $row['name'];
 	    $this->display_name = $row['display_name'];
 	    $this->flag_name = $row['flag_name'];
-	}
-
-	/*****
-	** Simple return only functions
-	*****/
-	public function get_name() {
-	    return $this->name;
 	}
 }
 

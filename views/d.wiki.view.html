@@ -7,27 +7,27 @@
 
 		<? include('blocks/d.nav.html'); ?>
 
-		<section id="wiki_page" <?=!$wikiPage->is_archive()?'class="archive"':''?>>
+		<section id="wiki_page" <?=$wikiPage->is_archive=="t"?'class="archive"':''?>>
 			<h1><?=$wikiPage->name?>.</h1>
 				<? if($user->rankIsHigher('premium')) { ?>
 					<span class="subtitle">
-					<? if(isset($wikiHistory_list)) { ?>
+					<? if(isset($wikiHistory)) { ?>
 						<select id="wikihistory">
 							<? $i = 0;
-							foreach ($wikiHistory_list as $row) { ?>
-								<option <?=$row->id==$wikiPage->id?'selected':''?> value="<?=$i?>"><?=$row->is_archive=="f"?'&bull; ':''?><? echo strftime('%d/%m/%Y %H:%M:%S',strtotime($row->lastedit)) ?></option>
+							foreach ($wikiHistory->objs as $row) { ?>
+								<option <?=$row->id==$wikiPage->id?'selected':''?> value="<?=$i?>"><?=$row->is_archive=="f"?'&bull; ':''?><? echo strftime('%d/%m/%Y %H:%M:%S',strtotime($row->update_date)) ?></option>
 							<? $i++;
 							} ?>
 						</select>
 					<? } 
-					if ($user->rankIsHigher('moderator') && isset($wikiHistory_list)) { ?>
+					if ($user->rankIsHigher('moderator') && isset($wikiHistory)) { ?>
 						 &mdash; 
 					<? }
 					if ($user->rankIsHigher('moderator')) { ?>
-						<a href="<?=$config['rel_root_folder']?>wiki/<?=$wikiPage->url?>/edit"><i class="fa fa-pencil"></i> Éditer la page</a>
-						<? if (!$wikiPage->is_archive()) { ?>
+						<a href="<?=$config['rel_root_folder']?>wiki/<?=$wikiPage->permalink?>/edit"><i class="fas fa-pencil-alt"></i> Éditer la page</a>
+						<? if ($wikiPage->is_archive=="f") { ?>
 							 &mdash; 
-							<a href="<?=$config['rel_root_folder']?>wiki/<?=$wikiPage->url?>/delete"><i class="fa fa-trash"></i> Effacer la page</a>
+							<a href="<?=$config['rel_root_folder']?>wiki/<?=$wikiPage->permalink?>/delete"><i class="fas fa-trash"></i> Effacer la page</a>
 						<? } ?>
 					<? } ?>
 					</span>
@@ -37,7 +37,7 @@
 				<?=$wikiPage->content_html?>
 			</div>
 
-			<p id="wikiTimestamp">Page mise à jour le <? echo strftime('%e %B %G, %kh%Mm%Ss',strtotime($wikiPage->update_date())) ?> <small><abbr title="Temps Universel Coordonné">UTC</abbr></small></p>
+			<p id="wikiTimestamp">Page mise à jour le <? echo strftime('%e %B %G, %kh%Mm%Ss',strtotime($wikiPage->update_date)) ?> <small><abbr title="Temps Universel Coordonné">UTC</abbr></small></p>
 
 			<div style="clear: both;"> </div>
 		</section>
@@ -45,7 +45,7 @@
 <? if($user->rankIsHigher('premium')) { ?>
 		<script type="text/javascript">
 $( "#wikihistory" ).change(function() {
-  window.location.href = "<?=$config['rel_root_folder']?>wiki/<?=$wikiPage->url?>/"+$( this ).val();
+  window.location.href = "<?=$config['rel_root_folder']?>wiki/<?=$wikiPage->permalink?>/"+$( this ).val();
 });
 		</script>
 <? } ?>

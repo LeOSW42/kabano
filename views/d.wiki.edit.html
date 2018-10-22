@@ -8,14 +8,14 @@
 		<? include('blocks/d.nav.html'); ?>
 
 		<section>
-			<form class="form" action="<?=$config['rel_root_folder']?>wiki/<?=$wikiPage->url?>/edit" method="post">
+			<form class="form" action="<?=$config['rel_root_folder']?>wiki/<?=$wikiPage->permalink?>/edit" method="post">
 				<h1>
 					<select name="locale" id="locale">
-						<? foreach($config['locales'] as $locale) { ?>
-							<option <?=$wikiPage->locale==$locale[0]?'selected':''?> value="<?=$locale[0]?>"><?=$locale[5]?></option>
+						<? foreach($locales->objs as $locale) { ?>
+							<option <?=$wikiPage->locale==$locale->name?'selected':''?> value="<?=$locale->name?>"><?=$locale->display_name?></option>
 						<? } ?>
 					</select>
-					<input type="text" value="<?=$wikiPage->title?>" name="title" id="title" placeholder="Titre">
+					<input type="text" value="<?=$wikiPage->name?>" name="name" id="name" placeholder="Titre">
 				</h1>
 
 				<textarea rows="30" name="content" id="content" placeholder="Contenu de la page"><?=$wikiPage->content?></textarea>
