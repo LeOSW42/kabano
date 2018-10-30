@@ -12,7 +12,7 @@ if(isset($controller->splitted_url[1]) && $user->rankIsHigher("moderator")) {
 
 				$output = array();
 				chdir($config['abs_root_folder']);
-				exec("git pull origin master", $output);
+				exec("git pull", $output);
 
 				include ($config['views_folder']."d.admin.git-pull.html");
 			}
