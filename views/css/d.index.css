@@ -4,11 +4,16 @@
 	padding: 0;
 }
 
+html {
+	height: 100%;
+}
+
 body {
 	font-family: "Fira Sans", "Open Sans",Helvetica,Arial,sans-serif;
 	color: #333;
 	background: #ddd;
 	padding-top: 65px;
+	height: calc(100% - 65px)
 }
 
 a {
@@ -233,7 +238,7 @@ section {
 	background: white;
 	margin: auto;
 	width: 820px;
-	min-height: 320px;
+	min-height: calc(100% - 97px);
 	z-index: 10;
 	padding: 15px;
 	text-align: justify;
