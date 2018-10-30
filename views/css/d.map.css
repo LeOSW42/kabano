@@ -92,12 +92,14 @@ footer {
 }
 .leaflet-control-fullscreen a:before {
 	content: "\f065";
-	font-family: FontAwesome;
+	font-family: "Font Awesome 5 Free";
+	font-weight: 900;
 	background: none !important;
 }
 .leaflet-fullscreen-on .leaflet-control-fullscreen a:before {
 	content: "\f066";
-	font-family: FontAwesome;
+	font-family: "Font Awesome 5 Free";
+	font-weight: 900;
 }
 
 /* Baselayers */
@@ -112,7 +114,8 @@ footer {
 }
 .leaflet-control-layers a:before {
 	content: "\f279";
-	font-family: FontAwesome;
+	font-family: "Font Awesome 5 Free";
+	font-weight: 900;
 	background: none !important;
 }
 .leaflet-control-layers-expanded a {
@@ -157,16 +160,22 @@ footer {
 	color: white;
 }
 
+.leaflet-fullscreen-on .easy-button-container {
+	display: none;
+}
+
 /* Scale */
 
 .leaflet-control-scale-line {
-	height: 26px !important;
+	height: 30px !important;
+	top: 2px !important;
+	position: relative !important;
 	background: #212121 !important;
 	color: #c1c1c1 !important;
 	text-align: center !important;
 	border: none !important;
 	font-size: 12px !important;
-	line-height: 20px !important;
+	line-height: 30px !important;
 }
 .leaflet-control-scale {
 	opacity: 0.8 !important;
