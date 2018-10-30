@@ -113,7 +113,7 @@ footer {
 	border-right: none !important;
 }
 .leaflet-control-layers a:before {
-	content: "\f279";
+	content: "\f5fd";
 	font-family: "Font Awesome 5 Free";
 	font-weight: 900;
 	background: none !important;
