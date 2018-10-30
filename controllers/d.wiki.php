@@ -54,6 +54,10 @@ else if(isset($controller->splitted_url[1]) && $wikiPage->checkPermalink($contro
 		// Delete page
 		$wikiPage->delete();
 		header('Location: '.$config['rel_root_folder']."wiki/".$wikiPage->permalink);
+	} else if (isset($controller->splitted_url[2]) && $controller->splitted_url[2]=="restore" && $user->rankIsHigher('moderator')) {
+		// Restore page
+		$wikiPage->restore();
+		header('Location: '.$config['rel_root_folder']."wiki/".$wikiPage->permalink);
 	} else {
 		// Display page
 		if($user->rankIsHigher('premium')) {

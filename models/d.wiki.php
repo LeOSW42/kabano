@@ -125,7 +125,7 @@ class WikiPage
 		$con = pg_connect("host=".$config['SQL_host']." dbname=".$config['SQL_db']." user=".$config['SQL_user']." password=".$config['SQL_pass'])
 			or die ("Could not connect to server\n");
 
-		$query = "UPDATE contents SET is_archive = TRUE WHERE permalink = $1 AND type='wiki'";
+		$query = "UPDATE contents SET is_public=FALSE WHERE permalink=$1 AND type='wiki'";
 
 		pg_prepare($con, "prepare1", $query) 
 			or die ("Cannot prepare statement\n");
@@ -135,7 +135,32 @@ class WikiPage
 		pg_close($con);
 
 		error_log(
-			date('r')." \t".$user->name." (".$user->id.") \tDELETE \tArchive wiki page '".$this->permalink."'\r\n",
+			date('r')." \t".$user->name." (".$user->id.") \tDELETE \tUnpublish wiki page '".$this->permalink."'\r\n",
+			3,
+			$config['logs_folder'].'wiki.log');
+	}
+
+	/*****
+	** Restore a page from unpublishing it
+	*****/
+	public function restore() {
+		global $config;
+		global $user;
+		
+		$con = pg_connect("host=".$config['SQL_host']." dbname=".$config['SQL_db']." user=".$config['SQL_user']." password=".$config['SQL_pass'])
+			or die ("Could not connect to server\n");
+
+		$query = "UPDATE contents SET is_public=TRUE WHERE permalink=$1 AND type='wiki'";
+
+		pg_prepare($con, "prepare1", $query) 
+			or die ("Cannot prepare statement\n");
+		$result = pg_execute($con, "prepare1", array($this->permalink))
+			or die ("Cannot execute statement\n");
+
+		pg_close($con);
+
+		error_log(
+			date('r')." \t".$user->name." (".$user->id.") \tRESTORE \tPublish wiki page '".$this->permalink."'\r\n",
 			3,
 			$config['logs_folder'].'wiki.log');
 	}

@@ -7,7 +7,7 @@
 
 		<? include('blocks/d.nav.html'); ?>
 
-		<section id="wiki_page" <?=$wikiPage->is_archive=="t"?'class="archive"':''?>>
+		<section id="wiki_page" <?=$wikiPage->is_archive=="t"||$wikiPage->is_public=="f"?'class="archive"':''?>>
 			<h1><?=$wikiPage->name?>.</h1>
 				<? if($user->rankIsHigher('premium')) { ?>
 					<span class="subtitle">
@@ -24,11 +24,12 @@
 						 &mdash; 
 					<? }
 					if ($user->rankIsHigher('moderator')) { ?>
-						<a href="<?=$config['rel_root_folder']?>wiki/<?=$wikiPage->permalink?>/edit"><i class="fas fa-pencil-alt"></i> Éditer la page</a>
-						<? if ($wikiPage->is_archive=="f") { ?>
-							 &mdash; 
+						<a href="<?=$config['rel_root_folder']?>wiki/<?=$wikiPage->permalink?>/edit"><i class="fas fa-pencil-alt"></i> Éditer la page</a> &mdash; 
+						<? if ($wikiPage->is_public=="t") { ?>
 							<a href="<?=$config['rel_root_folder']?>wiki/<?=$wikiPage->permalink?>/delete"><i class="fas fa-trash"></i> Effacer la page</a>
-						<? } ?>
+						<? } else { ?>
+							<a href="<?=$config['rel_root_folder']?>wiki/<?=$wikiPage->permalink?>/restore"><i class="fas fa-eye"></i> Restaurer la page</a>
+						<? }?>
 					<? } ?>
 					</span>
 				<? } ?>
