@@ -84,7 +84,7 @@ class WikiPage
 	*****/
 	public function update() {
 		global $config;
-		//global $user;
+		global $user;
 		
 		$this->version++;
 

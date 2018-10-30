@@ -1,13 +1,13 @@
 <?
 
-if(isset($controller->splitted_url[1]) && $user->role >= 800) {
+if(isset($controller->splitted_url[1]) && $user->rankIsHigher("moderator")) {
 	switch ($controller->splitted_url[1]) {
 		case '': case 'admin':
 			$head['title'] = "Administration";
 			include ($config['views_folder']."d.admin.html");
 			break;
 		case 'git-pull':
-			if ($user->role >= 1000) {
+			if ($user->rankIsHigher("administrator")) {
 				$head['title'] = "Mise à jour";
 
 				$output = array();
@@ -21,7 +21,7 @@ if(isset($controller->splitted_url[1]) && $user->role >= 800) {
 			}
 			break;
 		case 'logs':
-			if ($user->role >= 800) {
+			if ($user->rankIsHigher("moderator")) {
 				$head['title'] = "Logs";
 
 				$files_list = scandir($config['logs_folder']);
@@ -47,7 +47,7 @@ if(isset($controller->splitted_url[1]) && $user->role >= 800) {
 			break;
 	}
 }
-else if($user->role >= 800) {
+else if($user->rankIsHigher("moderator")) {
 	$head['title'] = "Administration";
 	include ($config['views_folder']."d.admin.html");
 }
