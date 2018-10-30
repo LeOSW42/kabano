@@ -98,13 +98,22 @@ class WikiPage
 		$result = pg_execute($con, "prepare1", array($this->permalink))
 			or die ("Cannot execute statement\n");
 
-
 		$query = "INSERT INTO contents (permalink, version, locale, creation_date, update_date, author, is_public, is_archive, is_commentable, type, name, content) VALUES
-			($1, $2, $3, $4, $5, $6, TRUE, FALSE, FALSE, 'wiki', $7, $8)";
+			($1, $2, $3, $4, $5, $6, TRUE, FALSE, FALSE, 'wiki', $7, $8) RETURNING id";
 
 		pg_prepare($con, "prepare2", $query) 
 			or die ("Cannot prepare statement\n");
 		$result = pg_execute($con, "prepare2", array($this->permalink, $this->version, $this->locale, $this->creation_date, date('r'), $this->author, $this->name, $this->content))
+			or die ("Cannot execute statement\n");
+
+		$this->id = pg_fetch_assoc($result)['id'];
+
+		$query = "INSERT INTO content_contributors (content, contributor) VALUES
+			($1, $2)";
+
+		pg_prepare($con, "prepare3", $query) 
+			or die ("Cannot prepare statement\n");
+		$result = pg_execute($con, "prepare3", array($this->id, $user->id))
 			or die ("Cannot execute statement\n");
 
 		pg_close($con);
@@ -176,12 +185,14 @@ class WikiPage
 			or die ("Could not connect to server\n");
 
 		$query = "INSERT INTO contents (permalink, version, locale, creation_date, update_date, author, is_public, is_archive, is_commentable, type, name, content) VALUES
-			($1, '0', $2, $3, $4, $5, TRUE, FALSE, FALSE, 'wiki', $6, $7)";
+			($1, '0', $2, $3, $4, $5, TRUE, FALSE, FALSE, 'wiki', $6, $7) RETURNING id";
 
 		pg_prepare($con, "prepare1", $query) 
 			or die ("Cannot prepare statement\n");
 		$result = pg_execute($con, "prepare1", array($this->permalink, $this->locale, date('r'), date('r'), $user->id, $this->name, $this->content))
 			or die ("Cannot execute statement\n");
+
+		$this->id = pg_fetch_assoc($result)['id'];
 
 		pg_close($con);
 
