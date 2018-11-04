@@ -85,6 +85,11 @@ class WikiPage
 	public function update() {
 		global $config;
 		global $user;
+
+		if($this->id == 0)
+			die("Cannot update entry without giving ID");
+
+		$oldId = $this->id;
 		
 		$this->version++;
 
@@ -108,12 +113,19 @@ class WikiPage
 
 		$this->id = pg_fetch_assoc($result)['id'];
 
-		$query = "INSERT INTO content_contributors (content, contributor) VALUES
-			($1, $2)";
+		$query = "INSERT INTO content_contributors (content, contributor) SELECT $1, contributor FROM content_contributors AS old WHERE old.content = $2";
 
 		pg_prepare($con, "prepare3", $query) 
 			or die ("Cannot prepare statement\n");
-		$result = pg_execute($con, "prepare3", array($this->id, $user->id))
+		$result = pg_execute($con, "prepare3", array($this->id, $oldId))
+			or die ("Cannot execute statement\n");
+
+		$query = "INSERT INTO content_contributors (content, contributor) VALUES
+			($1, $2) ON CONFLICT (content, contributor) DO NOTHING";
+
+		pg_prepare($con, "prepare4", $query) 
+			or die ("Cannot prepare statement\n");
+		$result = pg_execute($con, "prepare4", array($this->id, $user->id))
 			or die ("Cannot execute statement\n");
 
 		pg_close($con);
