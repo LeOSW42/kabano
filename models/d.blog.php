@@ -218,7 +218,7 @@ class BlogArticle
 
 class BlogArticles
 {
-	public $ids = array();
+	public $objs = array();
 	public $number = NULL;
 
 	/*****
@@ -232,10 +232,10 @@ class BlogArticles
 
 		if ($archive == 1) {
 			// You just want one per url and the criteria is ORDER BY archives = true, time DES=C
-			$query = "SELECT id FROM (SELECT a.id, a.lastedit , ROW_NUMBER() OVER (PARTITION BY a.url ORDER BY CASE WHEN a.archive IS TRUE THEN 1 ELSE 0 END, a.lastedit DESC) AS r FROM blog_articles AS a) AS b WHERE r = 1 ORDER BY lastedit DESC";
+			$query = "SELECT * FROM (SELECT a.id, a.update_date , ROW_NUMBER() OVER (PARTITION BY a.permalink ORDER BY CASE WHEN a.is_archive IS TRUE THEN 1 ELSE 0 END, a.update_date DESC) AS r FROM contents WHERE type='blog' AS a) AS b WHERE r = 1 ORDER BY update_date DESC";
 		}
 		else {
-			$query = "SELECT id FROM blog_articles WHERE archive IS NOT TRUE ORDER BY lastedit DESC";
+			$query = "SELECT * FROM contents WHERE is_archive IS NOT TRUE AND is_public IS TRUE AND type='blog' ORDER BY update_date DESC";
 		}
 		$query .= " LIMIT $1 OFFSET $2";
 
@@ -248,9 +248,11 @@ class BlogArticles
 
 		for($i = 0; $i < pg_num_rows($result); $i++) {
 			$row = pg_fetch_assoc($result, $i);
-			$this->ids[$i] = $row['id'];
+			$this->objs[$i] = new BlogArticle;
+			$this->objs[$i]->populate($row);
 		}
 	}
+
 	/*****
 	** Return the number of articles
 	*****/
@@ -262,10 +264,10 @@ class BlogArticles
 
 		if ($archive == 1) {
 			// You just want one per url and the criteria is ORDER BY archives = true, time DES=C
-			$query = "SELECT id FROM (SELECT a.id, a.lastedit , ROW_NUMBER() OVER (PARTITION BY a.url ORDER BY CASE WHEN a.archive IS TRUE THEN 1 ELSE 0 END, a.lastedit DESC) AS r FROM blog_articles AS a) AS b WHERE r = 1 ORDER BY lastedit DESC";
+			$query = "SELECT * FROM (SELECT a.id, a.update_date , ROW_NUMBER() OVER (PARTITION BY a.permalink ORDER BY CASE WHEN a.is_archive IS TRUE THEN 1 ELSE 0 END, a.update_date DESC) AS r FROM contents WHERE type='blog' AS a) AS b WHERE r = 1 ORDER BY update_date DESC";
 		}
 		else {
-			$query = "SELECT id FROM blog_articles WHERE archive IS NOT TRUE ORDER BY lastedit DESC";
+			$query = "SELECT * FROM contents WHERE is_archive IS NOT TRUE AND is_public IS TRUE AND type='blog' ORDER BY update_date DESC";
 		}
 
 		pg_prepare($con, "prepare1", $query) 
@@ -277,6 +279,7 @@ class BlogArticles
 
 		$this->number = pg_num_rows($result);
 	}
+
 	/*****
 	** Return the list of archived version of a blog article
 	*****/

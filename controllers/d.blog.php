@@ -31,13 +31,13 @@ switch ($controller->splitted_url[1]) {
 	case "list":
 		$blogArticles = new Kabano\BlogArticles();
 
-		$blogArticles->number(($user->role >= 600));
+		$blogArticles->number(($user->rankIsHigher("premium")));
 
 		// In case the wanted page is too big
 		if($articles_per_pages * $page >= $blogArticles->number)
 			$page = 0;
 
-		$blogArticles->listArticles($page*$articles_per_pages,$articles_per_pages,($user->role >= 600));
+		$blogArticles->listArticles($page*$articles_per_pages,$articles_per_pages,($user->rankIsHigher("premium")));
 
 		$i = 0;
 		$blogArticles_list = array();
@@ -64,7 +64,7 @@ switch ($controller->splitted_url[1]) {
 		}
 		break;
 	case "new":
-		if($user->role >= 800) {
+		if($user->rankIsHigher("moderator")) {
 			if(isset($_POST['submit'])) {
 				$blogArticle->content = $_POST['content'];
 				$blogArticle->locale = $_POST['locale'];
@@ -91,12 +91,12 @@ switch ($controller->splitted_url[1]) {
 		}
 	default:
 		// If the page exists
-		if ($blogArticle->checkUrl($controller->splitted_url[1],$user->role >= 600)) {
-			if (isset($controller->splitted_url[2]) && $controller->splitted_url[2] == "delete" && $user->role >= 800) {
+		if ($blogArticle->checkUrl($controller->splitted_url[1],$user->rankIsHigher("premium"))) {
+			if (isset($controller->splitted_url[2]) && $controller->splitted_url[2] == "delete" && $user->rankIsHigher("moderator")) {
 				$blogArticle->delete();
 				header('Location: '.$config['rel_root_folder']."blog/".$blogArticle->url);
 			}
-			else if (isset($controller->splitted_url[2]) && $controller->splitted_url[2] == "edit" && $user->role >= 800) {
+			else if (isset($controller->splitted_url[2]) && $controller->splitted_url[2] == "edit" && $user->rankIsHigher("moderator")) {
 				if(isset($_POST['submit'])) {
 					$blogArticle->content = $_POST['content'];
 					$blogArticle->locale = $_POST['locale'];
@@ -114,7 +114,7 @@ switch ($controller->splitted_url[1]) {
 			}
 			else {
 				// Manage history of an article
-				if($user->role >= 600) {
+				if($user->rankIsHigher("premium")) {
 					$blogArticles_history = new Kabano\BlogArticles();
 					$blogArticles_history->getHistory($controller->splitted_url[1]);
 
@@ -127,11 +127,11 @@ switch ($controller->splitted_url[1]) {
 					}
 				}
 				if (isset($controller->splitted_url[2]) && is_numeric($controller->splitted_url[2]))
-					$blogArticle->checkUrl($controller->splitted_url[1],$user->role>=600,$controller->splitted_url[2]);
+					$blogArticle->checkUrl($controller->splitted_url[1],$user->rankIsHigher("premium"),$controller->splitted_url[2]);
 
 				// Manage comment creation
 				if (isset($controller->splitted_url[2]) && $controller->splitted_url[2]=="new_comment") {
-					if (isset($_POST['submit']) && $user->role > 0) {
+					if (isset($_POST['submit']) && $user->rankIsHigher("registered")) {
 						$blogComment = new Kabano\BlogComment();
 						$blogComment->locale = $user->locale;
 						$blogComment->author = $user->id;
@@ -147,7 +147,7 @@ switch ($controller->splitted_url[1]) {
 						$blogComment = new Kabano\BlogComment();
 						$blogComment->id = $controller->splitted_url[3];
 						$blogComment->populate();
-						if ($user->role >= 800 || $user->id == $blogComment->author)
+						if ($user->rankIsHigher("moderator") || $user->id == $blogComment->author)
 							$blogComment->delete();
 					}
 				}
@@ -158,7 +158,7 @@ switch ($controller->splitted_url[1]) {
 						$blogComment = new Kabano\BlogComment();
 						$blogComment->id = $controller->splitted_url[3];
 						$blogComment->populate();
-						if ($user->role >= 800 || $user->id == $blogComment->author)
+						if ($user->rankIsHigher("moderator") || $user->id == $blogComment->author)
 							$blogComment->undelete();
 					}
 				}
@@ -169,7 +169,7 @@ switch ($controller->splitted_url[1]) {
 				// Manage comments
 				if ($blogArticle->comments == "t") {
 					$blogArticles_comments = new Kabano\BlogComments();
-					$blogArticles_comments->listComments($blogArticle->id, ($user->role>400));
+					$blogArticles_comments->listComments($blogArticle->id, ($user->rankIsHigher("premium")));
 
 					$i = 0;
 					foreach ($blogArticles_comments->ids as $row) {
