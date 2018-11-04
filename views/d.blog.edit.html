@@ -12,31 +12,31 @@
 				<form class="form" action="<?=$config['rel_root_folder']?>blog/new" method="post">
 			<? } 
 			else { ?>
-				<form class="form" action="<?=$config['rel_root_folder']?>blog/<?=$blogArticle->url?>/edit" method="post">
+				<form class="form" action="<?=$config['rel_root_folder']?>blog/<?=$blogArticle->permalink?>/edit" method="post">
 			<? } ?>
 			
 				<h1>
 					<select name="locale" id="locale">
-						<? foreach($config['locales'] as $locale) { ?>
-							<option <?=$blogArticle->locale==$locale[0]?'selected':''?> value="<?=$locale[0]?>"><?=$locale[5]?></option>
+						<? foreach($locales->objs as $locale) { ?>
+							<option <?=$blogArticle->locale==$locale->name?'selected':''?> value="<?=$locale->name?>"><?=$locale->display_name?></option>
 						<? } ?>
 					</select>
-					<input type="text" value="<?=$blogArticle->title?>" name="title" id="title" placeholder="Titre">
+					<input type="text" value="<?=$blogArticle->name?>" name="name" id="name" placeholder="Titre">
 				</h1>
 
-				<? if(isset($error) AND $error=="url") { ?>
+				<? if(isset($error) AND $error=="permalink") { ?>
 					<p style="color: red;">L'URL sélectionnée est déjà prise.</p>
 				<? } ?>
 
 				<textarea rows="30" name="content" id="content" placeholder="Contenu de la page"><?=$blogArticle->content?></textarea>
 
 				<? if(isset($new) AND $new==1) { ?>
-					<input type="text" value="<?=$blogArticle->url?>" name="url" id="url" placeholder="URL">
+					<input type="text" value="<?=$blogArticle->permalink?>" name="permalink" id="permalink" placeholder="URL">
 				<? } ?>
 
 				<label for="comments">
 					<input type="checkbox" name="comments" id="comments" value="comments" 
-					<? if($blogArticle->comments == 't') { ?>
+					<? if($blogArticle->is_commentable == 't') { ?>
 						checked
 					<? } ?>
 					/>
@@ -48,21 +48,21 @@
 		</section>
 
 		<script type="text/javascript">
-$( "#title" ).keyup(function() {
-  url = $( "#title" ).val();
-  url = url.replace(/ /g,'_');
-  url = url.toLowerCase();
-  url = url.replace(/[^a-z0-9_]/g,'-');
-  url = url.replace(/[_$]/g,'-');
-  $( "#url" ).val(url);
+$( "#name" ).keyup(function() {
+  permalink = $( "#name" ).val();
+  permalink = permalink.replace(/ /g,'_');
+  permalink = permalink.toLowerCase();
+  permalink = permalink.replace(/[^a-z0-9_]/g,'-');
+  permalink = permalink.replace(/[_$]/g,'-');
+  $( "#permalink" ).val(permalink);
 });
-$( "#title" ).change(function() {
-  url = $( "#title" ).val();
-  url = url.replace(/ /g,'_');
-  url = url.toLowerCase();
-  url = url.replace(/[^a-z0-9_]/g,'-');
-  url = url.replace(/[_$]/g,'-');
-  $( "#url" ).val(url);
+$( "#name" ).change(function() {
+  permalink = $( "#name" ).val();
+  permalink = permalink.replace(/ /g,'_');
+  permalink = permalink.toLowerCase();
+  permalink = permalink.replace(/[^a-z0-9_]/g,'-');
+  permalink = permalink.replace(/[_$]/g,'-');
+  $( "#permalink" ).val(permalink);
 });
 		</script>
 
