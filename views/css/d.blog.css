@@ -184,9 +184,10 @@ form.form input[type="checkbox"] {
 }
 
 form.form input[type="checkbox"] + span:before {
-	font-family: 'FontAwesome';
+	font-family: "Font Awesome 5 Free";
+	font-weight: 400;
 	vertical-align: middle;
-	padding: 2px 4px 0px 5px;
+	padding: 2px 5px 2px 4px;
 	margin-right: 10px;
 	display: inline-block;
 	width: 21px;
@@ -195,11 +196,11 @@ form.form input[type="checkbox"] + span:before {
 }
 
 form.form input[type="checkbox"] + span:before {
-	content: "\f096"; /* check-empty */
+	content: "\f0c8"; /* check-empty */
 }
 
 form.form input[type="checkbox"]:checked + span:before {
-	content: "\f046"; /* check */
+	content: "\f14a"; /* check */
 }
 
 /* Also used for new comment form in the view page */
