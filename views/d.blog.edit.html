@@ -28,7 +28,7 @@
 					<p style="color: red;">L'URL sélectionnée est déjà prise.</p>
 				<? } ?>
 
-				<textarea rows="30" name="content" id="content" placeholder="Contenu de la page"><?=$blogArticle->content?></textarea>
+				<textarea rows="30" name="content" id="content" placeholder="Contenu de l'article"><?=$blogArticle->content?></textarea>
 
 				<? if(isset($new) AND $new==1) { ?>
 					<input type="text" value="<?=$blogArticle->permalink?>" name="permalink" id="permalink" placeholder="URL">

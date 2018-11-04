@@ -230,7 +230,7 @@ form.form label {
 	float: right;
 	font-size: 17px;
 }
-#url {
+#permalink {
 	width: calc(100% - 20px);
 }
 

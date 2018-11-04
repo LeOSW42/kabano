@@ -15,45 +15,47 @@ require_once($config['third_folder']."Md/MarkdownExtra.inc.php");
 class BlogArticle
 {
 	public $id = 0;
-	public $title = NULL;
-	public $url = NULL;
+	public $permalink = 0;
+	public $version = 0;
 	public $locale = NULL;
-	public $lastedit = NULL;
-	public $archive = NULL;
-	public $content = NULL;
+	public $creation_date = NULL;
+	public $update_date = NULL;
 	public $author = NULL;
-	public $comments = NULL;
+	public $is_public = NULL;
+	public $is_archive = NULL;
+	public $is_commentable = NULL;
+	public $type = "blog";
+	public $name = NULL;
+	public $content = NULL;
 
 	/*****
 	** Checks if a page at this URL exists and return the ID
 	*****/
-	public function checkUrl($url, $withArchive=0, $elementNb=0) {
+	public function checkPermalink($permalink, $withArchive=0, $elementNb=0) {
 		global $config;
 		
 		$con = pg_connect("host=".$config['SQL_host']." dbname=".$config['SQL_db']." user=".$config['SQL_user']." password=".$config['SQL_pass'])
 			or die ("Could not connect to server\n");
 
-		$query = "SELECT id FROM blog_articles WHERE url=$1";
+		$query = "SELECT * FROM contents WHERE permalink=$1 AND type='blog'";
 		if($withArchive==0) {
-			$query .= " AND archive=FALSE";
+			$query .= " AND is_archive=FALSE AND is_public=TRUE";
 		}
-		$query .= " ORDER BY lastedit DESC LIMIT 1 OFFSET $2";
+		$query .= " ORDER BY update_date DESC LIMIT 1 OFFSET $2";
 
 		pg_prepare($con, "prepare1", $query) 
 			or die ("Cannot prepare statement\n");
-		$result = pg_execute($con, "prepare1", array($url, $elementNb))
+		$result = pg_execute($con, "prepare1", array($permalink, $elementNb))
 			or die ("Cannot execute statement\n");
 
 		pg_close($con);
 
 		if(pg_num_rows($result) == 1) {
-			$article = pg_fetch_assoc($result);
-			$this->id = $article['id'];
-			$this->url = $url;
+			$row = pg_fetch_assoc($result);
+			$this->populate($row);
 			return 1;
 		}
 		else {
-			$this->url = $url;
 			return 0;
 		}
 	}
@@ -61,36 +63,20 @@ class BlogArticle
 	/*****
 	** Populate the object using its ID
 	*****/
-	public function populate() {
-		global $config;
-		
-		if($this->id != 0) {
-			$con = pg_connect("host=".$config['SQL_host']." dbname=".$config['SQL_db']." user=".$config['SQL_user']." password=".$config['SQL_pass'])
-				or die ("Could not connect to server\n");
-
-			$query = "SELECT * FROM blog_articles WHERE id=$1";
-
-			pg_prepare($con, "prepare1", $query) 
-				or die ("Cannot prepare statement\n");
-			$result = pg_execute($con, "prepare1", array($this->id))
-				or die ("Cannot execute statement\n");
-
-			pg_close($con);
-
-			$blog_article = pg_fetch_assoc($result);
-
-			$this->title = $blog_article['title'];
-			$this->url = $blog_article['url'];
-			$this->locale = $blog_article['locale'];
-			$this->lastedit = $blog_article['lastedit'];
-			$this->archive = $blog_article['archive'];
-			$this->content = $blog_article['content'];
-			$this->author = $blog_article['author'];
-			$this->comments = $blog_article['comments'];
-		}
-		else {
-			die("Cannot populate a blog article without ID");
-		}
+	public function populate($row) {
+		$this->id = $row['id'];
+		$this->permalink = $row['permalink'];
+		$this->version = $row['version'];
+		$this->locale = $row['locale'];
+		$this->creation_date = $row['creation_date'];
+		$this->update_date = $row['update_date'];
+		$this->author = $row['author'];
+		$this->is_public = $row['is_public'];
+		$this->is_archive = $row['is_archive'];
+		$this->is_commentable = $row['is_commentable'];
+		$this->type = $row['type'];
+		$this->name = $row['name'];
+		$this->content = $row['content'];
 	}
 
 	/*****
@@ -232,7 +218,7 @@ class BlogArticles
 
 		if ($archive == 1) {
 			// You just want one per url and the criteria is ORDER BY archives = true, time DES=C
-			$query = "SELECT * FROM (SELECT a.id, a.update_date , ROW_NUMBER() OVER (PARTITION BY a.permalink ORDER BY CASE WHEN a.is_archive IS TRUE THEN 1 ELSE 0 END, a.update_date DESC) AS r FROM contents WHERE type='blog' AS a) AS b WHERE r = 1 ORDER BY update_date DESC";
+			$query = "SELECT * FROM (SELECT a.id, a.update_date , ROW_NUMBER() OVER (PARTITION BY a.permalink ORDER BY CASE WHEN a.is_archive IS TRUE THEN 1 ELSE 0 END, a.update_date DESC) AS r FROM contents AS a) AS b WHERE r = 1 ORDER BY update_date DESC";
 		}
 		else {
 			$query = "SELECT * FROM contents WHERE is_archive IS NOT TRUE AND is_public IS TRUE AND type='blog' ORDER BY update_date DESC";
@@ -264,7 +250,7 @@ class BlogArticles
 
 		if ($archive == 1) {
 			// You just want one per url and the criteria is ORDER BY archives = true, time DES=C
-			$query = "SELECT * FROM (SELECT a.id, a.update_date , ROW_NUMBER() OVER (PARTITION BY a.permalink ORDER BY CASE WHEN a.is_archive IS TRUE THEN 1 ELSE 0 END, a.update_date DESC) AS r FROM contents WHERE type='blog' AS a) AS b WHERE r = 1 ORDER BY update_date DESC";
+			$query = "SELECT * FROM (SELECT a.id, a.update_date , ROW_NUMBER() OVER (PARTITION BY a.permalink ORDER BY CASE WHEN a.is_archive IS TRUE THEN 1 ELSE 0 END, a.update_date DESC) AS r FROM contents AS a) AS b WHERE r = 1 ORDER BY update_date DESC";
 		}
 		else {
 			$query = "SELECT * FROM contents WHERE is_archive IS NOT TRUE AND is_public IS TRUE AND type='blog' ORDER BY update_date DESC";
