@@ -131,7 +131,7 @@ class BlogArticle
 		pg_close($con);
 
 		error_log(
-			date('r')." \t".$user->name." (".$user->id.") \tUPDATE \tEdit blog article '".$this->url."'\r\n",
+			date('r')." \t".$user->name." (".$user->id.") \tUPDATE \tEdit blog article '".$this->permalink."'\r\n",
 			3,
 			$config['logs_folder'].'blog.articles.log');
 	}
@@ -139,27 +139,52 @@ class BlogArticle
 	/*****
 	** Delete an article by archiving it
 	*****/
-/*	public function delete() {
+	public function delete() {
 		global $config;
 		global $user;
 		
 		$con = pg_connect("host=".$config['SQL_host']." dbname=".$config['SQL_db']." user=".$config['SQL_user']." password=".$config['SQL_pass'])
 			or die ("Could not connect to server\n");
 
-		$query = "UPDATE blog_articles SET archive = TRUE WHERE url = $1";
+		$query = "UPDATE contents SET is_public=FALSE WHERE permalink=$1 AND type='blog'";
 
 		pg_prepare($con, "prepare1", $query) 
 			or die ("Cannot prepare statement\n");
-		$result = pg_execute($con, "prepare1", array($this->url))
+		$result = pg_execute($con, "prepare1", array($this->permalink))
 			or die ("Cannot execute statement\n");
 
 		pg_close($con);
 
 		error_log(
-			date('r')." \t".$user->name." (".$user->id.") \tDELETE \tArchive blog article '".$this->url."'\r\n",
+			date('r')." \t".$user->name." (".$user->id.") \tDELETE \tArchive blog article '".$this->permalink."'\r\n",
 			3,
 			$config['logs_folder'].'blog.articles.log');
-	}*/
+	}
+
+	/*****
+	** Restore a page from unpublishing it
+	*****/
+	public function restore() {
+		global $config;
+		global $user;
+		
+		$con = pg_connect("host=".$config['SQL_host']." dbname=".$config['SQL_db']." user=".$config['SQL_user']." password=".$config['SQL_pass'])
+			or die ("Could not connect to server\n");
+
+		$query = "UPDATE contents SET is_public=TRUE WHERE permalink=$1 AND type='blog'";
+
+		pg_prepare($con, "prepare1", $query) 
+			or die ("Cannot prepare statement\n");
+		$result = pg_execute($con, "prepare1", array($this->permalink))
+			or die ("Cannot execute statement\n");
+
+		pg_close($con);
+
+		error_log(
+			date('r')." \t".$user->name." (".$user->id.") \tRESTORE \tPublish blog article '".$this->permalink."'\r\n",
+			3,
+			$config['logs_folder'].'blog.articles.log');
+	}
 
 	/*****
 	** Create an article
@@ -192,7 +217,7 @@ class BlogArticle
 		pg_close($con);
 
 		error_log(
-			date('r')." \t".$user->name." (".$user->id.") \tINSERT \tCreate new blog article '".$this->url."'\r\n",
+			date('r')." \t".$user->name." (".$user->id.") \tINSERT \tCreate new blog article '".$this->permalink."'\r\n",
 			3,
 			$config['logs_folder'].'blog.articles.log');
 	}

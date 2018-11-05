@@ -99,6 +99,10 @@ switch ($controller->splitted_url[1]) {
 				$blogArticle->delete();
 				header('Location: '.$config['rel_root_folder']."blog/".$blogArticle->permalink);
 			}
+			else if (isset($controller->splitted_url[2]) && $controller->splitted_url[2] == "restore" && $user->rankIsHigher("moderator")) {
+				$blogArticle->restore();
+				header('Location: '.$config['rel_root_folder']."blog/".$blogArticle->permalink);
+			}
 			else if (isset($controller->splitted_url[2]) && $controller->splitted_url[2] == "edit" && $user->rankIsHigher("moderator")) {
 				if(isset($_POST['submit'])) {
 					$blogArticle->content = $_POST['content'];
