@@ -82,41 +82,51 @@ class BlogArticle
 	/*****
 	** Edit a page by archiving the current one and inserting a new one ID
 	*****/
-/*	public function update() {
+	public function update() {
 		global $config;
 		global $user;
+
+		if($this->id == 0)
+			die("Cannot update entry without giving ID");
+
+		$oldId = $this->id;
 		
+		$this->version++;
+
 		$con = pg_connect("host=".$config['SQL_host']." dbname=".$config['SQL_db']." user=".$config['SQL_user']." password=".$config['SQL_pass'])
 			or die ("Could not connect to server\n");
 
-		// Archive previous article
-		$query = "UPDATE blog_articles SET archive = TRUE WHERE url = $1";
+		$query = "UPDATE contents SET is_archive = TRUE WHERE permalink = $1 AND type='blog'";
 
 		pg_prepare($con, "prepare1", $query) 
 			or die ("Cannot prepare statement\n");
-		$result = pg_execute($con, "prepare1", array($this->url))
+		$result = pg_execute($con, "prepare1", array($this->permalink))
 			or die ("Cannot execute statement\n");
 
-		// Publish the new one
-		$query = "INSERT INTO blog_articles (url, title, content, lastedit, archive, locale, author, comments) VALUES
-			($1, $2, $3, $4, FALSE, $5, $6, $7) RETURNING id";
+		$query = "INSERT INTO contents (permalink, version, locale, creation_date, update_date, author, is_public, is_archive, is_commentable, type, name, content) VALUES
+			($1, $2, $3, $4, $5, $6, TRUE, FALSE, $7, 'blog', $8, $9) RETURNING id";
 
 		pg_prepare($con, "prepare2", $query) 
 			or die ("Cannot prepare statement\n");
-		$result = pg_execute($con, "prepare2", array($this->url, $this->title, $this->content, date('r'), $this->locale, $this->author, $this->comments))
+		$result = pg_execute($con, "prepare2", array($this->permalink, $this->version, $this->locale, $this->creation_date, date('r'), $this->author, $this->is_commentable, $this->name, $this->content))
 			or die ("Cannot execute statement\n");
 
 		$this->id = pg_fetch_assoc($result)['id'];
 
-		// Move all comments to the new one
-
-		$query = "UPDATE blog_comments bc SET article = $1 FROM blog_articles ba WHERE bc.article = ba.id AND ba.url = $2";
+		$query = "INSERT INTO content_contributors (content, contributor) SELECT $1, contributor FROM content_contributors AS old WHERE old.content = $2";
 
 		pg_prepare($con, "prepare3", $query) 
 			or die ("Cannot prepare statement\n");
-		$result = pg_execute($con, "prepare3", array($this->id, $this->url))
+		$result = pg_execute($con, "prepare3", array($this->id, $oldId))
 			or die ("Cannot execute statement\n");
 
+		$query = "INSERT INTO content_contributors (content, contributor) VALUES
+			($1, $2) ON CONFLICT (content, contributor) DO NOTHING";
+
+		pg_prepare($con, "prepare4", $query) 
+			or die ("Cannot prepare statement\n");
+		$result = pg_execute($con, "prepare4", array($this->id, $user->id))
+			or die ("Cannot execute statement\n");
 
 		pg_close($con);
 
@@ -124,7 +134,7 @@ class BlogArticle
 			date('r')." \t".$user->name." (".$user->id.") \tUPDATE \tEdit blog article '".$this->url."'\r\n",
 			3,
 			$config['logs_folder'].'blog.articles.log');
-	}*/
+	}
 
 	/*****
 	** Delete an article by archiving it

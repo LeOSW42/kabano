@@ -97,21 +97,23 @@ switch ($controller->splitted_url[1]) {
 		if ($blogArticle->checkPermalink($controller->splitted_url[1],$user->rankIsHigher("premium"))) {
 			if (isset($controller->splitted_url[2]) && $controller->splitted_url[2] == "delete" && $user->rankIsHigher("moderator")) {
 				$blogArticle->delete();
-				header('Location: '.$config['rel_root_folder']."blog/".$blogArticle->url);
+				header('Location: '.$config['rel_root_folder']."blog/".$blogArticle->permalink);
 			}
 			else if (isset($controller->splitted_url[2]) && $controller->splitted_url[2] == "edit" && $user->rankIsHigher("moderator")) {
 				if(isset($_POST['submit'])) {
 					$blogArticle->content = $_POST['content'];
 					$blogArticle->locale = $_POST['locale'];
-					$blogArticle->title = $_POST['title'];
-					$blogArticle->comments = isset($_POST['comments'])?'t':'f';
+					$blogArticle->name = $_POST['name'];
+					$blogArticle->is_commentable = isset($_POST['is_commentable'])?'t':'f';
 					$blogArticle->author = $user->id;
 					$blogArticle->update();
-					header('Location: '.$config['rel_root_folder']."blog/".$blogArticle->url);
+					header('Location: '.$config['rel_root_folder']."blog/".$blogArticle->permalink);
 				}
 				else {
-					$blogArticle->populate();
-					$head['title'] = $blogArticle->title;
+					$locales = new Kabano\Locales();
+					$locales->getAll();
+
+					$head['title'] = $blogArticle->name;
 					include ($config['views_folder']."d.blog.edit.html");
 				}
 			}
@@ -147,14 +149,14 @@ switch ($controller->splitted_url[1]) {
 					}
 				}
 
-				// Manage comment undeletion
-				if (isset($controller->splitted_url[2]) && $controller->splitted_url[2]=="undelete_comment") {
+				// Manage comment restoration
+				if (isset($controller->splitted_url[2]) && $controller->splitted_url[2]=="restore_comment") {
 					if (isset($controller->splitted_url[3]) && is_numeric($controller->splitted_url[3])) {
 						$blogComment = new Kabano\BlogComment();
 						$blogComment->id = $controller->splitted_url[3];
 						$blogComment->populate();
 						if ($user->rankIsHigher("moderator") || $user->id == $blogComment->author)
-							$blogComment->undelete();
+							$blogComment->restore();
 					}
 				}
 

@@ -34,8 +34,8 @@
 					<input type="text" value="<?=$blogArticle->permalink?>" name="permalink" id="permalink" placeholder="URL">
 				<? } ?>
 
-				<label for="comments">
-					<input type="checkbox" name="comments" id="comments" value="comments" 
+				<label for="is_commentable">
+					<input type="checkbox" name="is_commentable" id="is_commentable"
 					<? if($blogArticle->is_commentable == 't') { ?>
 						checked
 					<? } ?>

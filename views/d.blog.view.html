@@ -86,7 +86,7 @@
 									<span class="delete_link"><a href="<?=$config['rel_root_folder']?>blog/<?=$blogArticle->permalink?>/delete_comment/<?=$row->id?>"><i class="fas fa-trash"></i> Effacer le commentaire</a></span>
 								<? } ?>
 								<? if (($user->rankIsHigher("moderator") || $user->id == $row->author) && $row->archive == 't') { ?>
-									<span class="delete_link"><a href="<?=$config['rel_root_folder']?>blog/<?=$blogArticle->permalink?>/undelete_comment/<?=$row->id?>"><i class="fas fa-eye"></i> Réafficher le commentaire</a></span>
+									<span class="delete_link"><a href="<?=$config['rel_root_folder']?>blog/<?=$blogArticle->permalink?>/restore_comment/<?=$row->id?>"><i class="fas fa-eye"></i> Restaurer le commentaire</a></span>
 								<? } ?>
 							</div>
 							<div class="comment_content">
