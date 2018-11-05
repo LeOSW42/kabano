@@ -9,18 +9,18 @@
 
 		<section id="blog_article" <?=$blogArticle->is_archive=="t"||$blogArticle->is_public=="f"?'class="archive"':''?>>
 			<h1><?=$blogArticle->name?>.</h1>
-				<? if($user->rankIsHigher("premium")) { ?>
+				<? if($user->rankIsHigher('premium')) { ?>
 					<span class="subtitle">
-					<? if(isset($blogArticles_history_list)) { ?>
+					<? if(isset($blogHistory)) { ?>
 						<select id="bloghistory">
 							<? $i = 0;
-							foreach ($blogArticles_history_list as $row) { ?>
-								<option <?=$row->id==$blogArticle->id?'selected':''?> value="<?=$i?>"><?=$row->archive=="f"?'&bull; ':''?><? echo strftime('%d/%m/%Y %H:%M:%S',strtotime($row->lastedit)) ?></option>
+							foreach ($blogHistory->objs as $row) { ?>
+								<option <?=$row->id==$blogArticle->id?'selected':''?> value="<?=$i?>"><?=$row->is_archive=="f"?'&bull; ':''?><? echo strftime('%d/%m/%Y %H:%M:%S',strtotime($row->update_date)) ?></option>
 							<? $i++;
 							} ?>
 						</select>
 					<? } 
-					if ($user->rankIsHigher("moderator") && isset($blogArticles_history_list)) { ?>
+					if ($user->rankIsHigher('moderator') && isset($blogHistory)) { ?>
 						 &mdash; 
 					<? }
 					if ($user->rankIsHigher("moderator")) { ?>

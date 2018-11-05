@@ -120,8 +120,8 @@ switch ($controller->splitted_url[1]) {
 			else {
 				// Manage history of an article
 				if($user->rankIsHigher("premium")) {
-					$blogArticles_history = new Kabano\BlogArticles();
-					$blogArticles_history->getHistory($controller->splitted_url[1]);
+					$blogHistory = new Kabano\BlogArticles();
+					$blogHistory->getHistory($controller->splitted_url[1]);
 				}
 				if (isset($controller->splitted_url[2]) && is_numeric($controller->splitted_url[2]))
 					$blogArticle->checkPermalink($controller->splitted_url[1],$user->rankIsHigher("premium"),$controller->splitted_url[2]);
