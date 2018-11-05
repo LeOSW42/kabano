@@ -120,14 +120,6 @@ switch ($controller->splitted_url[1]) {
 				if($user->rankIsHigher("premium")) {
 					$blogArticles_history = new Kabano\BlogArticles();
 					$blogArticles_history->getHistory($controller->splitted_url[1]);
-
-					$i = 0;
-					foreach ($blogArticles_history->ids as $row) {
-						$blogArticles_history_list[$i] = new Kabano\BlogArticle();
-						$blogArticles_history_list[$i]->id = $row;
-						$blogArticles_history_list[$i]->populate();
-						$i++;
-					}
 				}
 				if (isset($controller->splitted_url[2]) && is_numeric($controller->splitted_url[2]))
 					$blogArticle->checkPermalink($controller->splitted_url[1],$user->rankIsHigher("premium"),$controller->splitted_url[2]);
@@ -166,11 +158,10 @@ switch ($controller->splitted_url[1]) {
 					}
 				}
 
-				$blogArticle->populate();
 				$blogArticle->md2html();
 
 				// Manage comments
-				if ($blogArticle->comments == "t") {
+				if ($blogArticle->is_commentable == "t") {
 					$blogArticles_comments = new Kabano\BlogComments();
 					$blogArticles_comments->listComments($blogArticle->id, ($user->rankIsHigher("premium")));
 
@@ -189,12 +180,11 @@ switch ($controller->splitted_url[1]) {
 
 
 				$tempUser = new Kabano\User();
-				$tempUser->id = $blogArticle->author;
-				$tempUser->populate();
+				$tempUser->checkId($blogArticle->author);
 				$blogArticle->author_name = $tempUser->name;
 				unset($tempUser);
 
-				$head['title'] = $blogArticle->title;
+				$head['title'] = $blogArticle->name;
 				include ($config['views_folder']."d.blog.view.html");
 			}
 		}

@@ -271,13 +271,13 @@ class BlogArticles
 	/*****
 	** Return the list of archived version of a blog article
 	*****/
-/*	public function getHistory($url) {
+	public function getHistory($url) {
 		global $config;
 		
 		$con = pg_connect("host=".$config['SQL_host']." dbname=".$config['SQL_db']." user=".$config['SQL_user']." password=".$config['SQL_pass'])
 			or die ("Could not connect to server\n");
 
-		$query = "SELECT id FROM blog_articles WHERE url=$1 ORDER BY lastedit DESC";
+		$query = "SELECT * FROM contents WHERE permalink=$1 AND type='blog' ORDER BY update_date DESC";
 
 		pg_prepare($con, "prepare1", $query) 
 			or die ("Cannot prepare statement\n");
@@ -290,11 +290,11 @@ class BlogArticles
 
 		for($i = 0; $i < $this->number; $i++) {
 			$row = pg_fetch_assoc($result, $i);
-			$this->ids[$i] = $row['id'];
+			$this->objs[$i] = new BlogArticle;
+			$this->objs[$i]->populate($row);
 		}
-	}*/
+	}
 }
-
 
 /**********************************************************
 ***********************************************************
