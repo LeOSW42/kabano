@@ -204,9 +204,17 @@ class WikiPage
 		$result = pg_execute($con, "prepare1", array($this->permalink, $this->locale, date('r'), date('r'), $user->id, $this->name, $this->content))
 			or die ("Cannot execute statement\n");
 
-		pg_close($con);
-
 		$this->id = pg_fetch_assoc($result)['id'];
+
+		$query = "INSERT INTO content_contributors (content, contributor) VALUES
+			($1, $2)";
+
+		pg_prepare($con, "prepare2", $query) 
+			or die ("Cannot prepare statement\n");
+		$result = pg_execute($con, "prepare2", array($this->id, $user->id))
+			or die ("Cannot execute statement\n");
+
+		pg_close($con);
 
 		error_log(
 			date('r')." \t".$user->name." (".$user->id.") \tINSERT \tCreate new wiki page '".$this->permalink."'\r\n",
