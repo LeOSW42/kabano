@@ -53,7 +53,7 @@ $( "#name" ).keyup(function() {
   permalink = permalink.replace(/ /g,'_');
   permalink = permalink.toLowerCase();
   permalink = permalink.replace(/[^a-z0-9_]/g,'-');
-  permalink = permalink.replace(/[_$]/g,'-');
+  permalink = permalink.replace(/[_-]+$/g,'');
   $( "#permalink" ).val(permalink);
 });
 $( "#name" ).change(function() {
@@ -61,7 +61,7 @@ $( "#name" ).change(function() {
   permalink = permalink.replace(/ /g,'_');
   permalink = permalink.toLowerCase();
   permalink = permalink.replace(/[^a-z0-9_]/g,'-');
-  permalink = permalink.replace(/[_$]/g,'-');
+  permalink = permalink.replace(/[_-]+$/g,'');
   $( "#permalink" ).val(permalink);
 });
 		</script>

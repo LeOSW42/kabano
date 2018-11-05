@@ -14,8 +14,8 @@ require_once($config['third_folder']."Md/MarkdownExtra.inc.php");
 
 class BlogArticle
 {
-	public $id = 0;
-	public $permalink = 0;
+	public $id = NULL;
+	public $permalink = NULL;
 	public $version = 0;
 	public $locale = NULL;
 	public $creation_date = NULL;
@@ -82,7 +82,7 @@ class BlogArticle
 	/*****
 	** Edit a page by archiving the current one and inserting a new one ID
 	*****/
-	public function update() {
+/*	public function update() {
 		global $config;
 		global $user;
 		
@@ -124,12 +124,12 @@ class BlogArticle
 			date('r')." \t".$user->name." (".$user->id.") \tUPDATE \tEdit blog article '".$this->url."'\r\n",
 			3,
 			$config['logs_folder'].'blog.articles.log');
-	}
+	}*/
 
 	/*****
 	** Delete an article by archiving it
 	*****/
-	public function delete() {
+/*	public function delete() {
 		global $config;
 		global $user;
 		
@@ -149,7 +149,7 @@ class BlogArticle
 			date('r')." \t".$user->name." (".$user->id.") \tDELETE \tArchive blog article '".$this->url."'\r\n",
 			3,
 			$config['logs_folder'].'blog.articles.log');
-	}
+	}*/
 
 	/*****
 	** Create an article
@@ -161,15 +161,17 @@ class BlogArticle
 		$con = pg_connect("host=".$config['SQL_host']." dbname=".$config['SQL_db']." user=".$config['SQL_user']." password=".$config['SQL_pass'])
 			or die ("Could not connect to server\n");
 
-		$query = "INSERT INTO blog_articles (url, title, content, lastedit, archive, locale, author, comments) VALUES
-			($1, $2, $3, $4, FALSE, $5, $6, $7)";
+		$query = "INSERT INTO contents (permalink, version, locale, creation_date, update_date, author, is_public, is_archive, is_commentable, type, name, content) VALUES
+			($1, '0', $2, $3, $4, $5, TRUE, FALSE, $6, 'blog', $7, $8) RETURNING id";
 
-		pg_prepare($con, "prepare2", $query) 
+		pg_prepare($con, "prepare1", $query) 
 			or die ("Cannot prepare statement\n");
-		$result = pg_execute($con, "prepare2", array($this->url, $this->title, $this->content, date('r'), $this->locale, $this->author, $this->comments))
+		$result = pg_execute($con, "prepare1", array($this->permalink, $this->locale, date('r'), date('r'), $user->id, $this->is_commentable, $this->name, $this->content))
 			or die ("Cannot execute statement\n");
 
 		pg_close($con);
+
+		$this->id = pg_fetch_assoc($result)['id'];
 
 		error_log(
 			date('r')." \t".$user->name." (".$user->id.") \tINSERT \tCreate new blog article '".$this->url."'\r\n",
@@ -269,7 +271,7 @@ class BlogArticles
 	/*****
 	** Return the list of archived version of a blog article
 	*****/
-	public function getHistory($url) {
+/*	public function getHistory($url) {
 		global $config;
 		
 		$con = pg_connect("host=".$config['SQL_host']." dbname=".$config['SQL_db']." user=".$config['SQL_user']." password=".$config['SQL_pass'])
@@ -290,7 +292,7 @@ class BlogArticles
 			$row = pg_fetch_assoc($result, $i);
 			$this->ids[$i] = $row['id'];
 		}
-	}
+	}*/
 }
 
 

@@ -68,30 +68,33 @@ switch ($controller->splitted_url[1]) {
 			if(isset($_POST['submit'])) {
 				$blogArticle->content = $_POST['content'];
 				$blogArticle->locale = $_POST['locale'];
-				$blogArticle->title = $_POST['title'];
-				$blogArticle->comments = isset($_POST['comments'])?'t':'f';
+				$blogArticle->name = $_POST['name'];
+				$blogArticle->is_commentable = isset($_POST['is_commentable'])?'t':'f';
 				$blogArticle->author = $user->id;
-				if(!$blogArticle->checkUrl($_POST['url'],1)) {
+				if(!$blogArticle->checkPermalink($_POST['permalink'],1)) {
+					$blogArticle->permalink = $_POST['permalink'];
 					$blogArticle->insert();
-					header('Location: '.$config['rel_root_folder']."blog/".$blogArticle->url);
+					header('Location: '.$config['rel_root_folder']."blog/".$blogArticle->permalink);
 				}
 				else {
-					$head['title'] = $blogArticle->title;
-					$error = "url";
-					$new = 1;
-					include ($config['views_folder']."d.blog.edit.html");
+					$head['title'] = $blogArticle->name;
+					$error = "permalink";
 				}
 			}
 			else {
 				$head['title'] = "Nouvel article";
-				$new = 1;
-				include ($config['views_folder']."d.blog.edit.html");
 			}
+
+			$locales = new Kabano\Locales();
+			$locales->getAll();
+
+			$new = 1;
+			include ($config['views_folder']."d.blog.edit.html");
 			break;
 		}
 	default:
 		// If the page exists
-		if ($blogArticle->checkUrl($controller->splitted_url[1],$user->rankIsHigher("premium"))) {
+		if ($blogArticle->checkPermalink($controller->splitted_url[1],$user->rankIsHigher("premium"))) {
 			if (isset($controller->splitted_url[2]) && $controller->splitted_url[2] == "delete" && $user->rankIsHigher("moderator")) {
 				$blogArticle->delete();
 				header('Location: '.$config['rel_root_folder']."blog/".$blogArticle->url);
@@ -127,7 +130,7 @@ switch ($controller->splitted_url[1]) {
 					}
 				}
 				if (isset($controller->splitted_url[2]) && is_numeric($controller->splitted_url[2]))
-					$blogArticle->checkUrl($controller->splitted_url[1],$user->rankIsHigher("premium"),$controller->splitted_url[2]);
+					$blogArticle->checkPermalink($controller->splitted_url[1],$user->rankIsHigher("premium"),$controller->splitted_url[2]);
 
 				// Manage comment creation
 				if (isset($controller->splitted_url[2]) && $controller->splitted_url[2]=="new_comment") {

@@ -14,8 +14,8 @@ require_once($config['third_folder']."Md/MarkdownExtra.inc.php");
 
 class WikiPage
 {
-	public $id = 0;
-	public $permalink = 0;
+	public $id = NULL;
+	public $permalink = NULL;
 	public $version = 0;
 	public $locale = NULL;
 	public $creation_date = NULL;
@@ -204,9 +204,9 @@ class WikiPage
 		$result = pg_execute($con, "prepare1", array($this->permalink, $this->locale, date('r'), date('r'), $user->id, $this->name, $this->content))
 			or die ("Cannot execute statement\n");
 
-		$this->id = pg_fetch_assoc($result)['id'];
-
 		pg_close($con);
+
+		$this->id = pg_fetch_assoc($result)['id'];
 
 		error_log(
 			date('r')." \t".$user->name." (".$user->id.") \tINSERT \tCreate new wiki page '".$this->permalink."'\r\n",
