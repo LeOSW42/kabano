@@ -8,7 +8,7 @@
 		<? include('blocks/d.nav.html'); ?>
 
 		<section id="wiki_page" <?=$wikiPage->is_archive=="t"||$wikiPage->is_public=="f"?'class="archive"':''?>>
-			<h1><?=$wikiPage->name?>.</h1>
+			<h1><?=$wikiPage->name?></h1>
 				<? if($user->rankIsHigher('premium')) { ?>
 					<span class="subtitle">
 					<? if(isset($wikiHistory)) { ?>

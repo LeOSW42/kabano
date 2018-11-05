@@ -8,7 +8,7 @@
 		<? include('blocks/d.nav.html'); ?>
 
 		<section id="blog_article" <?=$blogArticle->is_archive=="t"||$blogArticle->is_public=="f"?'class="archive"':''?>>
-			<h1><?=$blogArticle->name?>.</h1>
+			<h1><?=$blogArticle->name?></h1>
 				<? if($user->rankIsHigher('premium')) { ?>
 					<span class="subtitle">
 					<? if(isset($blogHistory)) { ?>
