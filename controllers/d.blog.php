@@ -136,8 +136,8 @@ switch ($controller->splitted_url[1]) {
 						$blogComment = new Kabano\BlogComment();
 						$blogComment->locale = $user->locale;
 						$blogComment->author = $user->id;
-						$blogComment->article = $blogArticle->id;
-						$blogComment->content = $_POST['comment'];
+						$blogComment->content = $blogArticle->id;
+						$blogComment->comment = $_POST['comment'];
 						$blogComment->insert();
 					}
 				}
@@ -146,10 +146,9 @@ switch ($controller->splitted_url[1]) {
 				if (isset($controller->splitted_url[2]) && $controller->splitted_url[2]=="delete_comment") {
 					if (isset($controller->splitted_url[3]) && is_numeric($controller->splitted_url[3])) {
 						$blogComment = new Kabano\BlogComment();
-						$blogComment->id = $controller->splitted_url[3];
-						$blogComment->populate();
-						if ($user->rankIsHigher("moderator") || $user->id == $blogComment->author)
-							$blogComment->delete();
+						if($blogComment->checkId($controller->splitted_url[3]))
+							if ($user->rankIsHigher("moderator") || $user->id == $blogComment->author)
+								$blogComment->delete();
 					}
 				}
 
@@ -157,10 +156,9 @@ switch ($controller->splitted_url[1]) {
 				if (isset($controller->splitted_url[2]) && $controller->splitted_url[2]=="restore_comment") {
 					if (isset($controller->splitted_url[3]) && is_numeric($controller->splitted_url[3])) {
 						$blogComment = new Kabano\BlogComment();
-						$blogComment->id = $controller->splitted_url[3];
-						$blogComment->populate();
-						if ($user->rankIsHigher("moderator") || $user->id == $blogComment->author)
-							$blogComment->restore();
+						if($blogComment->checkId($controller->splitted_url[3]))
+							if ($user->rankIsHigher("moderator") || $user->id == $blogComment->author)
+								$blogComment->restore();
 					}
 				}
 
@@ -172,15 +170,10 @@ switch ($controller->splitted_url[1]) {
 					$blogArticles_comments->listComments($blogArticle->id, ($user->rankIsHigher("premium")));
 
 					$i = 0;
-					foreach ($blogArticles_comments->ids as $row) {
-						$blogArticles_comments_list[$i] = new Kabano\BlogComment();
-						$blogArticles_comments_list[$i]->id = $row;
-						$blogArticles_comments_list[$i]->populate();
-						$blogArticles_comments_list[$i]->md2html();
-						$blogArticles_comments_list[$i]->author_obj = new Kabano\User();
-						$blogArticles_comments_list[$i]->author_obj->id = $blogArticles_comments_list[$i]->author;
-						$blogArticles_comments_list[$i]->author_obj->populate();
-						$i++;
+					foreach ($blogArticles_comments->objs as $comment) {
+						$comment->md2html();
+						$comment->author_obj = new Kabano\User();
+						$comment->author_obj->checkId($comment->author);
 					}
 				}
 

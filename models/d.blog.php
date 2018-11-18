@@ -349,45 +349,60 @@ class BlogArticles
 
 class BlogComment
 {
-	public $id = 0;
-	public $locale = NULL;
-	public $lastedit = NULL;
-	public $archive = NULL;
-	public $content = NULL;
+	public $id = NULL;
+	public $version = 0;
+	public $creation_date = NULL;
+	public $update_date = NULL;
 	public $author = NULL;
-	public $article = NULL;
+	public $is_public = NULL;
+	public $is_archive = NULL;
+	public $content = NULL;
+	public $comment = NULL;
+	public $locale = NULL;
+
+
+	/*****
+	** Connect to correct account using ID and stores its ID
+	*****/
+	public function checkID($id) {
+		global $config;
+		
+		$con = pg_connect("host=".$config['SQL_host']." dbname=".$config['SQL_db']." user=".$config['SQL_user']." password=".$config['SQL_pass'])
+			or die ("Could not connect to server\n");
+
+		$query = "SELECT * FROM content_comments WHERE id=$1";
+
+		pg_prepare($con, "prepare1", $query) 
+			or die ("Cannot prepare statement\n");
+		$result = pg_execute($con, "prepare1", array($id))
+			or die ("Cannot execute statement\n");
+
+		pg_close($con);
+
+		if(pg_num_rows($result) == 1) {
+			$row = pg_fetch_assoc($result);
+			$this->populate($row);
+			return 1;
+		}
+		else {
+			return 0;
+		}
+	}
 
 	/*****
 	** Populate the object using its ID
 	*****/
-	public function populate() {
-		global $config;
-		
-		if($this->id != 0) {
-			$con = pg_connect("host=".$config['SQL_host']." dbname=".$config['SQL_db']." user=".$config['SQL_user']." password=".$config['SQL_pass'])
-				or die ("Could not connect to server\n");
-
-			$query = "SELECT * FROM blog_comments WHERE id=$1";
-
-			pg_prepare($con, "prepare1", $query) 
-				or die ("Cannot prepare statement\n");
-			$result = pg_execute($con, "prepare1", array($this->id))
-				or die ("Cannot execute statement\n");
-
-			pg_close($con);
-
-			$blog_comment = pg_fetch_assoc($result);
-
-			$this->locale = $blog_comment['locale'];
-			$this->lastedit = $blog_comment['lastedit'];
-			$this->archive = $blog_comment['archive'];
-			$this->content = $blog_comment['content'];
-			$this->author = $blog_comment['author'];
-			$this->article = $blog_comment['article'];
-		}
-		else {
-			die("Cannot populate a blog article without ID");
-		}
+	public function populate($row) {
+		$this->id = $row['id'];
+		$this->version = $row['version'];
+		$this->creation_date = $row['creation_date'];
+		$this->update_date = $row['update_date'];
+		$this->author = $row['author'];
+		$this->is_public = $row['is_public'];
+		$this->is_archive = $row['is_archive'];
+		$this->content = $row['content'];
+		$this->comment = $row['comment'];
+		$this->locale = $row['locale'];
 	}
 
 	/*****
@@ -399,13 +414,15 @@ class BlogComment
 		$con = pg_connect("host=".$config['SQL_host']." dbname=".$config['SQL_db']." user=".$config['SQL_user']." password=".$config['SQL_pass'])
 			or die ("Could not connect to server\n");
 
-		$query = "INSERT INTO blog_comments (content, lastedit, archive, locale, author, article) VALUES
-			($1, $2, FALSE, $3, $4, $5)";
+		$query = "INSERT INTO content_comments (version, creation_date, update_date, author, is_public, is_archive, content, comment, locale) VALUES
+			('0', $1, $2, $3, TRUE, FALSE, $4, $5, $6) RETURNING id";
 
-		pg_prepare($con, "prepare2", $query) 
+		pg_prepare($con, "prepare1", $query) 
 			or die ("Cannot prepare statement\n");
-		$result = pg_execute($con, "prepare2", array($this->content, date('r'), $this->locale, $this->author, $this->article))
+		$result = pg_execute($con, "prepare1", array(date('r'), date('r'), $this->author, $this->content, $this->comment, $this->locale))
 			or die ("Cannot execute statement\n");
+
+		$this->id = pg_fetch_assoc($result)['id'];
 
 		pg_close($con);
 	}
@@ -420,11 +437,11 @@ class BlogComment
 		$con = pg_connect("host=".$config['SQL_host']." dbname=".$config['SQL_db']." user=".$config['SQL_user']." password=".$config['SQL_pass'])
 			or die ("Could not connect to server\n");
 
-		$query = "UPDATE blog_comments SET archive = TRUE WHERE id = $1";
+		$query = "UPDATE content_comments SET is_public = FALSE WHERE id = $1";
 
-		pg_prepare($con, "prepare2", $query) 
+		pg_prepare($con, "prepare1", $query) 
 			or die ("Cannot prepare statement\n");
-		$result = pg_execute($con, "prepare2", array($this->id))
+		$result = pg_execute($con, "prepare1", array($this->id))
 			or die ("Cannot execute statement\n");
 
 		pg_close($con);
@@ -436,20 +453,20 @@ class BlogComment
 	}
 
 	/*****
-	** DeArchive a comment
+	** Restore a comment
 	*****/
-	public function undelete() {
+	public function restore() {
 		global $config;
 		global $user;
 		
 		$con = pg_connect("host=".$config['SQL_host']." dbname=".$config['SQL_db']." user=".$config['SQL_user']." password=".$config['SQL_pass'])
 			or die ("Could not connect to server\n");
 
-		$query = "UPDATE blog_comments SET archive = FALSE WHERE id = $1";
+		$query = "UPDATE content_comments SET is_public = TRUE WHERE id = $1";
 
-		pg_prepare($con, "prepare2", $query) 
+		pg_prepare($con, "prepare1", $query) 
 			or die ("Cannot prepare statement\n");
-		$result = pg_execute($con, "prepare2", array($this->id))
+		$result = pg_execute($con, "prepare1", array($this->id))
 			or die ("Cannot execute statement\n");
 
 		pg_close($con);
@@ -461,18 +478,18 @@ class BlogComment
 	}
 
 	/*****
-	** Converts the Markdown content to HTML
+	** Converts the Markdown comment to HTML
 	*****/
 	public function md2html() {
-		$this->content_html = \Michelf\MarkdownExtra::defaultTransform($this->content);
+		$this->comment_html = \Michelf\MarkdownExtra::defaultTransform($this->comment);
 	}
 
 	/*****
-	** Converts the Markdown content to text
+	** Converts the Markdown comment to text
 	*****/
 	public function md2txt() {
 		$this->md2html();
-		$this->content_txt = strip_tags($this->content_html);
+		$this->comment_txt = strip_tags($this->comment_html);
 	}
 }
 
@@ -487,7 +504,7 @@ class BlogComment
 
 class BlogComments
 {
-	public $ids = array();
+	public $objs = array();
 	public $number = NULL;
 
 	/*****
@@ -499,10 +516,10 @@ class BlogComments
 		$con = pg_connect("host=".$config['SQL_host']." dbname=".$config['SQL_db']." user=".$config['SQL_user']." password=".$config['SQL_pass'])
 			or die ("Could not connect to server\n");
 
-		$query = "SELECT id FROM blog_comments WHERE article = $1 ";
+		$query = "SELECT * FROM content_comments WHERE content = $1 ";
 		if ($archive == 0)
-			$query .= "AND archive IS FALSE ";
-		$query .= "ORDER BY lastedit DESC";
+			$query .= "AND is_archive IS FALSE AND is_public IS TRUE ";
+		$query .= "ORDER BY update_date DESC";
 
 		pg_prepare($con, "prepare1", $query) 
 			or die ("Cannot prepare statement\n");
@@ -515,7 +532,8 @@ class BlogComments
 
 		for($i = 0; $i < pg_num_rows($result); $i++) {
 			$row = pg_fetch_assoc($result, $i);
-			$this->ids[$i] = $row['id'];
+			$this->objs[$i] = new BlogComment;
+			$this->objs[$i]->populate($row);
 		}
 	}
 }

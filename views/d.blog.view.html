@@ -66,31 +66,31 @@
 					</form>
 				</div>
 
-				<? if(isset($blogArticles_comments_list)) {
-					foreach ($blogArticles_comments_list as $row) { ?>
+				<? if($blogArticle->is_commentable == 't') {
+					foreach ($blogArticles_comments->objs as $comment) { ?>
 
-						<article <? if($row->archive == 't') echo 'class="comment_archive" '; ?>>
+						<article <? if($comment->is_archive == 't' || $comment->is_public == 'f') echo 'class="comment_archive" '; ?>>
 							<div class="comment_title">
-								<? if ($row->author_obj->avatar=='t') { ?>
-									<img alt="Avatar" class="icon avatar" src="<?=$config['rel_root_folder']?>medias/avatars/<?=$row->author_obj->id?>_s.jpg">
+								<? if ($comment->author_obj->is_avatar_present=='t') { ?>
+									<img alt="Avatar" class="icon avatar" src="<?=$config['rel_root_folder']?>medias/avatars/<?=$comment->author_obj->id?>_s.jpg">
 								<? } else { ?>
 									<i class="icon fas fa-user-secret"></i>
 								<? } ?>
 								<? if ($user->rankIsHigher("blocked")) { ?>
-								<a class="username" href="<?=$config['rel_root_folder']?>user/p/<?=$row->author_obj->id?>"><?=$row->author_obj->name?></a>
+								<a class="username" href="<?=$config['rel_root_folder']?>user/p/<?=$comment->author_obj->id?>"><?=$comment->author_obj->name?></a>
 								<? } else { ?>
-									<?=$row->author_obj->name?>
+									<?=$comment->author_obj->name?>
 								<? } ?>
-								le <? echo strftime('%e %B %G, %kh%Mm%Ss',strtotime($row->lastedit)) ?> <small><abbr title="Temps Universel Coordonné">UTC</abbr></small>
-								<? if (($user->rankIsHigher("moderator") || $user->id == $row->author) && $row->archive == 'f') { ?>
-									<span class="delete_link"><a href="<?=$config['rel_root_folder']?>blog/<?=$blogArticle->permalink?>/delete_comment/<?=$row->id?>"><i class="fas fa-trash"></i> Effacer le commentaire</a></span>
+								le <? echo strftime('%e %B %G, %kh%Mm%Ss',strtotime($comment->update_date)) ?> <small><abbr title="Temps Universel Coordonné">UTC</abbr></small>
+								<? if (($user->rankIsHigher("moderator") || $user->id == $comment->author) && $comment->is_public == 't') { ?>
+									<span class="delete_link"><a href="<?=$config['rel_root_folder']?>blog/<?=$blogArticle->permalink?>/delete_comment/<?=$comment->id?>"><i class="fas fa-trash"></i> Effacer le commentaire</a></span>
 								<? } ?>
-								<? if (($user->rankIsHigher("moderator") || $user->id == $row->author) && $row->archive == 't') { ?>
-									<span class="delete_link"><a href="<?=$config['rel_root_folder']?>blog/<?=$blogArticle->permalink?>/restore_comment/<?=$row->id?>"><i class="fas fa-eye"></i> Restaurer le commentaire</a></span>
+								<? if (($user->rankIsHigher("moderator") || $user->id == $comment->author) && $comment->is_public == 'f') { ?>
+									<span class="delete_link"><a href="<?=$config['rel_root_folder']?>blog/<?=$blogArticle->permalink?>/restore_comment/<?=$comment->id?>"><i class="fas fa-eye"></i> Restaurer le commentaire</a></span>
 								<? } ?>
 							</div>
 							<div class="comment_content">
-								<?=$row->content_html?>
+								<?=$comment->comment_html?>
 							</div>
 						</article>
 

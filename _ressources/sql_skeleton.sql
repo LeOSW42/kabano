@@ -174,7 +174,6 @@ SET default_with_oids = false;
 
 CREATE TABLE public.content_comments (
     id integer DEFAULT nextval('public.content_comments_sequence'::regclass) NOT NULL,
-    permalink character varying(255),
     version integer,
     creation_date timestamp without time zone,
     update_date timestamp without time zone,
