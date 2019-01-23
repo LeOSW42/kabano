@@ -14,25 +14,25 @@ echo ('<?xml version="1.0" encoding="UTF-8"?>'); ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
 <channel>
 	<title>Kabano</title>
-	<link><?=$config['rel_root_folder']?></link>
-	<atom:link href="<?=$config['rel_root_folder']?>blog/rss" rel="self" type="application/rss+xml" />
+	<link><?=$config['web_root_folder']?></link>
+	<atom:link href="<?=$config['web_root_folder']?>blog/rss" rel="self" type="application/rss+xml" />
 	<description>L'actualité du blog officiel de Kabano : Plateforme collaborative de recensement de cabanes et refuges.</description>
 	<language>fr</language>
 	<image>
-		<url><?=$config['views_url']?>img/header_rss.svg</url>
+		<url><?=$config['web_root_folder']?>views/img/header_rss.svg</url>
 		<title>Kabano</title>
-		<link><?=$config['rel_root_folder']?></link>
+		<link><?=$config['web_root_folder']?></link>
 		<height>44</height>
 		<width>154</width>
 	</image>
 
-	<? foreach ($blogArticles_list as $row) { ?>
+	<? foreach ($blogArticles->objs as $row) { ?>
 
 		<item>
-			<title><?=$row->title?></title>
-			<link><?=$config['rel_root_folder']?>blog/<?=$row->url?></link>
-			<guid><?=$config['rel_root_folder']?>blog/<?=$row->url?></guid>
-			<pubDate><?=$row->lastedit?></pubDate>
+			<title><?=$row->name?></title>
+			<link><?=$config['web_root_folder']?>blog/<?=$row->permalink?></link>
+			<guid><?=$config['web_root_folder']?>blog/<?=$row->permalink?></guid>
+			<pubDate><?=gmdate(DATE_RFC822, strtotime($row->update_date))?></pubDate>
 			<description><![CDATA[
 				<?=$row->content_html?>
 				]]></description>

@@ -15,6 +15,7 @@ $config['include_folder']=basename(__DIR__);
 $config['abs_root_folder']=str_replace($config['include_folder'],"",__DIR__);
 // This is the relative folder to the root of the website from the DocumentRoot (can also be called subfolder)
 $config['rel_root_folder']=str_replace($_SERVER['DOCUMENT_ROOT'],"",$config['abs_root_folder']);
+$config['web_root_folder']="kabano.test";
 if($config['rel_root_folder']=="") $config['rel_root_folder']="/";
 
 // Here all the absolute paths to specific folders
