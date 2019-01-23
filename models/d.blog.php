@@ -263,7 +263,7 @@ class BlogArticles
 
 		if ($archive == 1) {
 			// You just want one per url and the criteria is ORDER BY archives = true, time DES=C
-			$query = "SELECT * FROM (SELECT a.id, a.update_date , ROW_NUMBER() OVER (PARTITION BY a.permalink ORDER BY CASE WHEN a.is_archive IS TRUE THEN 1 ELSE 0 END, a.update_date DESC) AS r FROM contents AS a) AS b WHERE r = 1 ORDER BY update_date DESC";
+			$query = "SELECT * FROM (SELECT *, ROW_NUMBER() OVER (PARTITION BY a.permalink ORDER BY CASE WHEN a.is_archive IS TRUE THEN 1 ELSE 0 END, a.update_date DESC) AS r FROM contents AS a WHERE type='blog') AS b WHERE r = 1 ORDER BY update_date DESC";
 		}
 		else {
 			$query = "SELECT * FROM contents WHERE is_archive IS NOT TRUE AND is_public IS TRUE AND type='blog' ORDER BY update_date DESC";
@@ -295,10 +295,10 @@ class BlogArticles
 
 		if ($archive == 1) {
 			// You just want one per url and the criteria is ORDER BY archives = true, time DES=C
-			$query = "SELECT * FROM (SELECT a.id, a.update_date , ROW_NUMBER() OVER (PARTITION BY a.permalink ORDER BY CASE WHEN a.is_archive IS TRUE THEN 1 ELSE 0 END, a.update_date DESC) AS r FROM contents AS a) AS b WHERE r = 1 ORDER BY update_date DESC";
+			$query = "SELECT * FROM (SELECT a.update_date, ROW_NUMBER() OVER (PARTITION BY a.permalink ORDER BY CASE WHEN a.is_archive IS TRUE THEN 1 ELSE 0 END, a.update_date DESC) AS r FROM contents AS a WHERE type='blog') AS b WHERE r = 1 ORDER BY update_date DESC";
 		}
 		else {
-			$query = "SELECT * FROM contents WHERE is_archive IS NOT TRUE AND is_public IS TRUE AND type='blog' ORDER BY update_date DESC";
+			$query = "SELECT update_date FROM contents WHERE is_archive IS NOT TRUE AND is_public IS TRUE AND type='blog' ORDER BY update_date DESC";
 		}
 
 		pg_prepare($con, "prepare1", $query) 

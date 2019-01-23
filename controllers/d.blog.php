@@ -41,15 +41,11 @@ switch ($controller->splitted_url[1]) {
 
 		$i = 0;
 		$blogArticles_list = array();
-		foreach ($blogArticles->ids as $row) {
-			$blogArticles_list[$i] = new Kabano\BlogArticle();
-			$blogArticles_list[$i]->id = $row;
-			$blogArticles_list[$i]->populate();
-			$blogArticles_list[$i]->md2txt();
+		foreach ($blogArticles->objs as $row) {
+			$row->md2txt();
 			$tempUser = new Kabano\User();
-			$tempUser->id = $blogArticles_list[$i]->author;
-			$tempUser->populate();
-			$blogArticles_list[$i]->author_name = $tempUser->name;
+			$tempUser->checkId($row->author);
+			$row->author_name = $tempUser->name;
 			unset($tempUser);
 			$i++;
 		}
