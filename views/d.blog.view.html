@@ -49,11 +49,13 @@
 
 			<!-- COMMENTS -->
 
-			<? if ($blogArticle->is_commentable == "t" && $blogArticle->is_archive == "f" && $blogArticle->is_public == "t") { ?>
+			<? if ($blogArticle->is_commentable == "t") { ?>
 				<div id="new_comment">
 					<form class="form" action="<?=$config['rel_root_folder']?>blog/<?=$blogArticle->permalink?>/new_comment" method="post">
 						<div id="new_comment_label" <?=$user->rank=="visitor"?"class='sent' ":""?>>
-							<? if ($user->rankIsHigher("registered")) { ?>
+							<? if ($blogArticle->is_archive == "t" || $blogArticle->is_public == "f") { ?>
+								<p>Impossible de commenter un article non publié</p>
+							<? } else if ($user->rankIsHigher("registered")) { ?>
 								<input name="submit" type="submit" value="Envoyer">
 								<p>Ajouter un nouveau commentaire</p>
 							<? } else { ?>
@@ -110,7 +112,7 @@ $( "#bloghistory" ).change(function() {
 });
 		</script>
 <? } ?>
-<? if($user->rankIsHigher("registered")) { ?>
+<? if($user->rankIsHigher("registered") && $blogArticle->is_archive == "f" && $blogArticle->is_public == "t") { ?>
 		<script type="text/javascript">
 $( "#new_comment_label" ).click(function() {
   $( "#new_comment_form" ).show(400);
