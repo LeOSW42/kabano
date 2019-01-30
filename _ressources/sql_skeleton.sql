@@ -201,7 +201,7 @@ ALTER TABLE public.content_locales_sequence OWNER TO kabano;
 
 CREATE TABLE public.content_locales (
     id integer DEFAULT nextval('public.content_locales_sequence'::regclass) NOT NULL,
-    content integer NOT NULL,
+    content_id integer NOT NULL,
     locale character varying(32) NOT NULL,
     author integer NOT NULL
 );
@@ -234,7 +234,7 @@ CREATE TABLE public.content_versions (
     is_archive boolean DEFAULT false NOT NULL,
     name character varying(255),
     content text,
-    locale integer NOT NULL
+    locale_id integer NOT NULL
 );
 
 
@@ -480,6 +480,8 @@ COPY public.content_comments (id, version, creation_date, update_date, author, i
 --
 
 COPY public.content_contributors (id, content, contributor) FROM stdin;
+31	1	1
+32	2	1
 \.
 
 
@@ -487,7 +489,9 @@ COPY public.content_contributors (id, content, contributor) FROM stdin;
 -- Data for Name: content_locales; Type: TABLE DATA; Schema: public; Owner: kabano
 --
 
-COPY public.content_locales (id, content, locale, author) FROM stdin;
+COPY public.content_locales (id, content_id, locale, author) FROM stdin;
+1	29	fr_FR	1
+2	32	fr_FR	1
 \.
 
 
@@ -495,7 +499,11 @@ COPY public.content_locales (id, content, locale, author) FROM stdin;
 -- Data for Name: content_versions; Type: TABLE DATA; Schema: public; Owner: kabano
 --
 
-COPY public.content_versions (id, version, update_date, is_archive, name, content, locale) FROM stdin;
+COPY public.content_versions (id, version, update_date, is_archive, name, content, locale_id) FROM stdin;
+2	0	2019-01-30 18:33:36	f	Ceci est un test héhé	Encore	2
+1	0	2019-01-30 18:10:51	t	404	Erreur 404	1
+3	1	2019-01-30 18:47:44	t	404	Erreur 404s	1
+4	2	2019-01-30 18:48:51	f	404	Erreur 404sd	1
 \.
 
 
@@ -504,6 +512,8 @@ COPY public.content_versions (id, version, update_date, is_archive, name, conten
 --
 
 COPY public.contents (id, permalink, creation_date, is_public, is_commentable, type) FROM stdin;
+32	403	2019-01-30 18:33:36	t	f	wiki
+29	404	2019-01-30 18:10:51	t	f	wiki
 \.
 
 
@@ -570,7 +580,7 @@ COPY public.spatial_ref_sys (srid, auth_name, auth_srid, srtext, proj4text) FROM
 
 COPY public.users (id, name, version, email, password, website, is_avatar_present, is_archive, rank, locale, timezone, visit_date, register_date) FROM stdin;
 4	leosw2	0	leo@leo.fr	b36982d19ecde5eabbd83f964c6fe560050fe4bd		f	f	moderator	fr_FR	CEST	2018-11-04 07:12:11	2018-10-17 18:14:11
-1	leosw	1	leo@lstronic.com	b36982d19ecde5eabbd83f964c6fe560050fe4bd	https://lstronic.com	t	f	administrator	fr_FR	CEST	2019-01-30 17:50:06	2018-09-03 21:27:13
+1	leosw	1	leo@lstronic.com	b36982d19ecde5eabbd83f964c6fe560050fe4bd	https://lstronic.com	t	f	administrator	fr_FR	CEST	2019-01-30 18:49:01	2018-09-03 21:27:13
 \.
 
 
@@ -601,28 +611,28 @@ SELECT pg_catalog.setval('public.content_comments_sequence', 3, true);
 -- Name: content_contributors_sequence; Type: SEQUENCE SET; Schema: public; Owner: kabano
 --
 
-SELECT pg_catalog.setval('public.content_contributors_sequence', 30, true);
+SELECT pg_catalog.setval('public.content_contributors_sequence', 34, true);
 
 
 --
 -- Name: content_locales_sequence; Type: SEQUENCE SET; Schema: public; Owner: kabano
 --
 
-SELECT pg_catalog.setval('public.content_locales_sequence', 1, false);
+SELECT pg_catalog.setval('public.content_locales_sequence', 2, true);
 
 
 --
 -- Name: content_versions_sequence; Type: SEQUENCE SET; Schema: public; Owner: kabano
 --
 
-SELECT pg_catalog.setval('public.content_versions_sequence', 1, false);
+SELECT pg_catalog.setval('public.content_versions_sequence', 4, true);
 
 
 --
 -- Name: contents_sequence; Type: SEQUENCE SET; Schema: public; Owner: kabano
 --
 
-SELECT pg_catalog.setval('public.contents_sequence', 26, true);
+SELECT pg_catalog.setval('public.contents_sequence', 32, true);
 
 
 --
@@ -697,7 +707,7 @@ ALTER TABLE ONLY public.content_locales
 --
 
 ALTER TABLE ONLY public.content_locales
-    ADD CONSTRAINT content_locales_unique UNIQUE (content, locale);
+    ADD CONSTRAINT content_locales_unique UNIQUE (content_id, locale);
 
 
 --
@@ -713,7 +723,7 @@ ALTER TABLE ONLY public.content_versions
 --
 
 ALTER TABLE ONLY public.content_versions
-    ADD CONSTRAINT content_versions_version_locale_key UNIQUE (version, locale);
+    ADD CONSTRAINT content_versions_version_locale_key UNIQUE (version, locale_id);
 
 
 --
@@ -1004,7 +1014,7 @@ ALTER TABLE ONLY public.content_locales
 --
 
 ALTER TABLE ONLY public.content_locales
-    ADD CONSTRAINT content_locales_content FOREIGN KEY (content) REFERENCES public.contents(id);
+    ADD CONSTRAINT content_locales_content FOREIGN KEY (content_id) REFERENCES public.contents(id);
 
 
 --
@@ -1020,7 +1030,7 @@ ALTER TABLE ONLY public.content_locales
 --
 
 ALTER TABLE ONLY public.content_versions
-    ADD CONSTRAINT content_versions_locale FOREIGN KEY (locale) REFERENCES public.content_locales(id);
+    ADD CONSTRAINT content_versions_locale FOREIGN KEY (locale_id) REFERENCES public.content_locales(id);
 
 
 --
