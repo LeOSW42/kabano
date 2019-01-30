@@ -132,7 +132,7 @@ switch ($controller->splitted_url[1]) {
 						$blogComment = new Kabano\BlogComment();
 						$blogComment->locale = $user->locale;
 						$blogComment->author = $user->id;
-						$blogComment->content = $blogArticle->id;
+						$blogComment->content = $blogArticle->content_id;
 						$blogComment->comment = $_POST['comment'];
 						$blogComment->insert();
 					}
@@ -163,7 +163,7 @@ switch ($controller->splitted_url[1]) {
 				// Manage comments
 				if ($blogArticle->is_commentable == "t") {
 					$blogArticles_comments = new Kabano\BlogComments();
-					$blogArticles_comments->listComments($blogArticle->id, ($user->rankIsHigher("premium")));
+					$blogArticles_comments->listComments($blogArticle->content_id, ($user->rankIsHigher("premium")));
 
 					$i = 0;
 					foreach ($blogArticles_comments->objs as $comment) {

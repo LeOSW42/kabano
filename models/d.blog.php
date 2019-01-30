@@ -14,7 +14,9 @@ require_once($config['third_folder']."Md/MarkdownExtra.inc.php");
 
 class BlogArticle
 {
-	public $id = NULL;
+	public $content_id = NULL;
+	public $locale_id = NULL;
+	public $version_id = NULL;
 	public $permalink = NULL;
 	public $version = 0;
 	public $locale = NULL;
@@ -37,7 +39,7 @@ class BlogArticle
 		$con = pg_connect("host=".$config['SQL_host']." dbname=".$config['SQL_db']." user=".$config['SQL_user']." password=".$config['SQL_pass'])
 			or die ("Could not connect to server\n");
 
-		$query = "SELECT * FROM contents WHERE permalink=$1 AND type='blog'";
+		$query = "SELECT content_versions.id AS version_id, * FROM contents INNER JOIN content_locales ON contents.id = content_locales.content_id INNER JOIN content_versions ON content_locales.id = content_versions.locale_id WHERE permalink=$1 AND type='blog'";
 		if($withArchive==0) {
 			$query .= " AND is_archive=FALSE AND is_public=TRUE";
 		}
@@ -64,7 +66,9 @@ class BlogArticle
 	** Populate the object using its ID
 	*****/
 	public function populate($row) {
-		$this->id = $row['id'];
+		$this->content_id = $row['content_id'];
+		$this->locale_id = $row['locale_id'];
+		$this->version_id = $row['version_id'];
 		$this->permalink = $row['permalink'];
 		$this->version = $row['version'];
 		$this->locale = $row['locale'];
@@ -86,46 +90,37 @@ class BlogArticle
 		global $config;
 		global $user;
 
-		if($this->id == 0)
+		if($this->content_id == 0 || $this->locale_id == 0 || $this->version_id == 0)
 			die("Cannot update entry without giving ID");
-
-		$oldId = $this->id;
 		
 		$this->version++;
 
 		$con = pg_connect("host=".$config['SQL_host']." dbname=".$config['SQL_db']." user=".$config['SQL_user']." password=".$config['SQL_pass'])
 			or die ("Could not connect to server\n");
 
-		$query = "UPDATE contents SET is_archive = TRUE WHERE permalink = $1 AND type='blog'";
+		$query = "UPDATE content_versions SET is_archive = TRUE WHERE locale_id = $1";
 
 		pg_prepare($con, "prepare1", $query) 
 			or die ("Cannot prepare statement\n");
-		$result = pg_execute($con, "prepare1", array($this->permalink))
+		$result = pg_execute($con, "prepare1", array($this->locale_id))
 			or die ("Cannot execute statement\n");
 
-		$query = "INSERT INTO contents (permalink, version, locale, creation_date, update_date, author, is_public, is_archive, is_commentable, type, name, content) VALUES
-			($1, $2, $3, $4, $5, $6, TRUE, FALSE, $7, 'blog', $8, $9) RETURNING id";
+		$query = "INSERT INTO content_versions (version, update_date, is_archive, name, content, locale_id) VALUES
+			($1, $2, FALSE, $3, $4, $5) RETURNING id";
 
 		pg_prepare($con, "prepare2", $query) 
 			or die ("Cannot prepare statement\n");
-		$result = pg_execute($con, "prepare2", array($this->permalink, $this->version, $this->locale, $this->creation_date, date('r'), $this->author, $this->is_commentable, $this->name, $this->content))
+		$result = pg_execute($con, "prepare2", array($this->version, date('r'), $this->name, $this->content, $this->locale_id))
 			or die ("Cannot execute statement\n");
 
-		$this->id = pg_fetch_assoc($result)['id'];
-
-		$query = "INSERT INTO content_contributors (content, contributor) SELECT $1, contributor FROM content_contributors AS old WHERE old.content = $2";
-
-		pg_prepare($con, "prepare3", $query) 
-			or die ("Cannot prepare statement\n");
-		$result = pg_execute($con, "prepare3", array($this->id, $oldId))
-			or die ("Cannot execute statement\n");
+		$this->version_id = pg_fetch_assoc($result)['id'];
 
 		$query = "INSERT INTO content_contributors (content, contributor) VALUES
 			($1, $2) ON CONFLICT (content, contributor) DO NOTHING";
 
-		pg_prepare($con, "prepare4", $query) 
+		pg_prepare($con, "prepare3", $query) 
 			or die ("Cannot prepare statement\n");
-		$result = pg_execute($con, "prepare4", array($this->id, $user->id))
+		$result = pg_execute($con, "prepare3", array($this->locale_id, $user->id))
 			or die ("Cannot execute statement\n");
 
 		pg_close($con);
@@ -196,22 +191,42 @@ class BlogArticle
 		$con = pg_connect("host=".$config['SQL_host']." dbname=".$config['SQL_db']." user=".$config['SQL_user']." password=".$config['SQL_pass'])
 			or die ("Could not connect to server\n");
 
-		$query = "INSERT INTO contents (permalink, version, locale, creation_date, update_date, author, is_public, is_archive, is_commentable, type, name, content) VALUES
-			($1, '0', $2, $3, $4, $5, TRUE, FALSE, $6, 'blog', $7, $8) RETURNING id";
+		$query = "INSERT INTO contents (permalink, creation_date, is_public, is_commentable, type) VALUES
+			($1, $2, TRUE, $3, 'blog') RETURNING id";
 
 		pg_prepare($con, "prepare1", $query) 
 			or die ("Cannot prepare statement\n");
-		$result = pg_execute($con, "prepare1", array($this->permalink, $this->locale, date('r'), date('r'), $user->id, $this->is_commentable, $this->name, $this->content))
+		$result = pg_execute($con, "prepare1", array($this->permalink, date('r'), $this->is_commentable))
 			or die ("Cannot execute statement\n");
 
-		$this->id = pg_fetch_assoc($result)['id'];
+		$this->content_id = pg_fetch_assoc($result)['id'];
+
+		$query = "INSERT INTO content_locales (content_id, locale, author) VALUES
+			($1, $2, $3) RETURNING id";
+
+		pg_prepare($con, "prepare2", $query) 
+			or die ("Cannot prepare statement\n");
+		$result = pg_execute($con, "prepare2", array($this->content_id, $this->locale, $user->id))
+			or die ("Cannot execute statement\n");
+
+		$this->locale_id = pg_fetch_assoc($result)['id'];
+
+		$query = "INSERT INTO content_versions (version, update_date, is_archive, name, content, locale_id) VALUES
+			('0', $1, FALSE, $2, $3, $4) RETURNING id";
+
+		pg_prepare($con, "prepare3", $query) 
+			or die ("Cannot prepare statement\n");
+		$result = pg_execute($con, "prepare3", array(date('r'), $this->name, $this->content, $this->locale_id))
+			or die ("Cannot execute statement\n");
+
+		$this->version_id = pg_fetch_assoc($result)['id'];
 
 		$query = "INSERT INTO content_contributors (content, contributor) VALUES
 			($1, $2)";
 
-		pg_prepare($con, "prepare2", $query) 
+		pg_prepare($con, "prepare4", $query) 
 			or die ("Cannot prepare statement\n");
-		$result = pg_execute($con, "prepare2", array($this->id, $user->id))
+		$result = pg_execute($con, "prepare4", array($this->id, $user->id))
 			or die ("Cannot execute statement\n");
 
 		pg_close($con);
@@ -261,13 +276,10 @@ class BlogArticles
 		$con = pg_connect("host=".$config['SQL_host']." dbname=".$config['SQL_db']." user=".$config['SQL_user']." password=".$config['SQL_pass'])
 			or die ("Could not connect to server\n");
 
-		if ($archive == 1) {
-			// You just want one per url and the criteria is ORDER BY archives = true, time DES=C
-			$query = "SELECT * FROM (SELECT *, ROW_NUMBER() OVER (PARTITION BY a.permalink ORDER BY CASE WHEN a.is_archive IS TRUE THEN 1 ELSE 0 END, a.update_date DESC) AS r FROM contents AS a WHERE type='blog') AS b WHERE r = 1 ORDER BY update_date DESC";
-		}
-		else {
-			$query = "SELECT * FROM contents WHERE is_archive IS NOT TRUE AND is_public IS TRUE AND type='blog' ORDER BY update_date DESC";
-		}
+		$query = "SELECT content_versions.id AS version_id, * FROM contents INNER JOIN content_locales ON contents.id = content_locales.content_id INNER JOIN content_versions ON content_locales.id = content_versions.locale_id WHERE is_archive=FALSE ";
+		if ($archive == 1)
+			$query .= "AND is_public=TRUE ";
+		$query .= "AND type='blog' ORDER BY update_date DESC";
 		$query .= " LIMIT $1 OFFSET $2";
 
 		pg_prepare($con, "prepare1", $query) 
@@ -293,13 +305,10 @@ class BlogArticles
 		$con = pg_connect("host=".$config['SQL_host']." dbname=".$config['SQL_db']." user=".$config['SQL_user']." password=".$config['SQL_pass'])
 			or die ("Could not connect to server\n");
 
-		if ($archive == 1) {
-			// You just want one per url and the criteria is ORDER BY archives = true, time DES=C
-			$query = "SELECT * FROM (SELECT a.update_date, ROW_NUMBER() OVER (PARTITION BY a.permalink ORDER BY CASE WHEN a.is_archive IS TRUE THEN 1 ELSE 0 END, a.update_date DESC) AS r FROM contents AS a WHERE type='blog') AS b WHERE r = 1 ORDER BY update_date DESC";
-		}
-		else {
-			$query = "SELECT update_date FROM contents WHERE is_archive IS NOT TRUE AND is_public IS TRUE AND type='blog' ORDER BY update_date DESC";
-		}
+		$query = "SELECT content_versions.id AS version_id, * FROM contents INNER JOIN content_locales ON contents.id = content_locales.content_id INNER JOIN content_versions ON content_locales.id = content_versions.locale_id WHERE is_archive=FALSE ";
+		if ($archive == 1)
+			$query .= "AND is_public=TRUE ";
+		$query .= "AND type='blog' ORDER BY update_date DESC";
 
 		pg_prepare($con, "prepare1", $query) 
 			or die ("Cannot prepare statement\n");
@@ -320,7 +329,7 @@ class BlogArticles
 		$con = pg_connect("host=".$config['SQL_host']." dbname=".$config['SQL_db']." user=".$config['SQL_user']." password=".$config['SQL_pass'])
 			or die ("Could not connect to server\n");
 
-		$query = "SELECT * FROM contents WHERE permalink=$1 AND type='blog' ORDER BY update_date DESC";
+		$query = "SELECT content_versions.id AS version_id, * FROM contents INNER JOIN content_locales ON contents.id = content_locales.content_id INNER JOIN content_versions ON content_locales.id = content_versions.locale_id WHERE permalink=$1 AND type='blog' ORDER BY update_date DESC";
 
 		pg_prepare($con, "prepare1", $query) 
 			or die ("Cannot prepare statement\n");

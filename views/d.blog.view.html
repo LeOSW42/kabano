@@ -15,7 +15,7 @@
 						<select id="bloghistory">
 							<? $i = 0;
 							foreach ($blogHistory->objs as $row) { ?>
-								<option <?=$row->id==$blogArticle->id?'selected':''?> value="<?=$i?>"><?=$row->is_archive=="f"?'&bull; ':''?><? echo strftime('%d/%m/%Y %H:%M:%S',strtotime($row->update_date)) ?></option>
+								<option <?=$row->version_id==$blogArticle->version_id?'selected':''?> value="<?=$i?>"><?=$row->is_archive=="f"?'&bull; ':''?><? echo strftime('%d/%m/%Y %H:%M:%S',strtotime($row->update_date)) ?></option>
 							<? $i++;
 							} ?>
 						</select>

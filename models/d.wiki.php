@@ -41,7 +41,7 @@ class WikiPage
 
 		$query = "SELECT content_versions.id AS version_id, * FROM contents INNER JOIN content_locales ON contents.id = content_locales.content_id INNER JOIN content_versions ON content_locales.id = content_versions.locale_id WHERE permalink=$1 AND type='wiki'";
 		if($withArchive==0) {
-			$query .= " AND is_public=TRUE";
+			$query .= " AND is_archive=FALSE AND is_public=TRUE";
 		}
 		$query .= " ORDER BY update_date DESC LIMIT 1 OFFSET $2";
 
