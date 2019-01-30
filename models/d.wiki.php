@@ -14,7 +14,9 @@ require_once($config['third_folder']."Md/MarkdownExtra.inc.php");
 
 class WikiPage
 {
-	public $id = NULL;
+	public $content_id = NULL;
+	public $locale_id = NULL;
+	public $version_id = NULL;
 	public $permalink = NULL;
 	public $version = 0;
 	public $locale = NULL;
@@ -37,9 +39,9 @@ class WikiPage
 		$con = pg_connect("host=".$config['SQL_host']." dbname=".$config['SQL_db']." user=".$config['SQL_user']." password=".$config['SQL_pass'])
 			or die ("Could not connect to server\n");
 
-		$query = "SELECT * FROM contents WHERE permalink=$1 AND type='wiki'";
+		$query = "SELECT content_versions.id AS version_id, * FROM contents INNER JOIN content_locales ON contents.id = content_locales.content_id INNER JOIN content_versions ON content_locales.id = content_versions.locale_id WHERE permalink=$1 AND type='wiki'";
 		if($withArchive==0) {
-			$query .= " AND is_archive=FALSE AND is_public=TRUE";
+			$query .= " AND is_public=TRUE";
 		}
 		$query .= " ORDER BY update_date DESC LIMIT 1 OFFSET $2";
 
@@ -64,7 +66,9 @@ class WikiPage
 	** Populate the object using raw data from SQL
 	*****/
 	public function populate($row) {
-		$this->id = $row['id'];
+		$this->content_id = $row['content_id'];
+		$this->locale_id = $row['locale_id'];
+		$this->version_id = $row['version_id'];
 		$this->permalink = $row['permalink'];
 		$this->version = $row['version'];
 		$this->locale = $row['locale'];
@@ -86,46 +90,37 @@ class WikiPage
 		global $config;
 		global $user;
 
-		if($this->id == 0)
+		if($this->content_id == 0 || $this->locale_id == 0 || $this->version_id == 0)
 			die("Cannot update entry without giving ID");
 
-		$oldId = $this->id;
-		
 		$this->version++;
 
 		$con = pg_connect("host=".$config['SQL_host']." dbname=".$config['SQL_db']." user=".$config['SQL_user']." password=".$config['SQL_pass'])
 			or die ("Could not connect to server\n");
 
-		$query = "UPDATE contents SET is_archive = TRUE WHERE permalink = $1 AND type='wiki'";
+		$query = "UPDATE content_versions SET is_archive = TRUE WHERE locale_id = $1";
 
 		pg_prepare($con, "prepare1", $query) 
 			or die ("Cannot prepare statement\n");
-		$result = pg_execute($con, "prepare1", array($this->permalink))
+		$result = pg_execute($con, "prepare1", array($this->locale_id))
 			or die ("Cannot execute statement\n");
 
-		$query = "INSERT INTO contents (permalink, version, locale, creation_date, update_date, author, is_public, is_archive, is_commentable, type, name, content) VALUES
-			($1, $2, $3, $4, $5, $6, TRUE, FALSE, FALSE, 'wiki', $7, $8) RETURNING id";
+		$query = "INSERT INTO content_versions (version, update_date, is_archive, name, content, locale_id) VALUES
+			($1, $2, FALSE, $3, $4, $5) RETURNING id";
 
 		pg_prepare($con, "prepare2", $query) 
 			or die ("Cannot prepare statement\n");
-		$result = pg_execute($con, "prepare2", array($this->permalink, $this->version, $this->locale, $this->creation_date, date('r'), $this->author, $this->name, $this->content))
+		$result = pg_execute($con, "prepare2", array($this->version, date('r'), $this->name, $this->content, $this->locale_id))
 			or die ("Cannot execute statement\n");
 
-		$this->id = pg_fetch_assoc($result)['id'];
-
-		$query = "INSERT INTO content_contributors (content, contributor) SELECT $1, contributor FROM content_contributors AS old WHERE old.content = $2";
-
-		pg_prepare($con, "prepare3", $query) 
-			or die ("Cannot prepare statement\n");
-		$result = pg_execute($con, "prepare3", array($this->id, $oldId))
-			or die ("Cannot execute statement\n");
+		$this->version_id = pg_fetch_assoc($result)['id'];
 
 		$query = "INSERT INTO content_contributors (content, contributor) VALUES
 			($1, $2) ON CONFLICT (content, contributor) DO NOTHING";
 
-		pg_prepare($con, "prepare4", $query) 
+		pg_prepare($con, "prepare3", $query) 
 			or die ("Cannot prepare statement\n");
-		$result = pg_execute($con, "prepare4", array($this->id, $user->id))
+		$result = pg_execute($con, "prepare3", array($this->locale_id, $user->id))
 			or die ("Cannot execute statement\n");
 
 		pg_close($con);
@@ -196,22 +191,42 @@ class WikiPage
 		$con = pg_connect("host=".$config['SQL_host']." dbname=".$config['SQL_db']." user=".$config['SQL_user']." password=".$config['SQL_pass'])
 			or die ("Could not connect to server\n");
 
-		$query = "INSERT INTO contents (permalink, version, locale, creation_date, update_date, author, is_public, is_archive, is_commentable, type, name, content) VALUES
-			($1, '0', $2, $3, $4, $5, TRUE, FALSE, FALSE, 'wiki', $6, $7) RETURNING id";
+		$query = "INSERT INTO contents (permalink, creation_date, is_public, is_commentable, type) VALUES
+			($1, $2, TRUE, FALSE, 'wiki') RETURNING id";
 
 		pg_prepare($con, "prepare1", $query) 
 			or die ("Cannot prepare statement\n");
-		$result = pg_execute($con, "prepare1", array($this->permalink, $this->locale, date('r'), date('r'), $user->id, $this->name, $this->content))
+		$result = pg_execute($con, "prepare1", array($this->permalink, date('r')))
 			or die ("Cannot execute statement\n");
 
-		$this->id = pg_fetch_assoc($result)['id'];
+		$this->content_id = pg_fetch_assoc($result)['id'];
+
+		$query = "INSERT INTO content_locales (content_id, locale, author) VALUES
+			($1, $2, $3) RETURNING id";
+
+		pg_prepare($con, "prepare2", $query) 
+			or die ("Cannot prepare statement\n");
+		$result = pg_execute($con, "prepare2", array($this->content_id, $this->locale, $user->id))
+			or die ("Cannot execute statement\n");
+
+		$this->locale_id = pg_fetch_assoc($result)['id'];
+
+		$query = "INSERT INTO content_versions (version, update_date, is_archive, name, content, locale_id) VALUES
+			('0', $1, FALSE, $2, $3, $4) RETURNING id";
+
+		pg_prepare($con, "prepare3", $query) 
+			or die ("Cannot prepare statement\n");
+		$result = pg_execute($con, "prepare3", array(date('r'), $this->name, $this->content, $this->locale_id))
+			or die ("Cannot execute statement\n");
+
+		$this->version_id = pg_fetch_assoc($result)['id'];
 
 		$query = "INSERT INTO content_contributors (content, contributor) VALUES
 			($1, $2)";
 
-		pg_prepare($con, "prepare2", $query) 
+		pg_prepare($con, "prepare4", $query) 
 			or die ("Cannot prepare statement\n");
-		$result = pg_execute($con, "prepare2", array($this->id, $user->id))
+		$result = pg_execute($con, "prepare4", array($this->locale_id, $user->id))
 			or die ("Cannot execute statement\n");
 
 		pg_close($con);
@@ -252,7 +267,7 @@ class WikiPages
 		$con = pg_connect("host=".$config['SQL_host']." dbname=".$config['SQL_db']." user=".$config['SQL_user']." password=".$config['SQL_pass'])
 			or die ("Could not connect to server\n");
 
-		$query = "SELECT * FROM contents WHERE permalink=$1 AND type='wiki' ORDER BY update_date DESC";
+		$query = "SELECT content_versions.id AS version_id, * FROM contents INNER JOIN content_locales ON contents.id = content_locales.content_id INNER JOIN content_versions ON content_locales.id = content_versions.locale_id WHERE permalink=$1 AND type='wiki' ORDER BY update_date DESC";
 
 		pg_prepare($con, "prepare1", $query) 
 			or die ("Cannot prepare statement\n");

@@ -15,7 +15,7 @@
 						<select id="wikihistory">
 							<? $i = 0;
 							foreach ($wikiHistory->objs as $row) { ?>
-								<option <?=$row->id==$wikiPage->id?'selected':''?> value="<?=$i?>"><?=$row->is_archive=="f"?'&bull; ':''?><? echo strftime('%d/%m/%Y %H:%M:%S',strtotime($row->update_date)) ?></option>
+								<option <?=$row->version_id==$wikiPage->version_id?'selected':''?> value="<?=$i?>"><?=$row->is_archive=="f"?'&bull; ':''?><? echo strftime('%d/%m/%Y %H:%M:%S',strtotime($row->update_date)) ?></option>
 							<? $i++;
 							} ?>
 						</select>
