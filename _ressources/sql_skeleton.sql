@@ -182,20 +182,6 @@ CREATE TABLE public.content_contributors (
 ALTER TABLE public.content_contributors OWNER TO kabano;
 
 --
--- Name: content_locales; Type: TABLE; Schema: public; Owner: kabano
---
-
-CREATE TABLE public.content_locales (
-    id integer NOT NULL,
-    content integer NOT NULL,
-    locale character varying(32) NOT NULL,
-    author integer NOT NULL
-);
-
-
-ALTER TABLE public.content_locales OWNER TO kabano;
-
---
 -- Name: content_locales_sequence; Type: SEQUENCE; Schema: public; Owner: kabano
 --
 
@@ -210,21 +196,18 @@ CREATE SEQUENCE public.content_locales_sequence
 ALTER TABLE public.content_locales_sequence OWNER TO kabano;
 
 --
--- Name: content_versions; Type: TABLE; Schema: public; Owner: kabano
+-- Name: content_locales; Type: TABLE; Schema: public; Owner: kabano
 --
 
-CREATE TABLE public.content_versions (
-    id integer NOT NULL,
-    version integer DEFAULT 0 NOT NULL,
-    update_date timestamp without time zone NOT NULL,
-    is_archive boolean DEFAULT false NOT NULL,
-    name character varying(255),
-    content text,
-    locale integer NOT NULL
+CREATE TABLE public.content_locales (
+    id integer DEFAULT nextval('public.content_locales_sequence'::regclass) NOT NULL,
+    content integer NOT NULL,
+    locale character varying(32) NOT NULL,
+    author integer NOT NULL
 );
 
 
-ALTER TABLE public.content_versions OWNER TO kabano;
+ALTER TABLE public.content_locales OWNER TO kabano;
 
 --
 -- Name: content_versions_sequence; Type: SEQUENCE; Schema: public; Owner: kabano
@@ -239,6 +222,23 @@ CREATE SEQUENCE public.content_versions_sequence
 
 
 ALTER TABLE public.content_versions_sequence OWNER TO kabano;
+
+--
+-- Name: content_versions; Type: TABLE; Schema: public; Owner: kabano
+--
+
+CREATE TABLE public.content_versions (
+    id integer DEFAULT nextval('public.content_versions_sequence'::regclass) NOT NULL,
+    version integer DEFAULT 0 NOT NULL,
+    update_date timestamp without time zone NOT NULL,
+    is_archive boolean DEFAULT false NOT NULL,
+    name character varying(255),
+    content text,
+    locale integer NOT NULL
+);
+
+
+ALTER TABLE public.content_versions OWNER TO kabano;
 
 --
 -- Name: contents_sequence; Type: SEQUENCE; Schema: public; Owner: kabano
@@ -570,7 +570,7 @@ COPY public.spatial_ref_sys (srid, auth_name, auth_srid, srtext, proj4text) FROM
 
 COPY public.users (id, name, version, email, password, website, is_avatar_present, is_archive, rank, locale, timezone, visit_date, register_date) FROM stdin;
 4	leosw2	0	leo@leo.fr	b36982d19ecde5eabbd83f964c6fe560050fe4bd		f	f	moderator	fr_FR	CEST	2018-11-04 07:12:11	2018-10-17 18:14:11
-1	leosw	1	leo@lstronic.com	b36982d19ecde5eabbd83f964c6fe560050fe4bd	https://lstronic.com	t	f	administrator	fr_FR	CEST	2019-01-29 18:23:39	2018-09-03 21:27:13
+1	leosw	1	leo@lstronic.com	b36982d19ecde5eabbd83f964c6fe560050fe4bd	https://lstronic.com	t	f	administrator	fr_FR	CEST	2019-01-30 17:50:06	2018-09-03 21:27:13
 \.
 
 
