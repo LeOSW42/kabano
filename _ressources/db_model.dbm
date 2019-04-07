@@ -3,7 +3,7 @@
 CAUTION: Do not modify this file unless you know what you are doing.
          Unexpected results may occur if the code is changed deliberately.
 -->
-<dbmodel pgmodeler-ver="0.9.2-alpha1" last-position="0,441" last-zoom="0.6" max-obj-count="21"
+<dbmodel pgmodeler-ver="0.9.2-alpha1" last-position="0,0" last-zoom="0.6" max-obj-count="21"
 	 default-owner="postgres">
 <role name="kabano"
       inherit="true"
@@ -67,7 +67,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 <table name="content_comments" layer="0" collapse-mode="2" max-obj-count="12">
 	<schema name="public"/>
 	<role name="kabano"/>
-	<position x="240" y="300"/>
+	<position x="540" y="340"/>
 	<column name="id" not-null="true" sequence="public.content_comments_sequence">
 		<type name="integer" length="0"/>
 	</column>
@@ -111,7 +111,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 <table name="content_contributors" layer="0" collapse-mode="2" max-obj-count="4">
 	<schema name="public"/>
 	<role name="kabano"/>
-	<position x="680" y="500"/>
+	<position x="1460" y="300"/>
 	<column name="id" not-null="true" sequence="public.content_contributors_sequence">
 		<type name="integer" length="0"/>
 	</column>
@@ -167,7 +167,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 <table name="locales" layer="0" collapse-mode="2" max-obj-count="3">
 	<schema name="public"/>
 	<role name="kabano"/>
-	<position x="1540" y="360"/>
+	<position x="700" y="800"/>
 	<column name="name" not-null="true">
 		<type name="character varying" length="32"/>
 	</column>
@@ -196,7 +196,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 <table name="poi_comments" layer="0" collapse-mode="2" max-obj-count="13">
 	<schema name="public"/>
 	<role name="kabano"/>
-	<position x="240" y="680"/>
+	<position x="1140" y="980"/>
 	<column name="id" not-null="true" sequence="public.poi_comments_sequence">
 		<type name="integer" length="0"/>
 	</column>
@@ -246,7 +246,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 <table name="poi_contributors" layer="0" collapse-mode="2" max-obj-count="4">
 	<schema name="public"/>
 	<role name="kabano"/>
-	<position x="720" y="820"/>
+	<position x="1560" y="820"/>
 	<column name="id" not-null="true" sequence="public.poi_contributors_sequence">
 		<type name="integer" length="0"/>
 	</column>
@@ -272,7 +272,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 <table name="poi_locales" layer="0" collapse-mode="2" max-obj-count="6">
 	<schema name="public"/>
 	<role name="kabano"/>
-	<position x="700" y="1040"/>
+	<position x="720" y="1340"/>
 	<column name="id" not-null="true" default-value="nextval('poi_locales_sequence'::regclass)">
 		<type name="integer" length="0"/>
 	</column>
@@ -299,7 +299,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 <table name="sources" layer="0" collapse-mode="2" max-obj-count="7">
 	<schema name="public"/>
 	<role name="kabano"/>
-	<position x="1160" y="1280"/>
+	<position x="1160" y="1600"/>
 	<column name="id" not-null="true">
 		<type name="character varying" length="3"/>
 	</column>
@@ -537,7 +537,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 <table name="pois" layer="0" collapse-mode="2" max-obj-count="8">
 	<schema name="public"/>
 	<role name="kabano"/>
-	<position x="160" y="1100"/>
+	<position x="280" y="1320"/>
 	<column name="id" not-null="true" sequence="public.poi_versions_sequence">
 		<type name="integer" length="0"/>
 	</column>
@@ -567,7 +567,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 <table name="poi_versions" layer="0" collapse-mode="2" max-obj-count="12">
 	<schema name="public"/>
 	<role name="kabano"/>
-	<position x="1560" y="980"/>
+	<position x="1620" y="1260"/>
 	<column name="id" not-null="true" sequence="public.pois_sequence">
 		<type name="integer" length="0"/>
 	</column>
@@ -638,7 +638,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 <table name="poi_sources" layer="0" collapse-mode="2" max-obj-count="4">
 	<schema name="public"/>
 	<role name="kabano"/>
-	<position x="1120" y="1100"/>
+	<position x="1160" y="1400"/>
 	<column name="id" not-null="true" sequence="public.poi_sources_sequence">
 		<type name="integer" length="0"/>
 	</column>
@@ -711,7 +711,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 </constraint>
 
 <constraint name="poi_contributors_poi_fkey" type="fk-constr" comparison-type="MATCH SIMPLE"
-	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="public.poi_versions" table="public.poi_contributors">
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="public.poi_sources" table="public.poi_contributors">
 	<columns names="poi" ref-type="src-columns"/>
 	<columns names="id" ref-type="dst-columns"/>
 </constraint>
@@ -809,9 +809,9 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	 dst-table="public.users" reference-fk="poi_contributors_contributor_fkey"
 	 src-required="false" dst-required="false"/>
 
-<relationship name="rel_poi_contributors_poi_versions" type="relfk" layer="0"
+<relationship name="rel_poi_contributors_poi_sources" type="relfk" layer="0"
 	 src-table="public.poi_contributors"
-	 dst-table="public.poi_versions" reference-fk="poi_contributors_poi_fkey"
+	 dst-table="public.poi_sources" reference-fk="poi_contributors_poi_fkey"
 	 src-required="false" dst-required="false"/>
 
 <relationship name="rel_poi_locales_locales" type="relfk" layer="0"
