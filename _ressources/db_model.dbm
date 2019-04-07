@@ -1,0 +1,861 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+CAUTION: Do not modify this file unless you know what you are doing.
+         Unexpected results may occur if the code is changed deliberately.
+-->
+<dbmodel pgmodeler-ver="0.9.2-alpha1" last-position="0,0" last-zoom="0.45" max-obj-count="20"
+	 default-schema="public" default-owner="postgres">
+<role name="kabano"
+      inherit="true"
+      login="true"
+      encrypted="true"
+      password="********">
+</role>
+
+<database name="kabano" encoding="UTF8" lc-collate="fr_FR.UTF-8" lc-ctype="fr_FR.UTF-8" is-template="false" allow-conns="true">
+	<role name="kabano"/>
+	<tablespace name="pg_default"/>
+</database>
+
+<schema name="public" layer="0" rect-visible="true" fill-color="#e1e1e1" sql-disabled="true">
+</schema>
+
+<schema name="topology" layer="0" rect-visible="true" fill-color="#c8e6ff">
+	<role name="kabano"/>
+	<comment><![CDATA[PostGIS Topology schema]]></comment>
+</schema>
+
+<extension name="postgis" cur-version="2.5.0">
+	<schema name="public"/>
+	<comment><![CDATA[PostGIS geometry, geography, and raster spatial types and functions]]></comment>
+</extension>
+
+<extension name="postgis_topology" cur-version="2.5.0">
+	<schema name="topology"/>
+	<comment><![CDATA[PostGIS topology spatial types and functions]]></comment>
+</extension>
+
+<usertype name="content_type_enum" configuration="enumeration">
+	<schema name="public"/>
+	<role name="kabano"/>
+	<enumeration values="wiki,blog,forum"/>
+</usertype>
+
+<usertype name="poi_key_enum" configuration="enumeration">
+	<schema name="public"/>
+	<role name="kabano"/>
+	<enumeration values="description,access"/>
+</usertype>
+
+<usertype name="poi_type_enum" configuration="enumeration">
+	<schema name="public"/>
+	<role name="kabano"/>
+	<enumeration values="basic_hut,wilderness_hut,alpine_hut,halt,bivouac,campsite"/>
+</usertype>
+
+<usertype name="user_rank_enum" configuration="enumeration">
+	<schema name="public"/>
+	<role name="kabano"/>
+	<enumeration values="blocked,registered,premium,moderator,administrator,visitor"/>
+</usertype>
+
+<sequence name="content_comments_sequence" cycle="false" start="1" increment="1" min-value="1" max-value="9223372036854775807" cache="1">
+	<schema name="public"/>
+	<role name="kabano"/>
+</sequence>
+
+<table name="content_comments" layer="0" collapse-mode="2" max-obj-count="12">
+	<schema name="public"/>
+	<role name="kabano"/>
+	<position x="240" y="280"/>
+	<column name="id" not-null="true" sequence="public.content_comments_sequence">
+		<type name="integer" length="0"/>
+	</column>
+	<column name="version">
+		<type name="integer" length="0"/>
+	</column>
+	<column name="creation_date">
+		<type name="timestamp" length="0"/>
+	</column>
+	<column name="update_date">
+		<type name="timestamp" length="0"/>
+	</column>
+	<column name="author">
+		<type name="integer" length="0"/>
+	</column>
+	<column name="is_public">
+		<type name="boolean" length="0"/>
+	</column>
+	<column name="is_archive">
+		<type name="boolean" length="0"/>
+	</column>
+	<column name="content">
+		<type name="integer" length="0"/>
+	</column>
+	<column name="comment">
+		<type name="text" length="0"/>
+	</column>
+	<column name="locale">
+		<type name="character varying" length="32"/>
+	</column>
+	<constraint name="content_comments_pkey" type="pk-constr" table="public.content_comments">
+		<columns names="id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<sequence name="content_contributors_sequence" cycle="false" start="1" increment="1" min-value="1" max-value="9223372036854775807" cache="1">
+	<schema name="public"/>
+	<role name="kabano"/>
+</sequence>
+
+<table name="content_contributors" layer="0" collapse-mode="2" max-obj-count="4">
+	<schema name="public"/>
+	<role name="kabano"/>
+	<position x="680" y="480"/>
+	<column name="id" not-null="true" sequence="public.content_contributors_sequence">
+		<type name="integer" length="0"/>
+	</column>
+	<column name="content">
+		<type name="integer" length="0"/>
+	</column>
+	<column name="contributor">
+		<type name="integer" length="0"/>
+	</column>
+	<constraint name="content_contributors_pkey" type="pk-constr" table="public.content_contributors">
+		<columns names="id" ref-type="src-columns"/>
+	</constraint>
+	<constraint name="content_contributors_unique" type="uq-constr" table="public.content_contributors">
+		<columns names="content,contributor" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<sequence name="contents_sequence" cycle="false" start="1" increment="1" min-value="1" max-value="9223372036854775807" cache="1">
+	<schema name="public"/>
+	<role name="kabano"/>
+</sequence>
+
+<table name="contents" layer="0" collapse-mode="2" max-obj-count="7">
+	<schema name="public"/>
+	<role name="kabano"/>
+	<position x="540" y="40"/>
+	<column name="id" not-null="true" sequence="public.contents_sequence">
+		<type name="integer" length="0"/>
+	</column>
+	<column name="permalink" not-null="true">
+		<type name="character varying" length="255"/>
+	</column>
+	<column name="creation_date" not-null="true">
+		<type name="timestamp" length="0"/>
+	</column>
+	<column name="is_public" not-null="true" default-value="true">
+		<type name="boolean" length="0"/>
+	</column>
+	<column name="is_commentable" not-null="true" default-value="true">
+		<type name="boolean" length="0"/>
+	</column>
+	<column name="type" not-null="true">
+		<type name="public.content_type_enum" length="0"/>
+	</column>
+	<constraint name="contents_pkey" type="pk-constr" table="public.contents">
+		<columns names="id" ref-type="src-columns"/>
+	</constraint>
+	<constraint name="contents_permalink_type_key" type="uq-constr" table="public.contents">
+		<columns names="permalink,type" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="locales" layer="0" collapse-mode="2" max-obj-count="3">
+	<schema name="public"/>
+	<role name="kabano"/>
+	<position x="1540" y="340"/>
+	<column name="name" not-null="true">
+		<type name="character varying" length="32"/>
+	</column>
+	<column name="display_name" not-null="true">
+		<type name="character varying" length="255"/>
+	</column>
+	<column name="flag_name">
+		<type name="character varying" length="32"/>
+	</column>
+	<constraint name="locales_display_name_unique" type="uq-constr" table="public.locales">
+		<columns names="display_name" ref-type="src-columns"/>
+	</constraint>
+	<constraint name="locales_flag_name_unique" type="uq-constr" table="public.locales">
+		<columns names="flag_name" ref-type="src-columns"/>
+	</constraint>
+	<constraint name="locales_pkey" type="pk-constr" table="public.locales">
+		<columns names="name" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<sequence name="poi_comments_sequence" cycle="false" start="1" increment="1" min-value="1" max-value="9223372036854775807" cache="1">
+	<schema name="public"/>
+	<role name="kabano"/>
+</sequence>
+
+<table name="poi_comments" layer="0" collapse-mode="2" max-obj-count="13">
+	<schema name="public"/>
+	<role name="kabano"/>
+	<position x="240" y="660"/>
+	<column name="id" not-null="true" sequence="public.poi_comments_sequence">
+		<type name="integer" length="0"/>
+	</column>
+	<column name="permalink">
+		<type name="character varying" length="255"/>
+	</column>
+	<column name="version">
+		<type name="integer" length="0"/>
+	</column>
+	<column name="creation_date">
+		<type name="timestamp" length="0"/>
+	</column>
+	<column name="update_date">
+		<type name="timestamp" length="0"/>
+	</column>
+	<column name="author">
+		<type name="integer" length="0"/>
+	</column>
+	<column name="is_public">
+		<type name="boolean" length="0"/>
+	</column>
+	<column name="is_archive">
+		<type name="boolean" length="0"/>
+	</column>
+	<column name="poi">
+		<type name="integer" length="0"/>
+	</column>
+	<column name="comment">
+		<type name="text" length="0"/>
+	</column>
+	<column name="locale">
+		<type name="character varying" length="32"/>
+	</column>
+	<constraint name="poi_comments_permalink_version_key" type="uq-constr" table="public.poi_comments">
+		<columns names="permalink,version" ref-type="src-columns"/>
+	</constraint>
+	<constraint name="poi_comments_pkey" type="pk-constr" table="public.poi_comments">
+		<columns names="id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<sequence name="poi_contributors_sequence" cycle="false" start="1" increment="1" min-value="1" max-value="9223372036854775807" cache="1">
+	<schema name="public"/>
+	<role name="kabano"/>
+</sequence>
+
+<table name="poi_contributors" layer="0" collapse-mode="2" max-obj-count="4">
+	<schema name="public"/>
+	<role name="kabano"/>
+	<position x="720" y="800"/>
+	<column name="id" not-null="true" sequence="public.poi_contributors_sequence">
+		<type name="integer" length="0"/>
+	</column>
+	<column name="poi">
+		<type name="integer" length="0"/>
+	</column>
+	<column name="contributor">
+		<type name="integer" length="0"/>
+	</column>
+	<constraint name="poi_contributors_pkey" type="pk-constr" table="public.poi_contributors">
+		<columns names="id" ref-type="src-columns"/>
+	</constraint>
+	<constraint name="poi_contributors_unique" type="uq-constr" table="public.poi_contributors">
+		<columns names="poi,contributor" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<sequence name="poi_locales_sequence" cycle="false" start="1" increment="1" min-value="1" max-value="9223372036854775807" cache="1">
+	<schema name="public"/>
+	<role name="kabano"/>
+</sequence>
+
+<table name="poi_locales" layer="0" collapse-mode="2" max-obj-count="6">
+	<schema name="public"/>
+	<role name="kabano"/>
+	<position x="980" y="1060"/>
+	<column name="id" not-null="true" default-value="nextval('poi_localised_sequence'::regclass)">
+		<type name="integer" length="0"/>
+	</column>
+	<column name="poi" not-null="true">
+		<type name="integer" length="0"/>
+	</column>
+	<column name="locale" not-null="true">
+		<type name="character varying" length="32"/>
+	</column>
+	<column name="key" not-null="true">
+		<type name="public.poi_key_enum" length="0"/>
+	</column>
+	<column name="value" not-null="true">
+		<type name="text" length="0"/>
+	</column>
+	<constraint name="poi_localised_pkey" type="pk-constr" table="public.poi_locales">
+		<columns names="id" ref-type="src-columns"/>
+	</constraint>
+	<constraint name="poi_localised_unique" type="uq-constr" table="public.poi_locales">
+		<columns names="poi,locale,key" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="sources" layer="0" collapse-mode="2" max-obj-count="7">
+	<schema name="public"/>
+	<role name="kabano"/>
+	<position x="540" y="1300"/>
+	<column name="id" not-null="true">
+		<type name="character varying" length="3"/>
+	</column>
+	<column name="display_name" not-null="true">
+		<type name="character varying" length="255"/>
+	</column>
+	<column name="icon_name">
+		<type name="character varying" length="255"/>
+	</column>
+	<column name="website">
+		<type name="character varying" length="255"/>
+	</column>
+	<column name="license_name">
+		<type name="character varying" length="255"/>
+	</column>
+	<column name="license_url">
+		<type name="character varying" length="255"/>
+	</column>
+	<constraint name="sources_display_name_unique" type="uq-constr" table="public.sources">
+		<columns names="display_name" ref-type="src-columns"/>
+	</constraint>
+	<constraint name="sources_pkey" type="pk-constr" table="public.sources">
+		<columns names="id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<sequence name="poi_versions_sequence" cycle="false" start="1" increment="1" min-value="1" max-value="9223372036854775807" cache="1">
+	<schema name="public"/>
+	<role name="kabano"/>
+</sequence>
+
+<sequence name="pois_sequence" cycle="false" start="1" increment="1" min-value="1" max-value="9223372036854775807" cache="1">
+	<schema name="public"/>
+	<role name="kabano"/>
+</sequence>
+
+<sequence name="users_id_sequence" cycle="false" start="1" increment="1" min-value="1" max-value="9223372036854775807" cache="1">
+	<schema name="public"/>
+	<role name="kabano"/>
+</sequence>
+
+<table name="users" layer="0" collapse-mode="2" max-obj-count="15">
+	<schema name="public"/>
+	<role name="kabano"/>
+	<position x="1140" y="520"/>
+	<column name="id" not-null="true" sequence="public.users_id_sequence">
+		<type name="integer" length="0"/>
+	</column>
+	<column name="name" not-null="true">
+		<type name="character varying" length="255"/>
+	</column>
+	<column name="version" not-null="true" default-value="0">
+		<type name="integer" length="0"/>
+	</column>
+	<column name="email" not-null="true">
+		<type name="character varying" length="255"/>
+	</column>
+	<column name="password" not-null="true">
+		<type name="character varying" length="255"/>
+	</column>
+	<column name="website">
+		<type name="character varying" length="255"/>
+	</column>
+	<column name="is_avatar_present" not-null="true">
+		<type name="boolean" length="0"/>
+	</column>
+	<column name="is_archive" not-null="true">
+		<type name="boolean" length="0"/>
+	</column>
+	<column name="rank" not-null="true">
+		<type name="public.user_rank_enum" length="0"/>
+	</column>
+	<column name="locale" not-null="true">
+		<type name="character varying" length="32"/>
+	</column>
+	<column name="timezone" not-null="true">
+		<type name="character varying" length="8"/>
+	</column>
+	<column name="visit_date" not-null="true">
+		<type name="timestamp" length="0"/>
+	</column>
+	<column name="register_date" not-null="true">
+		<type name="timestamp" length="0"/>
+	</column>
+	<constraint name="users_email_unique" type="uq-constr" table="public.users">
+		<columns names="email" ref-type="src-columns"/>
+	</constraint>
+	<constraint name="users_name_unique" type="uq-constr" table="public.users">
+		<columns names="name,version" ref-type="src-columns"/>
+	</constraint>
+	<constraint name="users_pkey" type="pk-constr" table="public.users">
+		<columns names="id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<index name="content_comments_is_archive_index" table="public.content_comments"
+	 concurrent="false" unique="false" fast-update="false" buffering="false"
+	 index-type="btree" factor="90">
+		<idxelement use-sorting="false">
+			<column name="is_archive"/>
+		</idxelement>
+</index>
+
+<index name="content_comments_is_public_index" table="public.content_comments"
+	 concurrent="false" unique="false" fast-update="false" buffering="false"
+	 index-type="btree" factor="90">
+		<idxelement use-sorting="false">
+			<column name="is_public"/>
+		</idxelement>
+</index>
+
+<index name="contents_is_public_index" table="public.contents"
+	 concurrent="false" unique="false" fast-update="false" buffering="false"
+	 index-type="btree" factor="90">
+		<idxelement use-sorting="false">
+			<column name="is_public"/>
+		</idxelement>
+</index>
+
+<index name="poi_comments_is_archive_index" table="public.poi_comments"
+	 concurrent="false" unique="false" fast-update="false" buffering="false"
+	 index-type="btree" factor="90">
+		<idxelement use-sorting="false">
+			<column name="is_archive"/>
+		</idxelement>
+</index>
+
+<index name="poi_comments_is_public_index" table="public.poi_comments"
+	 concurrent="false" unique="false" fast-update="false" buffering="false"
+	 index-type="btree" factor="90">
+		<idxelement use-sorting="false">
+			<column name="is_public"/>
+		</idxelement>
+</index>
+
+<index name="poi_versions_is_archive_index" table="public.poi_versions"
+	 concurrent="false" unique="false" fast-update="false" buffering="false"
+	 index-type="btree" factor="90">
+		<idxelement use-sorting="false">
+			<column name="is_archive"/>
+		</idxelement>
+</index>
+
+<index name="poi_versions_is_destroyed_index" table="public.poi_versions"
+	 concurrent="false" unique="false" fast-update="false" buffering="false"
+	 index-type="btree" factor="90">
+		<idxelement use-sorting="false">
+			<column name="is_destroyed"/>
+		</idxelement>
+</index>
+
+<index name="poi_versions_type_index" table="public.poi_versions"
+	 concurrent="false" unique="false" fast-update="false" buffering="false"
+	 index-type="btree" factor="90">
+		<idxelement use-sorting="false">
+			<column name="alt_type"/>
+		</idxelement>
+</index>
+
+<index name="users_is_archive_index" table="public.users"
+	 concurrent="false" unique="false" fast-update="false" buffering="false"
+	 index-type="btree" factor="90">
+		<idxelement use-sorting="false">
+			<column name="is_archive"/>
+		</idxelement>
+</index>
+
+<index name="users_register_date_index" table="public.users"
+	 concurrent="false" unique="false" fast-update="false" buffering="false"
+	 index-type="btree" factor="90">
+		<idxelement use-sorting="false">
+			<column name="register_date"/>
+		</idxelement>
+</index>
+
+<sequence name="content_locales_sequence" cycle="false" start="1" increment="1" min-value="1" max-value="9223372036854775807" cache="1">
+	<schema name="public"/>
+	<role name="kabano"/>
+</sequence>
+
+<sequence name="content_versions_sequence" cycle="false" start="1" increment="1" min-value="1" max-value="9223372036854775807" cache="1">
+	<schema name="public"/>
+	<role name="kabano"/>
+</sequence>
+
+<index name="fki_content_contributors_contributor_fkey" table="public.content_contributors"
+	 concurrent="false" unique="false" fast-update="false" buffering="false"
+	 index-type="btree" factor="90">
+		<idxelement use-sorting="false">
+			<column name="contributor"/>
+		</idxelement>
+</index>
+
+<index name="fki_content_contributors_content_fkey" table="public.content_contributors"
+	 concurrent="false" unique="false" fast-update="false" buffering="false"
+	 index-type="btree" factor="90">
+		<idxelement use-sorting="false">
+			<column name="content"/>
+		</idxelement>
+</index>
+
+<table name="content_locales" layer="0" collapse-mode="2" max-obj-count="6">
+	<schema name="public"/>
+	<role name="kabano"/>
+	<position x="1020" y="40"/>
+	<column name="id" not-null="true" sequence="public.content_locales_sequence">
+		<type name="integer" length="0"/>
+	</column>
+	<column name="content_id" not-null="true">
+		<type name="integer" length="0"/>
+	</column>
+	<column name="locale" not-null="true">
+		<type name="character varying" length="32"/>
+	</column>
+	<column name="author" not-null="true">
+		<type name="integer" length="0"/>
+	</column>
+	<constraint name="content_locales_pkey" type="pk-constr" table="public.content_locales">
+		<columns names="id" ref-type="src-columns"/>
+	</constraint>
+	<constraint name="content_locales_unique" type="uq-constr" table="public.content_locales">
+		<columns names="content_id,locale" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="content_versions" layer="0" collapse-mode="2" max-obj-count="8">
+	<schema name="public"/>
+	<role name="kabano"/>
+	<position x="1500" y="20"/>
+	<column name="id" not-null="true" sequence="public.content_versions_sequence">
+		<type name="integer" length="0"/>
+	</column>
+	<column name="version" not-null="true" default-value="0">
+		<type name="integer" length="0"/>
+	</column>
+	<column name="update_date" not-null="true">
+		<type name="timestamp" length="0"/>
+	</column>
+	<column name="is_archive" not-null="true" default-value="false">
+		<type name="boolean" length="0"/>
+	</column>
+	<column name="name">
+		<type name="character varying" length="255"/>
+	</column>
+	<column name="content">
+		<type name="text" length="0"/>
+	</column>
+	<column name="locale_id" not-null="true">
+		<type name="integer" length="0"/>
+	</column>
+	<constraint name="content_versions_pkey" type="pk-constr" table="public.content_versions">
+		<columns names="id" ref-type="src-columns"/>
+	</constraint>
+	<constraint name="content_versions_version_locale_key" type="uq-constr" table="public.content_versions">
+		<columns names="version,locale_id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="pois" layer="0" collapse-mode="2" max-obj-count="8">
+	<schema name="public"/>
+	<role name="kabano"/>
+	<position x="160" y="1080"/>
+	<column name="id" not-null="true" sequence="public.poi_versions_sequence">
+		<type name="integer" length="0"/>
+	</column>
+	<column name="is_public" not-null="true" default-value="true">
+		<type name="boolean" length="0"/>
+	</column>
+	<column name="permalink" not-null="true">
+		<type name="character varying" length="255"/>
+	</column>
+	<column name="creation_date" not-null="true">
+		<type name="timestamp" length="0"/>
+	</column>
+	<column name="name" not-null="true">
+		<type name="character varying" length="255"/>
+	</column>
+	<column name="position" not-null="true">
+		<type name="geometry" length="0"/>
+	</column>
+	<column name="type" not-null="true">
+		<type name="public.poi_type_enum" length="0"/>
+	</column>
+	<constraint name="pois_pkey" type="pk-constr" table="public.pois">
+		<columns names="id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="poi_versions" layer="0" collapse-mode="2" max-obj-count="12">
+	<schema name="public"/>
+	<role name="kabano"/>
+	<position x="1560" y="960"/>
+	<column name="id" not-null="true" sequence="public.pois_sequence">
+		<type name="integer" length="0"/>
+	</column>
+	<column name="version" not-null="true" default-value="0">
+		<type name="integer" length="0"/>
+	</column>
+	<column name="update_date" not-null="true">
+		<type name="timestamp" length="0"/>
+	</column>
+	<column name="is_archive" not-null="true" default-value="false">
+		<type name="boolean" length="0"/>
+	</column>
+	<column name="alt_type" not-null="true">
+		<type name="public.poi_type_enum" length="0"/>
+	</column>
+	<column name="is_destroyed" not-null="true" default-value="false">
+		<type name="boolean" length="0"/>
+	</column>
+	<column name="alt_name">
+		<type name="character varying" length="255"/>
+	</column>
+	<column name="alt_position" not-null="true">
+		<type name="geometry" length="0"/>
+	</column>
+	<column name="parameters">
+		<type name="jsonb" length="0"/>
+	</column>
+	<column name="source_id" not-null="true">
+		<type name="integer" length="0"/>
+	</column>
+	<constraint name="poi_versions_pkey" type="pk-constr" table="public.poi_versions">
+		<columns names="id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<sequence name="poi_sources_sequence" cycle="false" start="1" increment="1" min-value="1" max-value="9223372036854775807" cache="1">
+	<schema name="public"/>
+	<role name="kabano"/>
+</sequence>
+
+<table name="poi_sources" layer="0" collapse-mode="2" max-obj-count="4">
+	<schema name="public"/>
+	<role name="kabano"/>
+	<position x="560" y="1120"/>
+	<column name="id" not-null="true" sequence="public.poi_sources_sequence">
+		<type name="integer" length="0"/>
+	</column>
+	<column name="source">
+		<type name="character varying" length="3"/>
+	</column>
+	<column name="remote_source_id">
+		<type name="character varying" length="255"/>
+	</column>
+	<column name="author" not-null="true">
+		<type name="integer" length="0"/>
+	</column>
+</table>
+
+<constraint name="content_comments_author_fkey" type="fk-constr" comparison-type="MATCH SIMPLE"
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="public.users" table="public.content_comments">
+	<columns names="author" ref-type="src-columns"/>
+	<columns names="id" ref-type="dst-columns"/>
+</constraint>
+
+<constraint name="content_comments_content_fkey" type="fk-constr" comparison-type="MATCH SIMPLE"
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="public.contents" table="public.content_comments">
+	<columns names="content" ref-type="src-columns"/>
+	<columns names="id" ref-type="dst-columns"/>
+</constraint>
+
+<constraint name="content_comments_locale_fkey" type="fk-constr" comparison-type="MATCH SIMPLE"
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="public.locales" table="public.content_comments">
+	<columns names="locale" ref-type="src-columns"/>
+	<columns names="name" ref-type="dst-columns"/>
+</constraint>
+
+<constraint name="content_contributors_contributor_fkey" type="fk-constr" comparison-type="MATCH SIMPLE"
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="public.users" table="public.content_contributors">
+	<columns names="contributor" ref-type="src-columns"/>
+	<columns names="id" ref-type="dst-columns"/>
+</constraint>
+
+<constraint name="content_contributors_content_fkey" type="fk-constr" comparison-type="MATCH SIMPLE"
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="public.content_locales" table="public.content_contributors">
+	<columns names="content" ref-type="src-columns"/>
+	<columns names="id" ref-type="dst-columns"/>
+</constraint>
+
+<constraint name="poi_comments_author_fkey" type="fk-constr" comparison-type="MATCH SIMPLE"
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="public.users" table="public.poi_comments">
+	<columns names="author" ref-type="src-columns"/>
+	<columns names="id" ref-type="dst-columns"/>
+</constraint>
+
+<constraint name="poi_comments_locale_fkey" type="fk-constr" comparison-type="MATCH SIMPLE"
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="public.locales" table="public.poi_comments">
+	<columns names="locale" ref-type="src-columns"/>
+	<columns names="name" ref-type="dst-columns"/>
+</constraint>
+
+<constraint name="poi_comments_poi_fkey" type="fk-constr" comparison-type="MATCH SIMPLE"
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="public.poi_versions" table="public.poi_comments">
+	<columns names="poi" ref-type="src-columns"/>
+	<columns names="id" ref-type="dst-columns"/>
+</constraint>
+
+<constraint name="poi_contributors_contributor_fkey" type="fk-constr" comparison-type="MATCH SIMPLE"
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="public.users" table="public.poi_contributors">
+	<columns names="contributor" ref-type="src-columns"/>
+	<columns names="id" ref-type="dst-columns"/>
+</constraint>
+
+<constraint name="poi_contributors_poi_fkey" type="fk-constr" comparison-type="MATCH SIMPLE"
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="public.poi_versions" table="public.poi_contributors">
+	<columns names="poi" ref-type="src-columns"/>
+	<columns names="id" ref-type="dst-columns"/>
+</constraint>
+
+<constraint name="poi_localised_locale_fkey" type="fk-constr" comparison-type="MATCH SIMPLE"
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="public.locales" table="public.poi_locales">
+	<columns names="locale" ref-type="src-columns"/>
+	<columns names="name" ref-type="dst-columns"/>
+</constraint>
+
+<constraint name="poi_localised_poi_fkey" type="fk-constr" comparison-type="MATCH SIMPLE"
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="public.poi_versions" table="public.poi_locales">
+	<columns names="poi" ref-type="src-columns"/>
+	<columns names="id" ref-type="dst-columns"/>
+</constraint>
+
+<constraint name="users_locale_fkey" type="fk-constr" comparison-type="MATCH SIMPLE"
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="public.locales" table="public.users">
+	<columns names="locale" ref-type="src-columns"/>
+	<columns names="name" ref-type="dst-columns"/>
+</constraint>
+
+<constraint name="content_locales_locale" type="fk-constr" comparison-type="MATCH SIMPLE"
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="public.locales" table="public.content_locales">
+	<columns names="locale" ref-type="src-columns"/>
+	<columns names="name" ref-type="dst-columns"/>
+</constraint>
+
+<constraint name="content_locales_content" type="fk-constr" comparison-type="MATCH SIMPLE"
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="public.contents" table="public.content_locales">
+	<columns names="content_id" ref-type="src-columns"/>
+	<columns names="id" ref-type="dst-columns"/>
+</constraint>
+
+<constraint name="content_locales_author" type="fk-constr" comparison-type="MATCH SIMPLE"
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="public.users" table="public.content_locales">
+	<columns names="author" ref-type="src-columns"/>
+	<columns names="id" ref-type="dst-columns"/>
+</constraint>
+
+<constraint name="content_versions_locale" type="fk-constr" comparison-type="MATCH SIMPLE"
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="public.content_locales" table="public.content_versions">
+	<columns names="locale_id" ref-type="src-columns"/>
+	<columns names="id" ref-type="dst-columns"/>
+</constraint>
+
+<relationship name="rel_content_comments_users" type="relfk" layer="0"
+	 custom-color="#ca85d8"
+	 src-table="public.content_comments"
+	 dst-table="public.users" reference-fk="content_comments_author_fkey"
+	 src-required="false" dst-required="false"/>
+
+<relationship name="rel_content_comments_contents" type="relfk" layer="0"
+	 custom-color="#5d3c68"
+	 src-table="public.content_comments"
+	 dst-table="public.contents" reference-fk="content_comments_content_fkey"
+	 src-required="false" dst-required="false"/>
+
+<relationship name="rel_content_comments_locales" type="relfk" layer="0"
+	 custom-color="#ea075d"
+	 src-table="public.content_comments"
+	 dst-table="public.locales" reference-fk="content_comments_locale_fkey"
+	 src-required="false" dst-required="false"/>
+
+<relationship name="rel_content_contributors_users" type="relfk" layer="0"
+	 custom-color="#505ca9"
+	 src-table="public.content_contributors"
+	 dst-table="public.users" reference-fk="content_contributors_contributor_fkey"
+	 src-required="false" dst-required="false"/>
+
+<relationship name="rel_content_contributors_content_locales" type="relfk" layer="0"
+	 custom-color="#9b26a5"
+	 src-table="public.content_contributors"
+	 dst-table="public.content_locales" reference-fk="content_contributors_content_fkey"
+	 src-required="false" dst-required="false"/>
+
+<relationship name="rel_poi_comments_users" type="relfk" layer="0"
+	 custom-color="#013c52"
+	 src-table="public.poi_comments"
+	 dst-table="public.users" reference-fk="poi_comments_author_fkey"
+	 src-required="false" dst-required="false"/>
+
+<relationship name="rel_poi_comments_locales" type="relfk" layer="0"
+	 custom-color="#725b3d"
+	 src-table="public.poi_comments"
+	 dst-table="public.locales" reference-fk="poi_comments_locale_fkey"
+	 src-required="false" dst-required="false"/>
+
+<relationship name="rel_poi_comments_poi_versions" type="relfk" layer="0"
+	 custom-color="#0a8cd3"
+	 src-table="public.poi_comments"
+	 dst-table="public.poi_versions" reference-fk="poi_comments_poi_fkey"
+	 src-required="false" dst-required="false"/>
+
+<relationship name="rel_poi_contributors_users" type="relfk" layer="0"
+	 custom-color="#013103"
+	 src-table="public.poi_contributors"
+	 dst-table="public.users" reference-fk="poi_contributors_contributor_fkey"
+	 src-required="false" dst-required="false"/>
+
+<relationship name="rel_poi_contributors_poi_versions" type="relfk" layer="0"
+	 custom-color="#660151"
+	 src-table="public.poi_contributors"
+	 dst-table="public.poi_versions" reference-fk="poi_contributors_poi_fkey"
+	 src-required="false" dst-required="false"/>
+
+<relationship name="rel_poi_locales_locales" type="relfk" layer="0"
+	 custom-color="#9b93fa"
+	 src-table="public.poi_locales"
+	 dst-table="public.locales" reference-fk="poi_localised_locale_fkey"
+	 src-required="false" dst-required="false"/>
+
+<relationship name="rel_poi_locales_poi_versions" type="relfk" layer="0"
+	 custom-color="#de6291"
+	 src-table="public.poi_locales"
+	 dst-table="public.poi_versions" reference-fk="poi_localised_poi_fkey"
+	 src-required="false" dst-required="false"/>
+
+<relationship name="rel_users_locales" type="relfk" layer="0"
+	 custom-color="#026da9"
+	 src-table="public.users"
+	 dst-table="public.locales" reference-fk="users_locale_fkey"
+	 src-required="false" dst-required="false"/>
+
+<relationship name="rel_content_locales_locales" type="relfk" layer="0"
+	 custom-color="#ba08f7"
+	 src-table="public.content_locales"
+	 dst-table="public.locales" reference-fk="content_locales_locale"
+	 src-required="false" dst-required="false"/>
+
+<relationship name="rel_content_locales_contents" type="relfk" layer="0"
+	 custom-color="#c023e3"
+	 src-table="public.content_locales"
+	 dst-table="public.contents" reference-fk="content_locales_content"
+	 src-required="false" dst-required="false"/>
+
+<relationship name="rel_content_locales_users" type="relfk" layer="0"
+	 custom-color="#a5dd20"
+	 src-table="public.content_locales"
+	 dst-table="public.users" reference-fk="content_locales_author"
+	 src-required="false" dst-required="false">
+	<label ref-type="name-label">
+		<position x="15.1865" y="-26.9082"/>
+	</label>
+</relationship>
+
+<relationship name="rel_content_versions_content_locales" type="relfk" layer="0"
+	 custom-color="#6f13c6"
+	 src-table="public.content_versions"
+	 dst-table="public.content_locales" reference-fk="content_versions_locale"
+	 src-required="false" dst-required="false"/>
+
+</dbmodel>
