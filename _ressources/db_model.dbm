@@ -3,8 +3,8 @@
 CAUTION: Do not modify this file unless you know what you are doing.
          Unexpected results may occur if the code is changed deliberately.
 -->
-<dbmodel pgmodeler-ver="0.9.2-alpha1" last-position="0,0" last-zoom="0.45" max-obj-count="20"
-	 default-schema="public" default-owner="postgres">
+<dbmodel pgmodeler-ver="0.9.2-alpha1" last-position="0,343" last-zoom="0.6" max-obj-count="20"
+	 default-owner="postgres">
 <role name="kabano"
       inherit="true"
       login="true"
@@ -25,12 +25,12 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	<comment><![CDATA[PostGIS Topology schema]]></comment>
 </schema>
 
-<extension name="postgis" cur-version="2.5.0">
+<extension name="postgis" cur-version="2.5.1">
 	<schema name="public"/>
 	<comment><![CDATA[PostGIS geometry, geography, and raster spatial types and functions]]></comment>
 </extension>
 
-<extension name="postgis_topology" cur-version="2.5.0">
+<extension name="postgis_topology" cur-version="2.5.1">
 	<schema name="topology"/>
 	<comment><![CDATA[PostGIS topology spatial types and functions]]></comment>
 </extension>
@@ -272,8 +272,8 @@ CAUTION: Do not modify this file unless you know what you are doing.
 <table name="poi_locales" layer="0" collapse-mode="2" max-obj-count="6">
 	<schema name="public"/>
 	<role name="kabano"/>
-	<position x="980" y="1060"/>
-	<column name="id" not-null="true" default-value="nextval('poi_localised_sequence'::regclass)">
+	<position x="700" y="1020"/>
+	<column name="id" not-null="true" default-value="nextval('poi_locales_sequence'::regclass)">
 		<type name="integer" length="0"/>
 	</column>
 	<column name="poi" not-null="true">
@@ -299,7 +299,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 <table name="sources" layer="0" collapse-mode="2" max-obj-count="7">
 	<schema name="public"/>
 	<role name="kabano"/>
-	<position x="540" y="1300"/>
+	<position x="1160" y="1260"/>
 	<column name="id" not-null="true">
 		<type name="character varying" length="3"/>
 	</column>
@@ -432,30 +432,6 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	 index-type="btree" factor="90">
 		<idxelement use-sorting="false">
 			<column name="is_public"/>
-		</idxelement>
-</index>
-
-<index name="poi_versions_is_archive_index" table="public.poi_versions"
-	 concurrent="false" unique="false" fast-update="false" buffering="false"
-	 index-type="btree" factor="90">
-		<idxelement use-sorting="false">
-			<column name="is_archive"/>
-		</idxelement>
-</index>
-
-<index name="poi_versions_is_destroyed_index" table="public.poi_versions"
-	 concurrent="false" unique="false" fast-update="false" buffering="false"
-	 index-type="btree" factor="90">
-		<idxelement use-sorting="false">
-			<column name="is_destroyed"/>
-		</idxelement>
-</index>
-
-<index name="poi_versions_type_index" table="public.poi_versions"
-	 concurrent="false" unique="false" fast-update="false" buffering="false"
-	 index-type="btree" factor="90">
-		<idxelement use-sorting="false">
-			<column name="alt_type"/>
 		</idxelement>
 </index>
 
@@ -625,7 +601,34 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	<constraint name="poi_versions_pkey" type="pk-constr" table="public.poi_versions">
 		<columns names="id" ref-type="src-columns"/>
 	</constraint>
+	<constraint name="poi_versions_version_key" type="uq-constr" table="public.poi_versions">
+		<columns names="version" ref-type="src-columns"/>
+	</constraint>
 </table>
+
+<index name="poi_versions_is_archive_index" table="public.poi_versions"
+	 concurrent="false" unique="false" fast-update="false" buffering="false"
+	 index-type="btree" factor="90">
+		<idxelement use-sorting="false">
+			<column name="is_archive"/>
+		</idxelement>
+</index>
+
+<index name="poi_versions_is_destroyed_index" table="public.poi_versions"
+	 concurrent="false" unique="false" fast-update="false" buffering="false"
+	 index-type="btree" factor="90">
+		<idxelement use-sorting="false">
+			<column name="is_destroyed"/>
+		</idxelement>
+</index>
+
+<index name="poi_versions_type_index" table="public.poi_versions"
+	 concurrent="false" unique="false" fast-update="false" buffering="false"
+	 index-type="btree" factor="90">
+		<idxelement use-sorting="false">
+			<column name="alt_type"/>
+		</idxelement>
+</index>
 
 <sequence name="poi_sources_sequence" cycle="false" start="1" increment="1" min-value="1" max-value="9223372036854775807" cache="1">
 	<schema name="public"/>
@@ -635,7 +638,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 <table name="poi_sources" layer="0" collapse-mode="2" max-obj-count="4">
 	<schema name="public"/>
 	<role name="kabano"/>
-	<position x="560" y="1120"/>
+	<position x="1120" y="1080"/>
 	<column name="id" not-null="true" sequence="public.poi_sources_sequence">
 		<type name="integer" length="0"/>
 	</column>
@@ -753,107 +756,86 @@ CAUTION: Do not modify this file unless you know what you are doing.
 </constraint>
 
 <relationship name="rel_content_comments_users" type="relfk" layer="0"
-	 custom-color="#ca85d8"
 	 src-table="public.content_comments"
 	 dst-table="public.users" reference-fk="content_comments_author_fkey"
 	 src-required="false" dst-required="false"/>
 
 <relationship name="rel_content_comments_contents" type="relfk" layer="0"
-	 custom-color="#5d3c68"
 	 src-table="public.content_comments"
 	 dst-table="public.contents" reference-fk="content_comments_content_fkey"
 	 src-required="false" dst-required="false"/>
 
 <relationship name="rel_content_comments_locales" type="relfk" layer="0"
-	 custom-color="#ea075d"
 	 src-table="public.content_comments"
 	 dst-table="public.locales" reference-fk="content_comments_locale_fkey"
 	 src-required="false" dst-required="false"/>
 
 <relationship name="rel_content_contributors_users" type="relfk" layer="0"
-	 custom-color="#505ca9"
 	 src-table="public.content_contributors"
 	 dst-table="public.users" reference-fk="content_contributors_contributor_fkey"
 	 src-required="false" dst-required="false"/>
 
 <relationship name="rel_content_contributors_content_locales" type="relfk" layer="0"
-	 custom-color="#9b26a5"
 	 src-table="public.content_contributors"
 	 dst-table="public.content_locales" reference-fk="content_contributors_content_fkey"
 	 src-required="false" dst-required="false"/>
 
 <relationship name="rel_poi_comments_users" type="relfk" layer="0"
-	 custom-color="#013c52"
 	 src-table="public.poi_comments"
 	 dst-table="public.users" reference-fk="poi_comments_author_fkey"
 	 src-required="false" dst-required="false"/>
 
 <relationship name="rel_poi_comments_locales" type="relfk" layer="0"
-	 custom-color="#725b3d"
 	 src-table="public.poi_comments"
 	 dst-table="public.locales" reference-fk="poi_comments_locale_fkey"
 	 src-required="false" dst-required="false"/>
 
 <relationship name="rel_poi_comments_poi_versions" type="relfk" layer="0"
-	 custom-color="#0a8cd3"
 	 src-table="public.poi_comments"
 	 dst-table="public.poi_versions" reference-fk="poi_comments_poi_fkey"
 	 src-required="false" dst-required="false"/>
 
 <relationship name="rel_poi_contributors_users" type="relfk" layer="0"
-	 custom-color="#013103"
 	 src-table="public.poi_contributors"
 	 dst-table="public.users" reference-fk="poi_contributors_contributor_fkey"
 	 src-required="false" dst-required="false"/>
 
 <relationship name="rel_poi_contributors_poi_versions" type="relfk" layer="0"
-	 custom-color="#660151"
 	 src-table="public.poi_contributors"
 	 dst-table="public.poi_versions" reference-fk="poi_contributors_poi_fkey"
 	 src-required="false" dst-required="false"/>
 
 <relationship name="rel_poi_locales_locales" type="relfk" layer="0"
-	 custom-color="#9b93fa"
 	 src-table="public.poi_locales"
 	 dst-table="public.locales" reference-fk="poi_localised_locale_fkey"
 	 src-required="false" dst-required="false"/>
 
 <relationship name="rel_poi_locales_poi_versions" type="relfk" layer="0"
-	 custom-color="#de6291"
 	 src-table="public.poi_locales"
 	 dst-table="public.poi_versions" reference-fk="poi_localised_poi_fkey"
 	 src-required="false" dst-required="false"/>
 
 <relationship name="rel_users_locales" type="relfk" layer="0"
-	 custom-color="#026da9"
 	 src-table="public.users"
 	 dst-table="public.locales" reference-fk="users_locale_fkey"
 	 src-required="false" dst-required="false"/>
 
 <relationship name="rel_content_locales_locales" type="relfk" layer="0"
-	 custom-color="#ba08f7"
 	 src-table="public.content_locales"
 	 dst-table="public.locales" reference-fk="content_locales_locale"
 	 src-required="false" dst-required="false"/>
 
 <relationship name="rel_content_locales_contents" type="relfk" layer="0"
-	 custom-color="#c023e3"
 	 src-table="public.content_locales"
 	 dst-table="public.contents" reference-fk="content_locales_content"
 	 src-required="false" dst-required="false"/>
 
 <relationship name="rel_content_locales_users" type="relfk" layer="0"
-	 custom-color="#a5dd20"
 	 src-table="public.content_locales"
 	 dst-table="public.users" reference-fk="content_locales_author"
-	 src-required="false" dst-required="false">
-	<label ref-type="name-label">
-		<position x="15.1865" y="-26.9082"/>
-	</label>
-</relationship>
+	 src-required="false" dst-required="false"/>
 
 <relationship name="rel_content_versions_content_locales" type="relfk" layer="0"
-	 custom-color="#6f13c6"
 	 src-table="public.content_versions"
 	 dst-table="public.content_locales" reference-fk="content_versions_locale"
 	 src-required="false" dst-required="false"/>
