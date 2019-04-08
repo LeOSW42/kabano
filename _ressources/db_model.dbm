@@ -3,7 +3,7 @@
 CAUTION: Do not modify this file unless you know what you are doing.
          Unexpected results may occur if the code is changed deliberately.
 -->
-<dbmodel pgmodeler-ver="0.9.2-alpha1" last-position="171,1067" last-zoom="0.9" max-obj-count="24"
+<dbmodel pgmodeler-ver="0.9.2-alpha1" last-position="0,998" last-zoom="0.9" max-obj-count="24"
 	 default-owner="postgres">
 <role name="kabano"
       inherit="true"
@@ -549,6 +549,12 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	</column>
 	<constraint name="pois_pkey" type="pk-constr" table="public.pois">
 		<columns names="id" ref-type="src-columns"/>
+	</constraint>
+	<constraint name="pois_permalink_key" type="uq-constr" table="public.pois">
+		<columns names="permalink" ref-type="src-columns"/>
+	</constraint>
+	<constraint name="pois_position_type_key" type="uq-constr" table="public.pois">
+		<columns names="position,type" ref-type="src-columns"/>
 	</constraint>
 </table>
 
