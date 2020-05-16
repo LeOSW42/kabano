@@ -1,5 +1,6 @@
 /includes/config.php
 /medias/*
+/_maps
 *.sublime-project
 *.sublime-workspace
 *.log

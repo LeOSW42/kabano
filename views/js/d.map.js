@@ -2,20 +2,22 @@ var mymap;
 
 $( document ).ready(function() {
 	// Differents layers for the map
-	var	osmfr   = L.tileLayer('//{s}.tile.openstreetmap.fr/osmfr/{z}/{x}/{y}.png', {maxZoom: 20, attribution: 'Maps © <a href="http://www.openstreetmap.fr">OpenSreetMap France</a>, Data © <a href="http://www.openstreetmap.org/copyright">OpenStreetMap contributors</a>'});
-	var	wikimedia  = L.tileLayer('//maps.wikimedia.org/osm-intl/{z}/{x}/{y}.png', {maxZoom: 18, attribution: 'Maps © <a href="http://wikimedia.org">Wikimedia</a>, Data © <a href="http://www.openstreetmap.org/copyright">OpenStreetMap contributors</a>'});
+	var	osmfr   = L.tileLayer('//{s}.tile.openstreetmap.fr/osmfr/{z}/{x}/{y}.png', {tms: true, maxZoom: 20, attribution: 'Maps © <a href="http://www.openstreetmap.fr">OpenSreetMap France</a>, Data © <a href="http://www.openstreetmap.org/copyright">OpenStreetMap contributors</a>'});
+	var	wikimedia  = L.tileLayer('//maps.wikimedia.org/osm-intl/{z}/{x}/{y}.png', {tms: true, maxZoom: 18, attribution: 'Maps © <a href="http://wikimedia.org">Wikimedia</a>, Data © <a href="http://www.openstreetmap.org/copyright">OpenStreetMap contributors</a>'});
+	var	crozet  = L.tileLayer('/_maps/osm_cro/{z}/{x}/{y}.png', {tms: true, maxZoom: 18, attribution: 'For dev purpose only'});
 
 	// Base layers
 	var baseLayers = {
 		"OSM France": osmfr,
 		"OSM Wikimedia": wikimedia,
+		"Crozet": crozet,
 	};
 
 	mymap = L.map('mapid', {
 		zoomControl: false,
-		layers: [wikimedia],
-	}).setView([47.018, 3.142], 6);
-	$("#map-credits").html(wikimedia.getAttribution());
+		layers: [crozet],
+	}).setView([-46.407, 51.766], 12);
+	$("#map-credits").html(crozet.getAttribution());
 
 	L.control.scale({
 		position: "bottomleft",
