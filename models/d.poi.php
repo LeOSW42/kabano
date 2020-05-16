@@ -12,6 +12,16 @@ namespace Kabano;
 
 require_once($config['third_folder']."Md/MarkdownExtra.inc.php");
 
+// This array is related to the defined SQL enum, do not touch.
+$poi_types = array(
+	"basic_hut"			=> array("Abri sommaire", "Abri", "#ef2929", "basic_hut"),
+	"wilderness_hut" 	=> array("Cabane non gardée", "Cabane", "#ef2929", "wilderness_hut"),
+	"alpine_hut" 		=> array("Refuge gardé", "Refuge", "#ef2929", "alpine_hut"),
+	"halt"				=> array("Gîte d'étape", "Gîte", "#4e9a06", "halt"),
+	"bivouac"			=> array("Zone de bivouac", "Bivouac", "#ef2929", "bivouac"),
+	"campsite"			=> array("Camping", "Camping", "#4e9a06", "campsite")
+);
+
 class Poi
 {
 	public $poi_id = NULL;

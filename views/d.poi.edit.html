@@ -13,6 +13,14 @@
 			<section>
 				<i id="slide-icon" class="fas fa-chevron-up"></i>
 				<form class="form" action="<?=$config['rel_root_folder']?>wiki/<?=$poi->permalink?>/edit" method="post">
+					<br>
+					<div id="type_selector">
+						<? foreach($poi_types as $type) { ?>
+							<input type="radio" name="poi_type" value="<?=$type[3]?>" id="<?=$type[3]?>">
+							<label for="<?=$type[3]?>"><img src="<?=$config['views_url']?>img/<?=$type[3]?>.svg"><br><?=$type[0]?></label>
+						<? } ?>
+					</div>
+
 					<h1>
 						<select name="locale" id="locale">
 							<? foreach($locales->objs as $locale) { ?>
@@ -22,7 +30,7 @@
 						<input type="text" value="<?=$poi->name?>" name="name" id="name" placeholder="Titre">
 					</h1>
 
-					<textarea rows="30" name="content" id="content" placeholder="Contenu de la page"><?=$poi->content?></textarea>
+					<textarea rows="30" name="content" id="content" placeholder="Contenu de la page"><?=$poi->parameters?></textarea>
 
 					<input name="submit" id="submit" type="submit" value="Envoyer">
 				</form>
