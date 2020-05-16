@@ -358,8 +358,6 @@ section .thumb {
 	margin: 50px auto 0 auto;
 	width: 90%;
 	background: #efefef;
-	border: 1px solid #ccc;
-	border-bottom: 3px solid #ccc;
 }
 .action p {
 	margin: 0;
@@ -372,14 +370,25 @@ section .thumb {
 	font-size: 1.1em;
 }
 .action .title a, .action .title p {
-	padding: 15px 10px;
+	padding: 15px 10px 15px 71px;
 	margin: 0;
 	color: inherit;
 	display: block;
 }
+.action .title i {
+	float: left;
+	width: 56px;
+	line-height: 56px;
+	text-align: center;
+	font-size: 30px;
+	background: #333;
+	color: #ccc;
+}
 
 .action .description {
 	display: none;
+	border: solid #ccc;
+	border-width: 0px 1px 3px 1px;
 }
 .action .description p {
 	padding: 10px 20px;
