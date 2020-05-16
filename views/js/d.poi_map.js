@@ -24,20 +24,6 @@ $( document ).ready(function() {
 		imperial: false
 	}).addTo(mymap);
 
-	var credits = L.easyButton('fa-info',
-		function(control, mymap){
-			$("footer").hide();
-			$("#footer-credits").show();
-			$("#footer-legend").hide();
-		}, 'Credits');
-	var legend = L.easyButton('fa-question',
-		function(control, mymap){
-			$("footer").hide();
-			$("#footer-credits").hide();
-			$("#footer-legend").show();
-		}, 'Legend');
-	L.easyBar([ credits, legend, ], {position: "bottomleft"}).addTo(mymap);
-
 	L.control.fullscreen({
 		position: "bottomleft"
 	}).addTo(mymap);

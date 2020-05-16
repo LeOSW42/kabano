@@ -38,6 +38,7 @@ switch ($controller->splitted_url[0])
     case "wiki" :
     case "blog" :
     case "map" :
+    case "poi" :
     case "admin" :
         $controller->name=$controller->splitted_url[0];
         $view->name="";
