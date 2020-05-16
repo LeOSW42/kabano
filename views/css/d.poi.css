@@ -28,6 +28,7 @@ html, body {
 	animation-name: fadeinfadeout;
 	animation-duration: 2s;
 	animation-iteration-count: infinite;
+	cursor: pointer;
 }
 
 #mapid {
