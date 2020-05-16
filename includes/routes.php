@@ -20,12 +20,15 @@ $controller->prefix = "d.";
 $notfound = 0;
 $session = 1;
 
+if($controller->splitted_url[0]=="") $controller->splitted_url[0]="index";
+
 // Routing to the correct page from the correct link
 switch ($controller->splitted_url[0])
 {
-    case "index": case "" :
+    case "index":
+    case "community" :
         $controller->name="";
-        $view->name="index";
+        $view->name=$controller->splitted_url[0];
         break;
     case "user" :
         $controller->name="users";

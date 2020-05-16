@@ -347,3 +347,39 @@ section .thumb {
 	margin: 0 10px;
 	border: 1px solid #aaa;
 }
+
+/*********************************/
+/** Community portal page       **/ 
+/*********************************/
+
+.action {
+	clear: both;
+	margin: 50px auto 0 auto;
+	width: 90%;
+	background: #efefef;
+	border: 1px solid #ccc;
+	border-bottom: 3px solid #ccc;
+}
+.action p {
+	margin: 0;
+}
+
+.action .title {
+	background: #ccc;
+	cursor: pointer;
+	font-weight: 500;
+	font-size: 1.1em;
+}
+.action .title a, .action .title p {
+	padding: 15px 10px;
+	margin: 0;
+	color: inherit;
+	display: block;
+}
+
+.action .description {
+	display: none;
+}
+.action .description p {
+	padding: 10px 20px;
+}
