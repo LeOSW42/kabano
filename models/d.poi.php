@@ -73,7 +73,6 @@ class Poi
 	** Populate the object using its ID
 	*****/
 	public function populate($row) {
-
 		$this->$poi_id = $row['poi_id'];
 		$this->$locale_id = $row['locale_id'];
 		$this->$source_id = $row['source_id'];
@@ -96,6 +95,77 @@ class Poi
 		$this->$alt_name = $row['alt_name'];
 		$this->$alt_position = $row['alt_position'];
 		$this->$parameters = $row['parameters'];
+	}
+
+	/*****
+	** Create a new poi, all field required except alt_*, *_id
+	*****/
+	public function insert() {
+		global $config;
+		global $user;
+		
+		$con = pg_connect("host=".$config['SQL_host']." dbname=".$config['SQL_db']." user=".$config['SQL_user']." password=".$config['SQL_pass'])
+			or die ("Could not connect to server\n");
+
+		// Because it is the first insert.
+		$this->alt_type = $this->type;
+		$this->alt_name = $this->name;
+		$this->alt_position = $this->position;
+
+		$query = "INSERT INTO pois (is_public, permalink, creation_date, name, position, type) VALUES
+			(TRUE, $1, $2, $3, $4, $5) RETURNING id";
+
+		pg_prepare($con, "prepare1", $query) 
+			or die ("Cannot prepare statement\n");
+		$result = pg_execute($con, "prepare1", array($this->permalink, date('r'), $this->name, $this->position, $this->type))
+			or die ("Cannot execute statement\n");
+
+		$this->poi_id = pg_fetch_assoc($result)['id'];
+
+		$query = "INSERT INTO poi_locales (locale, poi_id) VALUES
+			($1, $2) RETURNING id";
+
+		pg_prepare($con, "prepare2", $query) 
+			or die ("Cannot prepare statement\n");
+		$result = pg_execute($con, "prepare2", array($this->locale, $this->poi_id))
+			or die ("Cannot execute statement\n");
+
+		$this->locale_id = pg_fetch_assoc($result)['id'];
+
+		$query = "INSERT INTO poi_sources (source, remote_source_id, author, locale_id) VALUES
+			($1, $2, $3, $4) RETURNING id";
+
+		pg_prepare($con, "prepare3", $query) 
+			or die ("Cannot prepare statement\n");
+		$result = pg_execute($con, "prepare3", array($this->source, $this->remote_source_id, $this->author, $this->locale_id))
+			or die ("Cannot execute statement\n");
+
+		$this->source_id = pg_fetch_assoc($result)['id'];
+
+		$query = "INSERT INTO poi_versions (version, update_date, is_archive, alt_type, is_destroyed, alt_name, alt_position, parameters, source_id) VALUES
+			('0', $1, FALSE, $2, $3, $4, $5, $6, $7) RETURNING id";
+
+		pg_prepare($con, "prepare4", $query) 
+			or die ("Cannot prepare statement\n");
+		$result = pg_execute($con, "prepare4", array(date('r'), $this->alt_type, $this->is_destroyed, $this->alt_name, $this->alt_position, $this->parameters, $this->source_id))
+			or die ("Cannot execute statement\n");
+
+		$this->version_id = pg_fetch_assoc($result)['id'];
+
+		$query = "INSERT INTO poi_contributors (poi, contributor) VALUES
+			($1, $2)";
+
+		pg_prepare($con, "prepare5", $query) 
+			or die ("Cannot prepare statement\n");
+		$result = pg_execute($con, "prepare5", array($this->source_id, $user->id))
+			or die ("Cannot execute statement\n");
+
+		pg_close($con);
+
+		error_log(
+			date('r')." \t".$user->name." (".$user->id.") \tINSERT \tCreate new poi '".$this->permalink."'\r\n",
+			3,
+			$config['logs_folder'].'wiki.log');
 	}
 
 }

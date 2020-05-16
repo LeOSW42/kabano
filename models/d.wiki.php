@@ -182,7 +182,7 @@ class WikiPage
 	}
 
 	/*****
-	** Create a page by archiving the current one and inserting a new one ID
+	** Create a new page, fails if permalink already exists
 	*****/
 	public function insert() {
 		global $config;
