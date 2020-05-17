@@ -53,6 +53,8 @@ switch ($controller->splitted_url[1]) {
 			$head['css'] .= ";../third/leaflet/leaflet.css;../third/leaflet-fullscreen/leaflet.fullscreen.css;../third/leaflet-easybutton/easy-button.css";
 			$head['js'] = "d.poi_map.js";
 
+			$poi->lat = ""; $poi->lon = ""; $poi->alt = "";
+
 			$new = 1;
 			include ($config['views_folder']."d.poi.edit.html");
 			break;

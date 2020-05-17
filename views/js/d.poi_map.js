@@ -1,4 +1,5 @@
 var mymap;
+var poi_layer;
 
 $( document ).ready(function() {
 	// Differents layers for the map
@@ -40,13 +41,19 @@ $( document ).ready(function() {
 
 	mymap.removeControl(mymap.attributionControl);
 
-	$(".close-link").click(function() {
-		$("footer").show();
-		$("#footer-credits").hide();
-		$("#footer-legend").hide();
-	});
-
 	mymap.on('baselayerchange', function(e) {
 		$("#map-credits").html(e.layer.getAttribution());
 	});
+
+	poi_layer = L.marker([-46.407, 51.766], {draggable: true}).addTo(mymap);
+
+	mymap.on('click', function(e){
+		poi_layer.setLatLng(e.latlng);
+		$("#lat").val(e.latlng.lat);
+		$("#lon").val(e.latlng.lng);
+	})
+	poi_layer.on('move', function(e){
+		$("#lat").val(e.latlng.lat);
+		$("#lon").val(e.latlng.lng);
+	})
 });

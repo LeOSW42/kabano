@@ -42,19 +42,14 @@ html, body {
 /** Editor page                 **/
 /*********************************/
 
-form.form input, form.form textarea, #locale {
+form.form input, form.form textarea, form.form input[type=radio]:checked+label, #locale {
 	background: #ddd;
 	border-bottom: 2px solid #ccc;
 	display: block;
 	padding: 10px;
 }
 
-form.form textarea {
-	font-size: 14px;
-	margin: 10px 0 10px 0px;
-	width: calc(100% - 20px);
-}
-form.form input {
+form.form h1 input {
 	width: 58%;
 	margin: 10px 0 10px 0px;
 	font-size: 18px;
@@ -65,29 +60,46 @@ form.form input {
 	font-size: 17px;
 }
 
-form.form input[type=submit] {
-	width: auto;
-	margin: auto;
-	border-bottom: 2px solid blue;
+#permalink {
+	width: 808px;
+	margin: 10px 0 0 0px;
+	padding: 6px;
+	font-size: 11px;
+	font-style: italic;
+	color: #555;
+
 }
 
-#type_selector {
+.flex_line {
 	display: flex;
 	flex-direction: row;
 }
+
+.flex_line input[type=text] {
+	flex: 1;
+	margin: 10px 5px 0 5px;
+}
+
+form.form input[type=submit] {
+	width: auto;
+	margin: 10px auto;
+	border-bottom: 2px solid blue;
+}
+
 form.form input[type=radio] {
 	display: none;
 }
 form.form input[type=radio]+label {
+	font-size: 13px;
 	flex: 1;
 	text-align: center;
-	padding: 10px 5px;
+	padding: 10px;
 	vertical-align: middle;
 	border-bottom: 2px solid transparent;
 }
-form.form input[type=radio]:checked+label {
-	background: #ddd;
-	border-bottom: 2px solid #ccc;
+form.form input[type=radio]+label img {
+	width: 32px;
+	height: 32px;
 }
 
 /*****************************************

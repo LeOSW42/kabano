@@ -14,7 +14,7 @@
 				<i id="slide-icon" class="fas fa-chevron-up"></i>
 				<form class="form" action="<?=$config['rel_root_folder']?>wiki/<?=$poi->permalink?>/edit" method="post">
 					<br>
-					<div id="type_selector">
+					<div class="flex_line">
 						<? foreach($poi_types as $type) { ?>
 							<input type="radio" name="poi_type" value="<?=$type[3]?>" id="<?=$type[3]?>">
 							<label for="<?=$type[3]?>"><img src="<?=$config['views_url']?>img/<?=$type[3]?>.svg"><br><?=$type[0]?></label>
@@ -27,10 +27,17 @@
 								<option <?=$poi->locale==$locale->name?'selected':''?> value="<?=$locale->name?>"><?=$locale->display_name?></option>
 							<? } ?>
 						</select>
-						<input type="text" value="<?=$poi->name?>" name="name" id="name" placeholder="Titre">
+						<input type="text" value="<?=$poi->name?>" name="name" id="name" placeholder="Nom de l'hébergement">
 					</h1>
+					<? if(isset($new) AND $new==1) { ?>
+						<input type="text" value="<?=$poi->permalink?>" name="permalink" id="permalink" placeholder="Permalien généré automatiquement" readonly>
+					<? } ?>
 
-					<textarea rows="30" name="content" id="content" placeholder="Contenu de la page"><?=$poi->parameters?></textarea>
+					<div class="flex_line">
+						<input type="text" value="<?=$poi->lat?>" name="lat" id="lat" placeholder="Latitude">
+						<input type="text" value="<?=$poi->lon?>" name="lon" id="lon" placeholder="Longitude">
+						<input type="text" value="<?=$poi->alt?>" name="alt" id="alt" placeholder="Altitude">
+					</div>
 
 					<input name="submit" id="submit" type="submit" value="Envoyer">
 				</form>
@@ -39,6 +46,22 @@
 		<script type="text/javascript">
 $( "#slide-icon" ).click(function() {
   $( "html, body" ).animate({scrollTop: "300px"});
+});
+$( "#name" ).keyup(function() {
+  permalink = $( "#name" ).val();
+  permalink = permalink.replace(/ /g,'_');
+  permalink = permalink.toLowerCase();
+  permalink = permalink.replace(/[^a-z0-9_]/g,'-');
+  permalink = permalink.replace(/[_-]+$/g,'');
+  $( "#permalink" ).val(permalink);
+});
+$( "#name" ).change(function() {
+  permalink = $( "#name" ).val();
+  permalink = permalink.replace(/ /g,'_');
+  permalink = permalink.toLowerCase();
+  permalink = permalink.replace(/[^a-z0-9_]/g,'-');
+  permalink = permalink.replace(/[_-]+$/g,'');
+  $( "#permalink" ).val(permalink);
 });
 		</script>
 
