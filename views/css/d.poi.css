@@ -50,13 +50,16 @@ form.form input, form.form textarea, form.form input[type=radio]:checked+label, 
 }
 
 form.form h1 input {
-	width: 58%;
-	margin: 10px 0 10px 0px;
+	flex: 2 !important;
 	font-size: 18px;
 }
+form.form h1 {
+	padding: 10px 0;
+	margin: 0 0 10px 0;
+}
 #locale {
-	width: 38%;
-	float: right;
+	flex: 1;
+	margin: 10px 5px 0 5px;
 	font-size: 17px;
 }
 

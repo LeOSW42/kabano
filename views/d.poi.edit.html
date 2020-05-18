@@ -13,7 +13,15 @@
 			<section>
 				<i id="slide-icon" class="fas fa-chevron-up"></i>
 				<form class="form" action="<?=$config['rel_root_folder']?>wiki/<?=$poi->permalink?>/edit" method="post">
-					<br>
+					<h1 class="flex_line">
+						<input type="text" value="<?=$poi->name?>" name="name" id="name" placeholder="Nom de l'hébergement">
+						<select name="locale" id="locale">
+							<? foreach($locales->objs as $locale) { ?>
+								<option <?=$poi->locale==$locale->name?'selected':''?> value="<?=$locale->name?>"><?=$locale->display_name?></option>
+							<? } ?>
+						</select>
+					</h1>
+
 					<div class="flex_line" id="type_selector">
 						<? foreach($poi_types as $type) { ?>
 							<input type="radio" name="poi_type" value="<?=$type[3]?>" id="<?=$type[3]?>">
@@ -21,22 +29,13 @@
 						<? } ?>
 					</div>
 
-					<h1>
-						<select name="locale" id="locale">
-							<? foreach($locales->objs as $locale) { ?>
-								<option <?=$poi->locale==$locale->name?'selected':''?> value="<?=$locale->name?>"><?=$locale->display_name?></option>
-							<? } ?>
-						</select>
-						<input type="text" value="<?=$poi->name?>" name="name" id="name" placeholder="Nom de l'hébergement">
-					</h1>
-
 					<div class="flex_line">
 						<input type="text" value="<?=$poi->lat?>" name="lat" id="lat" placeholder="Latitude">
 						<input type="text" value="<?=$poi->lon?>" name="lon" id="lon" placeholder="Longitude">
 						<input type="text" value="<?=$poi->alt?>" name="alt" id="alt" placeholder="Altitude">
 					</div>
 
-					<input name="submit" id="submit" type="submit" value="Envoyer">
+					<input name="submit" id="submit" type="submit" value="Ajouter l'hébergement">
 				</form>
 			</section>
 
