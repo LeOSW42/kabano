@@ -14,7 +14,7 @@
 				<i id="slide-icon" class="fas fa-chevron-up"></i>
 				<form class="form" action="<?=$config['rel_root_folder']?>wiki/<?=$poi->permalink?>/edit" method="post">
 					<br>
-					<div class="flex_line">
+					<div class="flex_line" id="type_selector">
 						<? foreach($poi_types as $type) { ?>
 							<input type="radio" name="poi_type" value="<?=$type[3]?>" id="<?=$type[3]?>">
 							<label for="<?=$type[3]?>"><img src="<?=$config['views_url']?>img/<?=$type[3]?>.svg"><br><?=$type[0]?></label>

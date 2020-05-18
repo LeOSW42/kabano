@@ -56,4 +56,15 @@ $( document ).ready(function() {
 		$("#lat").val(e.latlng.lat);
 		$("#lon").val(e.latlng.lng);
 	})
+
+	var poiicon = L.icon({
+		iconSize: [24, 24],
+		iconAnchor: [12, 12]
+	});
+
+	$("#type_selector label").click(function(e) {
+		console.log(e);
+		poiicon.options.iconUrl = e.currentTarget.firstChild.currentSrc;
+		poi_layer.setIcon(poiicon);
+	})
 });
