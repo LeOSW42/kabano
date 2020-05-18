@@ -60,16 +60,6 @@ form.form h1 input {
 	font-size: 17px;
 }
 
-#permalink {
-	width: 808px;
-	margin: 10px 0 0 0px;
-	padding: 6px;
-	font-size: 11px;
-	font-style: italic;
-	color: #555;
-
-}
-
 .flex_line {
 	display: flex;
 	flex-direction: row;

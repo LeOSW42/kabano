@@ -29,9 +29,6 @@
 						</select>
 						<input type="text" value="<?=$poi->name?>" name="name" id="name" placeholder="Nom de l'hébergement">
 					</h1>
-					<? if(isset($new) AND $new==1) { ?>
-						<input type="text" value="<?=$poi->permalink?>" name="permalink" id="permalink" placeholder="Permalien généré automatiquement" readonly>
-					<? } ?>
 
 					<div class="flex_line">
 						<input type="text" value="<?=$poi->lat?>" name="lat" id="lat" placeholder="Latitude">
@@ -46,22 +43,6 @@
 		<script type="text/javascript">
 $( "#slide-icon" ).click(function() {
   $( "html, body" ).animate({scrollTop: "300px"});
-});
-$( "#name" ).keyup(function() {
-  permalink = $( "#name" ).val();
-  permalink = permalink.replace(/ /g,'_');
-  permalink = permalink.toLowerCase();
-  permalink = permalink.replace(/[^a-z0-9_]/g,'-');
-  permalink = permalink.replace(/[_-]+$/g,'');
-  $( "#permalink" ).val(permalink);
-});
-$( "#name" ).change(function() {
-  permalink = $( "#name" ).val();
-  permalink = permalink.replace(/ /g,'_');
-  permalink = permalink.toLowerCase();
-  permalink = permalink.replace(/[^a-z0-9_]/g,'-');
-  permalink = permalink.replace(/[_-]+$/g,'');
-  $( "#permalink" ).val(permalink);
 });
 		</script>
 
