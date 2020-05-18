@@ -12,8 +12,12 @@
 		<div id="sticky">
 			<section>
 				<i id="slide-icon" class="fas fa-chevron-up"></i>
-				<form class="form" action="<?=$config['rel_root_folder']?>wiki/<?=$poi->permalink?>/edit" method="post">
-					<h1 class="flex_line">
+				<? if(isset($new) AND $new==1) { ?>
+					<form class="form" action="<?=$config['rel_root_folder']?>poi/new" method="post">
+				<? } 
+				else { ?>
+					<form class="form" action="<?=$config['rel_root_folder']?>poi/<?=$poi->permalink?>/edit" method="post">
+				<? } ?>					<h1 class="flex_line">
 						<input type="text" value="<?=$poi->name?>" name="name" id="name" placeholder="Nom de l'hébergement">
 						<select name="locale" id="locale">
 							<? foreach($locales->objs as $locale) { ?>

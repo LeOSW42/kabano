@@ -7,31 +7,17 @@ $head['css'] = "d.index.css;d.poi.css";
 
 $poi = new Kabano\Poi();
 
-// In case we are in the list of articles, we set url to switch with according parameters
-// if (!isset($controller->splitted_url[1]) OR $controller->splitted_url[1]=="" OR is_numeric($controller->splitted_url[1])) {
-// 	$head['title'] = "Blog";
-
-// 	// Get the correct page number
-// 	if (!isset($controller->splitted_url[1]) OR $controller->splitted_url[1]=="") {
-// 		$page = 0;
-// 	} else {
-// 		$page = $controller->splitted_url[1] - 1;
-// 	}
-
-// 	$controller->splitted_url[1] = "list";
-// 	$list = "html";
-// 	$articles_per_pages = 5;
-// }
-
 switch ($controller->splitted_url[1]) {
 	case "new":
 		if($user->rankIsHigher("registered")) {
 			if(isset($_POST['submit'])) {
-				$blogArticle->content = $_POST['content'];
-				$blogArticle->locale = $_POST['locale'];
-				$blogArticle->name = $_POST['name'];
-				$blogArticle->is_commentable = isset($_POST['is_commentable'])?'t':'f';
-				$blogArticle->author = $user->id;
+				$poi->name = $_POST['name'];
+				$poi->locale = $_POST['locale'];
+				$poi->poi_type = $_POST['poi_type'];
+				$poi->lat = $_POST['lat'];
+				$poi->lon = $_POST['lon'];
+				$poi->alt = $_POST['alt'];
+				$poi->author = $user->id;
 				if(!$blogArticle->checkPermalink($_POST['permalink'],1)) {
 					$blogArticle->permalink = $_POST['permalink'];
 					$blogArticle->insert();
