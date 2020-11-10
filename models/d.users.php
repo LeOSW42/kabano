@@ -12,6 +12,7 @@ namespace Kabano;
 
 require_once($config['models_folder']."d.locales.php");
 
+// This array is related to the defined SQL enum, do not touch.
 $ranks = array(
 	"administrator"	=> array(1000,"Administrateur", "red", "administrator"),
 	"moderator" 	=> array(800,"Modérateur", "orangered", "moderator"),

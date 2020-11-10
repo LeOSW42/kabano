@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+	<? include('blocks/d.head.html'); ?>
+
+	<body>
+
+		<? include('blocks/d.nav.html'); ?>
+
+		<div id="mapid"></div>
+
+		<div id="sticky">
+			<section>
+				<i id="slide-icon" class="fas fa-chevron-up"></i>
+				<? if(isset($new) AND $new==1) { ?>
+					<form class="form" action="<?=$config['rel_root_folder']?>poi/new" method="post">
+				<? } 
+				else { ?>
+					<form class="form" action="<?=$config['rel_root_folder']?>poi/<?=$poi->permalink?>/edit" method="post">
+				<? } ?>					<h1 class="flex_line">
+						<input type="text" value="<?=$poi->name?>" name="name" id="name" placeholder="Nom de l'hébergement">
+						<select name="locale" id="locale">
+							<? foreach($locales->objs as $locale) { ?>
+								<option <?=$poi->locale==$locale->name?'selected':''?> value="<?=$locale->name?>"><?=$locale->display_name?></option>
+							<? } ?>
+						</select>
+					</h1>
+
+					<div class="flex_line" id="type_selector">
+						<? foreach($poi_types as $type) { ?>
+							<input type="radio" name="poi_type" value="<?=$type[3]?>" id="<?=$type[3]?>">
+							<label for="<?=$type[3]?>"><img src="<?=$config['views_url']?>img/<?=$type[3]?>.svg"><br><?=$type[0]?></label>
+						<? } ?>
+					</div>
+
+					<div class="flex_line">
+						<input type="text" value="<?=$poi->lat?>" name="lat" id="lat" placeholder="Latitude">
+						<input type="text" value="<?=$poi->lon?>" name="lon" id="lon" placeholder="Longitude">
+						<input type="text" value="<?=$poi->alt?>" name="alt" id="alt" placeholder="Altitude">
+					</div>
+
+					<input name="submit" id="submit" type="submit" value="Ajouter l'hébergement">
+				</form>
+			</section>
+
+		<script type="text/javascript">
+$( "#slide-icon" ).click(function() {
+  $( "html, body" ).animate({scrollTop: "300px"});
+});
+		</script>
+
+			<? include('blocks/d.footer.html'); ?>
+		</div>
+	</body>
+</html>

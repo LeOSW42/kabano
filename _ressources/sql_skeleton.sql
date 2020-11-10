@@ -6,10 +6,7 @@
 
 -- object: kabano | type: ROLE --
 -- DROP ROLE IF EXISTS kabano;
-CREATE ROLE kabano WITH 
-	INHERIT
-	LOGIN
-	ENCRYPTED PASSWORD '********';
+
 -- ddl-end --
 
 
@@ -42,7 +39,7 @@ SET search_path TO pg_catalog,public,topology;
 -- DROP EXTENSION IF EXISTS postgis CASCADE;
 CREATE EXTENSION postgis
       WITH SCHEMA public
-      VERSION '2.5.1';
+      VERSION '3.0.1';
 -- ddl-end --
 COMMENT ON EXTENSION postgis IS 'PostGIS geometry, geography, and raster spatial types and functions';
 -- ddl-end --
@@ -51,7 +48,7 @@ COMMENT ON EXTENSION postgis IS 'PostGIS geometry, geography, and raster spatial
 -- DROP EXTENSION IF EXISTS postgis_topology CASCADE;
 CREATE EXTENSION postgis_topology
       WITH SCHEMA topology
-      VERSION '2.5.1';
+      VERSION '3.0.1';
 -- ddl-end --
 COMMENT ON EXTENSION postgis_topology IS 'PostGIS topology spatial types and functions';
 -- ddl-end --

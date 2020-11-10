@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+	<? include('blocks/d.head.html'); ?>
+	
+	<body>
+
+		<? include('blocks/d.nav.html'); ?>
+
+		<section>
+			<h1>Contribuer au projet Kabano.</h1>
+			<p>&Eacute;tant un projet collaboratif, Kabano se repose sur vos contributions pour diffuser des informations au plus proche de la réalité. En participant au projet Kabano, vous acceptez de placer vos collaborations sous <a href="<?=$config['rel_root_folder']?>wiki/licences">nos licences libres</a>.</p>
+			<br>
+
+			<div class="action">
+				<? if($user->rankIsHigher("registered")) { ?>
+				<div class="title"><i class="fas fa-home"></i>
+					<a href="<?=$config['rel_root_folder']?>poi/new">Ajouter un hébergement de montagne</a>
+				</div>
+				<? } else { ?>
+				<div class="title" id="js_open_1"><i class="fas fa-home"></i>
+					<p>Ajouter un hébergement de montagne</p>
+				</div>
+				<div class="description" id="js_openned_1">
+					<p>Vous devez être connecté pour pouvoir ajouter un hébergement. &Ccedil;a nous permet de laisser les robots à la porte.</p>
+				</div>
+				<? } ?>
+			</div>
+
+			<div class="action">
+				<div class="title" id="js_open_2"><i class="fas fa-comment"></i>
+					<p>Ajouter un commentaire sur un hébergement</p>
+				</div>
+				<div class="description" id="js_openned_2">
+					<p>Rendez-vous sur la page hébergement où vous souhaitez laisser un commentaire, puis ajoutez un commentaire en bas de page.</p>
+				</div>
+			</div>
+
+			<div class="action">
+				<div class="title" id="js_open_3"><i class="fas fa-wrench"></i>
+					<p>Faire une demande de travaux</p>
+				</div>
+				<div class="description" id="js_openned_3">
+					<p>Cette fonctionnalité n'est pas encore disponible, mais n'hésitez pas à laisser un commentaire pour faire savoir le besoin d'entretien.</p>
+				</div>
+			</div>
+
+		</section>
+
+		<script type="text/javascript">
+$( "#js_open_1" ).click(function() {
+  $( "#js_openned_1" ).show(400);
+});
+$( "#js_open_2" ).click(function() {
+  $( "#js_openned_2" ).show(400);
+});
+$( "#js_open_3" ).click(function() {
+  $( "#js_openned_3" ).show(400);
+});
+		</script>
+
+		<? include('blocks/d.footer.html'); ?>
+
+	</body>
+</html>

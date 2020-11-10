@@ -1,16 +1,98 @@
-/* Custom configuration for the map page */
+/*********************************/
+/** Common                      **/
+/*********************************/
 
-html {
+html, body {
 	height: 100%;
 }
-body {
-	height: calc(100% - 65px);
+
+#sticky {
+	position: relative;
+	min-height: 0;
+	top: 65%;
+	z-index: 10;
 }
-footer {
+
+@keyframes fadeinfadeout {
+	0% {color: #444;}
+	50% {color: #999;}
+	100% {color: #444;}
+}
+#slide-icon {
 	position: absolute;
-	bottom: 0;
-	left: calc(50% - 425px);
-	z-index: 10000;
+	left: 400px;
+	top: -35px;
+	color: #000;
+	font-size: 60px;
+	color: #555;
+	animation-name: fadeinfadeout;
+	animation-duration: 2s;
+	animation-iteration-count: infinite;
+	cursor: pointer;
+}
+
+#mapid {
+	position: fixed;
+	height: 100%;
+	width: 100%;
+	top: 0;
+}
+
+/*********************************/
+/** Editor page                 **/
+/*********************************/
+
+form.form input, form.form textarea, form.form input[type=radio]:checked+label, #locale {
+	background: #ddd;
+	border-bottom: 2px solid #ccc;
+	display: block;
+	padding: 10px;
+}
+
+form.form h1 input {
+	flex: 2 !important;
+	font-size: 18px;
+}
+form.form h1 {
+	padding: 10px 0;
+	margin: 0 0 10px 0;
+}
+#locale {
+	flex: 1;
+	margin: 10px 5px 0 5px;
+	font-size: 17px;
+}
+
+.flex_line {
+	display: flex;
+	flex-direction: row;
+}
+
+.flex_line input[type=text] {
+	flex: 1;
+	margin: 10px 5px 0 5px;
+}
+
+form.form input[type=submit] {
+	width: auto;
+	margin: 10px auto;
+	border-bottom: 2px solid blue;
+}
+
+form.form input[type=radio] {
+	display: none;
+}
+form.form input[type=radio]+label {
+	font-size: 13px;
+	flex: 1;
+	text-align: center;
+	padding: 10px;
+	vertical-align: middle;
+	border-bottom: 2px solid transparent;
+}
+form.form input[type=radio]+label img {
+	width: 32px;
+	height: 32px;
 }
 
 /*****************************************
@@ -33,19 +115,23 @@ footer {
 }
 
 .leaflet-bottom.leaflet-left {
-	margin-bottom: 60px;
+	bottom: 35% !important;
+	margin-bottom: -50px !important;
 }
 .leaflet-fullscreen-on .leaflet-bottom.leaflet-left {
 	margin-bottom: 15px !important;
 	margin-left: 15px !important;
+	bottom: 0 !important;
 }
 
 .leaflet-bottom.leaflet-right {
-	margin-bottom: 60px;
+	bottom: 35% !important;
+	margin-bottom: -50px !important;
 }
 .leaflet-fullscreen-on .leaflet-bottom.leaflet-right {
 	margin-bottom: 15px !important;
 	margin-right: 15px !important;
+	bottom: 0 !important;
 }
 
 .leaflet-control {
@@ -142,41 +228,4 @@ footer {
 }
 .leaflet-control-scale {
 	opacity: 0.8 !important;
-}
-
-/* Credit / Legend */
-
-.leaflet-control button {
-	font-size: 12px !important;
-}
-
-#footer-credits, #footer-legend {
-	background: #212121;
-	width: 820px;
-	padding: 15px;
-	margin: 15px auto 0 auto;
-	color: #c1c1c1;
-	text-align: left;
-	position: absolute;
-	bottom: 0;
-	left: calc(50% - 425px);
-	z-index: 10000;
-}
-
-#footer-credits .close-link, #footer-legend .close-link {
-	float: right;
-	color: white;
-	padding: 0 8px;
-	cursor: pointer;
-}
-
-#footer-credits a, #footer-legend a {
-	color: white;
-}
-#footer-credits a:hover, #footer-legend a:hover {
-	color: white;
-}
-
-.leaflet-fullscreen-on .easy-button-container {
-	display: none;
 }

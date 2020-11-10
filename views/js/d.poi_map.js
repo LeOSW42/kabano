@@ -1,4 +1,5 @@
 var mymap;
+var poi_layer;
 
 $( document ).ready(function() {
 	// Differents layers for the map
@@ -27,20 +28,6 @@ $( document ).ready(function() {
 		imperial: false
 	}).addTo(mymap);
 
-	var credits = L.easyButton('fa-info',
-		function(control, mymap){
-			$("footer").hide();
-			$("#footer-credits").show();
-			$("#footer-legend").hide();
-		}, 'Credits');
-	var legend = L.easyButton('fa-question',
-		function(control, mymap){
-			$("footer").hide();
-			$("#footer-credits").hide();
-			$("#footer-legend").show();
-		}, 'Legend');
-	L.easyBar([ credits, legend, ], {position: "bottomleft"}).addTo(mymap);
-
 	L.control.fullscreen({
 		position: "bottomleft"
 	}).addTo(mymap);
@@ -57,13 +44,32 @@ $( document ).ready(function() {
 
 	mymap.removeControl(mymap.attributionControl);
 
-	$(".close-link").click(function() {
-		$("footer").show();
-		$("#footer-credits").hide();
-		$("#footer-legend").hide();
-	});
-
 	mymap.on('baselayerchange', function(e) {
 		$("#map-credits").html(e.layer.getAttribution());
 	});
+
+	poi_layer = L.marker([-46.407, 51.766], {draggable: true}).addTo(mymap);
+	poi_layer.bindTooltip("Glissez moi au bon endroit.", {permanent: true, direction: 'top'}).openTooltip();
+
+	mymap.on('click', function(e){
+		poi_layer.unbindTooltip();
+		poi_layer.setLatLng(e.latlng);
+		$("#lat").val(e.latlng.lat);
+		$("#lon").val(e.latlng.lng);
+	})
+	poi_layer.on('move', function(e){
+		poi_layer.unbindTooltip();
+		$("#lat").val(e.latlng.lat);
+		$("#lon").val(e.latlng.lng);
+	})
+
+	var poiicon = L.icon({
+		iconSize: [24, 24],
+		iconAnchor: [12, 12]
+	});
+	$("#type_selector label").click(function(e) {
+		poi_layer.unbindTooltip();
+		poiicon.options.iconUrl = e.currentTarget.firstChild.currentSrc;
+		poi_layer.setIcon(poiicon);
+	})
 });

@@ -34,7 +34,7 @@ if(isset($controller->splitted_url[1]) && $user->rankIsHigher("moderator")) {
 				}
 
 				chdir($config['logs_folder']);
-				exec("tail -n 200 ".$files_list[$filenb+2]." | tac", $output);
+				//exec("tail -n 200 ".$files_list[$filenb+2]." | tac", $output);
 
 				include ($config['views_folder']."d.admin.logs.html");
 			}
