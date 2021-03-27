@@ -3,25 +3,18 @@ var poi_layer;
 
 $( document ).ready(function() {
 	// Differents layers for the map
-/*	var	osmfr   = L.tileLayer('//{s}.tile.openstreetmap.fr/osmfr/{z}/{x}/{y}.png', {tms: true, maxZoom: 20, attribution: 'Maps © <a href="http://www.openstreetmap.fr">OpenSreetMap France</a>, Data © <a href="http://www.openstreetmap.org/copyright">OpenStreetMap contributors</a>'});
-	var	wikimedia  = L.tileLayer('//maps.wikimedia.org/osm-intl/{z}/{x}/{y}.png', {tms: true, maxZoom: 18, attribution: 'Maps © <a href="http://wikimedia.org">Wikimedia</a>, Data © <a href="http://www.openstreetmap.org/copyright">OpenStreetMap contributors</a>'});*/
-	var	sat_cro  = L.tileLayer('/_maps/sat_cro/{z}/{x}/{y}.png', {tms: true, maxZoom: 17, attribution: 'For dev purpose only'});
-	var	osm_cro  = L.tileLayer('/_maps/osm_cro/{z}/{x}/{y}.png', {tms: true, maxZoom: 17, attribution: 'For dev purpose only'});
-	var	ign_cro  = L.tileLayer('/_maps/ign_cro/{z}/{x}/{y}.jpg.tile', {tms: false, maxZoom: 13, attribution: 'For dev purpose only'});
-
+	var	topo_maptiler = L.tileLayer('https://api.maptiler.com/maps/topographique/{z}/{x}/{y}.png?key=Sm8M7mJ53GtYdl773rpi', {tms: false, maxZoom: 20, attribution: 'Maps © <a href="https://www.maptiler.com/copyright/" target="_blank">&copy; MapTiler</a>, Data © <a href="http://www.openstreetmap.org/copyright">OpenStreetMap contributors</a>'});
+	/*var	wikimedia  = L.tileLayer('//maps.wikimedia.org/osm-intl/{z}/{x}/{y}.png', {tms: true, maxZoom: 18, attribution: 'Maps © <a href="http://wikimedia.org">Wikimedia</a>, Data © <a href="http://www.openstreetmap.org/copyright">OpenStreetMap contributors</a>'});*/
 	// Base layers
 	var baseLayers = {
-		"Crozet IGN": ign_cro,
-		"Crozet satellite": sat_cro,
-		"Crozet OSM": osm_cro,
+		"Topo": topo_maptiler,
 	};
 
 	mymap = L.map('mapid', {
 		zoomControl: false,
-		layers: [sat_cro],
-		maxBounds: [[-46.32,51.60],[-46.50,51.90]]
-	}).setView([-46.407, 51.766], 13);
-	$("#map-credits").html(sat_cro.getAttribution());
+		layers: [topo_maptiler]
+	}).setView([47, 3], 6);
+	$("#map-credits").html(topo_maptiler.getAttribution());
 
 	L.control.scale({
 		position: "bottomleft",
@@ -48,7 +41,7 @@ $( document ).ready(function() {
 		$("#map-credits").html(e.layer.getAttribution());
 	});
 
-	poi_layer = L.marker([-46.407, 51.766], {draggable: true}).addTo(mymap);
+	poi_layer = L.marker([47, 3], {draggable: true}).addTo(mymap);
 	poi_layer.bindTooltip("Glissez moi au bon endroit.", {permanent: true, direction: 'top'}).openTooltip();
 
 	mymap.on('click', function(e){
