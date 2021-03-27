@@ -3,7 +3,7 @@ var poi_layer;
 
 $( document ).ready(function() {
 	// Differents layers for the map
-	var	topo_maptiler = L.tileLayer('https://api.maptiler.com/maps/topographique/{z}/{x}/{y}.png?key=Sm8M7mJ53GtYdl773rpi', {tms: false, maxZoom: 20, attribution: 'Maps © <a href="https://www.maptiler.com/copyright/" target="_blank">&copy; MapTiler</a>, Data © <a href="http://www.openstreetmap.org/copyright">OpenStreetMap contributors</a>'});
+	var	topo_maptiler = L.tileLayer('https://api.maptiler.com/maps/topographique/{z}/{x}/{y}.png?key=Sm8M7mJ53GtYdl773rpi', {tms: false, maxZoom: 20, attribution: 'Maps © <a href="https://www.maptiler.com/copyright/" target="_blank">MapTiler</a>, Data © <a href="http://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap contributors</a>'});
 	/*var	wikimedia  = L.tileLayer('//maps.wikimedia.org/osm-intl/{z}/{x}/{y}.png', {tms: true, maxZoom: 18, attribution: 'Maps © <a href="http://wikimedia.org">Wikimedia</a>, Data © <a href="http://www.openstreetmap.org/copyright">OpenStreetMap contributors</a>'});*/
 	// Base layers
 	var baseLayers = {

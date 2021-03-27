@@ -2,11 +2,8 @@ var mymap;
 
 $( document ).ready(function() {
 	// Differents layers for the map
-	var	topo_maptiler = L.tileLayer('https://api.maptiler.com/maps/topographique/{z}/{x}/{y}.png?key=Sm8M7mJ53GtYdl773rpi', {tms: false, maxZoom: 20, attribution: 'Maps © <a href="https://www.maptiler.com/copyright/" target="_blank">&copy; MapTiler</a>, Data © <a href="http://www.openstreetmap.org/copyright">OpenStreetMap contributors</a>'});
-	/*var	wikimedia  = L.tileLayer('//maps.wikimedia.org/osm-intl/{z}/{x}/{y}.png', {tms: true, maxZoom: 18, attribution: 'Maps © <a href="http://wikimedia.org">Wikimedia</a>, Data © <a href="http://www.openstreetmap.org/copyright">OpenStreetMap contributors</a>'});
-	var	sat_cro  = L.tileLayer('/_maps/sat_cro/{z}/{x}/{y}.png', {tms: true, maxZoom: 17, attribution: 'For dev purpose only'});
-	var	osm_cro  = L.tileLayer('/_maps/osm_cro/{z}/{x}/{y}.png', {tms: true, maxZoom: 17, attribution: 'For dev purpose only'});
-	var	ign_cro  = L.tileLayer('/_maps/ign_cro/{z}/{x}/{y}.jpg.tile', {tms: false, maxZoom: 13, attribution: 'For dev purpose only'});*/
+	var	topo_maptiler = L.tileLayer('https://api.maptiler.com/maps/topographique/{z}/{x}/{y}.png?key=Sm8M7mJ53GtYdl773rpi', {tms: false, maxZoom: 20, attribution: 'Maps © <a href="https://www.maptiler.com/copyright/" target="_blank">MapTiler</a>, Data © <a href="http://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap contributors</a>'});
+	/*var	wikimedia  = L.tileLayer('//maps.wikimedia.org/osm-intl/{z}/{x}/{y}.png', {tms: true, maxZoom: 18, attribution: 'Maps © <a href="http://wikimedia.org">Wikimedia</a>, Data © <a href="http://www.openstreetmap.org/copyright">OpenStreetMap contributors</a>'});*/
 	// Base layers
 	var baseLayers = {
 		"Topo": topo_maptiler,
