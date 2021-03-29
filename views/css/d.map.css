@@ -121,10 +121,12 @@ footer {
 .leaflet-control-layers-expanded a {
 	display: none !important;
 }
+
 .leaflet-control-layers-list {
 	padding: 3px 8px !important;
 	color: white !important;
 	background: #212121 !important;
+	width: inherit !important;
 }
 
 /* Scale */

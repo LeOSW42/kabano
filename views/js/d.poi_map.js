@@ -42,7 +42,7 @@ $( document ).ready(function() {
 	});
 
 	poi_layer = L.marker([47, 3], {draggable: true}).addTo(mymap);
-	poi_layer.bindTooltip("Glissez moi au bon endroit.", {permanent: true, direction: 'top'}).openTooltip();
+	poi_layer.bindTooltip("Glissez moi au bon endroit.", {permanent: true, direction: 'auto'}).openTooltip();
 
 	mymap.on('click', function(e){
 		poi_layer.unbindTooltip();

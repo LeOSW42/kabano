@@ -211,6 +211,7 @@ form.form input[type=radio]+label img {
 	padding: 3px 8px !important;
 	color: white !important;
 	background: #212121 !important;
+	width: inherit !important;
 }
 
 /* Scale */
