@@ -3,7 +3,7 @@ var mymap;
 $( document ).ready(function() {
 	// Differents layers for the map
 	var	topo_maptiler = L.tileLayer('https://api.maptiler.com/maps/topographique/{z}/{x}/{y}.png?key=Sm8M7mJ53GtYdl773rpi', {tms: false, attribution: 'Carte © <a href="https://www.maptiler.com/copyright/" target="_blank">MapTiler</a>, Données © <a href="http://www.openstreetmap.org/copyright" target="_blank">Contributeurs OpenStreetMap</a>', tileSize: 512, zoomOffset: -1, minZoom: 1});
-	var	ign = L.tileLayer('https://wxs.ign.fr/5sf7ych7ecsa575btea2ln17/geoportail/wmts?service=WMTS&request=GetTile&version=1.0.0&tilematrixset=PM&tilematrix={z}&tilecol={x}&tilerow={y}&layer=GEOGRAPHICALGRIDSYSTEMS.MAPS&format=image/jpeg&style=normal', {attribution: 'Carte & Connées © <a href="http://ign.fr/" target="_blank">IGN-F/Géoportail</a>'});
+	var	ign = L.tileLayer('https://wxs.ign.fr/5sf7ych7ecsa575btea2ln17/geoportail/wmts?service=WMTS&request=GetTile&version=1.0.0&tilematrixset=PM&tilematrix={z}&tilecol={x}&tilerow={y}&layer=GEOGRAPHICALGRIDSYSTEMS.PLANIGNV2&format=image/jpeg&style=normal', {attribution: 'Carte & Connées © <a href="http://ign.fr/" target="_blank">IGN-F/Géoportail</a>'});
 	// Base layers
 	var baseLayers = {
 		"OpenStreetMap": topo_maptiler,
