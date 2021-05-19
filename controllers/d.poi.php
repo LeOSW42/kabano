@@ -16,7 +16,7 @@ switch ($controller->splitted_url[1]) {
 				$poi->poi_type = $_POST['poi_type'];
 				$poi->lat = $_POST['lat'];
 				$poi->lon = $_POST['lon'];
-				$poi->alt = $_POST['alt'];
+				$poi->ele = $_POST['ele'];
 				$poi->author = $user->id;
 				if(!$blogArticle->checkPermalink($_POST['permalink'],1)) {
 					$blogArticle->permalink = $_POST['permalink'];
@@ -39,10 +39,19 @@ switch ($controller->splitted_url[1]) {
 			$head['css'] .= ";../third/leaflet/leaflet.css;../third/leaflet-fullscreen/leaflet.fullscreen.css;../third/leaflet-easybutton/easy-button.css";
 			$head['js'] = "d.poi_map.js";
 
-			$poi->lat = ""; $poi->lon = ""; $poi->alt = "";
+			$poi->lat = ""; $poi->lon = ""; $poi->ele = "";
 
 			$new = 1;
 			include ($config['views_folder']."d.poi.edit.html");
+			break;
+		}
+		else {
+			$notfound = 1;	
+		}
+	case "elevation_proxy":
+		if(isset($_GET['location'])) {
+			header("Content-Type: application/json;charset=utf-8");
+			echo(file_get_contents("https://api.opentopodata.org/v1/mapzen?locations=".$_GET['location']));
 			break;
 		}
 		else {

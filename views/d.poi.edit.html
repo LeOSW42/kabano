@@ -36,7 +36,8 @@
 					<div class="flex_line">
 						<input type="text" value="<?=$poi->lat?>" name="lat" id="lat" placeholder="Latitude">
 						<input type="text" value="<?=$poi->lon?>" name="lon" id="lon" placeholder="Longitude">
-						<input type="text" value="<?=$poi->alt?>" name="alt" id="alt" placeholder="Altitude">
+						<input type="text" value="<?=$poi->ele?>" name="ele" id="ele" placeholder="Altitude">
+						<div id="elevation_icon" title="Calculer l'altitude"><i class="fas fa-search-location"></i></div>
 					</div>
 
 					<input name="submit" id="submit" type="submit" value="Ajouter l'hébergement">

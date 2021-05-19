@@ -230,3 +230,15 @@ form.form input[type=radio]+label img {
 .leaflet-control-scale {
 	opacity: 0.8 !important;
 }
+
+#elevation_icon {
+	font-size: 20px;
+	cursor: pointer;
+	position: relative;
+	top: 18px;
+	right: 34px;
+}
+
+#elevation_icon i {
+	position: absolute;
+}
