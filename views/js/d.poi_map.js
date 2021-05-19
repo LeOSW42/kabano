@@ -46,16 +46,22 @@ $( document ).ready(function() {
 	poi_layer.bindTooltip("Glissez moi au bon endroit.", {permanent: true, direction: 'auto'}).openTooltip();
 
 	mymap.on('click', function(e){
-		poi_layer.unbindTooltip();
 		poi_layer.setLatLng(e.latlng);
-		$("#lat").val(e.latlng.lat.toFixed(6));
-		$("#lon").val(e.latlng.lng.toFixed(6));
 	})
 	poi_layer.on('move', function(e){
 		poi_layer.unbindTooltip();
 		$("#lat").val(e.latlng.lat.toFixed(6));
 		$("#lon").val(e.latlng.lng.toFixed(6));
+		$("#elevation_icon").show();
 	})
+	$("#lat,#lon").change(function() { // If the user changes the lat/lon input values manualy
+		if(isNaN($("#lat").val()) || isNaN($("#lon").val()) || $("#lat").val().length==0 || $("#lon").val()==null)
+			$("#elevation_icon").hide();
+		else {
+			$("#elevation_icon").show();
+			poi_layer.setLatLng([$("#lat").val(),$("#lon").val()]);
+		}
+	});
 
 	var poiicon = L.icon({
 		iconSize: [24, 24],
@@ -66,7 +72,6 @@ $( document ).ready(function() {
 		poiicon.options.iconUrl = e.currentTarget.firstChild.currentSrc;
 		poi_layer.setIcon(poiicon);
 	})
-
 	$("#elevation_icon").click(function(e) {
 		$(this).find($(".fas")).removeClass('fa-search-location').addClass('fa-spinner').addClass('fa-spin');
 		$.get("./elevation_proxy", {location:$("#lat").val()+","+$("#lon").val()}, function(result){
