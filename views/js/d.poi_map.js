@@ -48,13 +48,13 @@ $( document ).ready(function() {
 	mymap.on('click', function(e){
 		poi_layer.unbindTooltip();
 		poi_layer.setLatLng(e.latlng);
-		$("#lat").val(e.latlng.lat);
-		$("#lon").val(e.latlng.lng);
+		$("#lat").val(e.latlng.lat.toFixed(6));
+		$("#lon").val(e.latlng.lng.toFixed(6));
 	})
 	poi_layer.on('move', function(e){
 		poi_layer.unbindTooltip();
-		$("#lat").val(e.latlng.lat);
-		$("#lon").val(e.latlng.lng);
+		$("#lat").val(e.latlng.lat.toFixed(6));
+		$("#lon").val(e.latlng.lng.toFixed(6));
 	})
 
 	var poiicon = L.icon({
