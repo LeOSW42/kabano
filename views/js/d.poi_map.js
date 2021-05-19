@@ -50,8 +50,8 @@ $( document ).ready(function() {
 	})
 	poi_layer.on('move', function(e){
 		poi_layer.unbindTooltip();
-		$("#lat").val(e.latlng.lat.toFixed(6));
-		$("#lon").val(e.latlng.lng.toFixed(6));
+		$("#lat").val(+e.latlng.lat.toFixed(6));
+		$("#lon").val(+e.latlng.lng.toFixed(6));
 		$("#elevation_icon").show();
 	})
 	$("#lat,#lon").change(function() { // If the user changes the lat/lon input values manualy
