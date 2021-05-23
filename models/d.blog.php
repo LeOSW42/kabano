@@ -277,7 +277,7 @@ class BlogArticles
 			or die ("Could not connect to server\n");
 
 		$query = "SELECT content_versions.id AS version_id, * FROM contents INNER JOIN content_locales ON contents.id = content_locales.content_id INNER JOIN content_versions ON content_locales.id = content_versions.locale_id WHERE is_archive=FALSE ";
-		if ($archive == 1)
+		if ($archive != 1)
 			$query .= "AND is_public=TRUE ";
 		$query .= "AND type='blog' ORDER BY update_date DESC";
 		$query .= " LIMIT $1 OFFSET $2";
