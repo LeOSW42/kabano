@@ -32,7 +32,7 @@ echo ('<?xml version="1.0" encoding="UTF-8"?>'); ?>
 			<title><?=$row->name?></title>
 			<link><?=$config['web_root_folder']?>blog/<?=$row->permalink?></link>
 			<guid><?=$config['web_root_folder']?>blog/<?=$row->permalink?></guid>
-			<pubDate><?=gmdate(DATE_RFC822, strtotime($row->update_date))?></pubDate>
+			<pubDate><?=gmdate(DATE_RSS, strtotime($row->update_date))?></pubDate>
 			<description><![CDATA[
 				<?=$row->content_html?>
 				]]></description>
