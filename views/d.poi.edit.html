@@ -26,18 +26,18 @@
 						</select>
 					</h1>
 
-					<div class="flex_line" id="type_selector">
-						<? foreach($poi_types as $type) { ?>
-							<input type="radio" name="poi_type" value="<?=$type[3]?>" id="<?=$type[3]?>">
-							<label for="<?=$type[3]?>"><img src="<?=$config['views_url']?>img/<?=$type[3]?>.svg"><br><?=$type[0]?></label>
-						<? } ?>
-					</div>
-
 					<div class="flex_line">
 						<input type="text" value="<?=$poi->lat?>" name="lat" id="lat" placeholder="Latitude">
 						<input type="text" value="<?=$poi->lon?>" name="lon" id="lon" placeholder="Longitude">
 						<input type="text" value="<?=$poi->ele?>" name="ele" id="ele" placeholder="Altitude">
 						<div id="elevation_icon" style="display:none;" title="Calculer l'altitude"><i class="fas fa-search-location"></i></div>
+					</div>
+
+					<div class="flex_line" id="type_selector">
+						<? foreach($poi_types as $type) { ?>
+							<input type="radio" name="poi_type" value="<?=$type[3]?>" id="<?=$type[3]?>">
+							<label for="<?=$type[3]?>"><img src="<?=$config['views_url']?>img/<?=$type[3]?>.svg"><br><?=$type[0]?></label>
+						<? } ?>
 					</div>
 
 					<input name="submit" id="submit" type="submit" value="Ajouter l'hébergement">
