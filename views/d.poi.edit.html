@@ -36,9 +36,62 @@
 					<div class="flex_line" id="type_selector">
 						<? foreach($poi_types as $type) { ?>
 							<input type="radio" name="poi_type" value="<?=$type[3]?>" id="<?=$type[3]?>">
-							<label for="<?=$type[3]?>"><img src="<?=$config['views_url']?>img/<?=$type[3]?>.svg"><br><?=$type[0]?></label>
+							<label for="<?=$type[3]?>" onclick='updateForm("<?=$type[3]?>")'><img src="<?=$config['views_url']?>img/<?=$type[3]?>.svg"><br><?=$type[0]?></label>
 						<? } ?>
 					</div>
+
+					<script type="text/javascript">
+						// Used to store all the forms skeleton and abstracts
+						<? foreach($poi_types as $type) { ?>
+							<?=$type[3]?>_abstract="<?=$type[4]?>";
+							<?=$type[3]?>_jsonform=<?=json_encode($type[5])?>;
+						<? } ?>
+
+						// Manages the three state checkbox feature
+						function update3State(id) {
+							input=$("input[name="+id+"]");
+							label=$("label[for="+id+"]");
+							switch(+input.val()) {
+								case 0:
+									input.val(1);
+									label.toggleClass('uncheck intermediate')
+									break;
+								case 1:
+									input.val(2);
+									label.toggleClass('intermediate check')
+									break;
+								default:
+									input.val(0);
+									label.toggleClass('check uncheck')
+
+							}
+						}
+
+						// Updates the specific form section when changing poi type
+						function updateForm(type) {
+							$("#abstract").html(this[type+'_abstract']);
+							html_form="";
+							$.each(this[type+'_jsonform'],function(index, value){
+									switch(index.charAt(0)) {
+										case 'b':
+											html_form+='<label class="threecb intermediate" for="'+index+'" onclick="update3State(\''+index+'\')" >'+value+'</label><input value="1" type="hidden" name="'+index+'" id="'+index+'"><br>'
+											break;
+										case 'n':
+											break;
+										case 't':
+											break;
+										case 'l':
+											break;
+										default:
+											console.log("ERROR: "+index+"'s type is not known");
+									}
+							});
+							$("#specific_form").html(html_form);
+						}
+					</script>
+
+					<p id="abstract"></p>
+					<div id="specific_form"></div>
 
 					<input name="submit" id="submit" type="submit" value="Ajouter l'hébergement">
 				</form>
