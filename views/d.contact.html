@@ -33,7 +33,7 @@
 					<p style="color: green;">Message bien envoyé.</p>
 				<? } ?>
 				<input type="text" name="name" id="name" placeholder="Nom" value="<?=$contact['name']?>">
-				<input type="text" name="email" id="email" placeholder="Adresse mail" value="<?=$contact['email']?>">
+				<input type="email" name="email" id="email" placeholder="Adresse mail" value="<?=$contact['email']?>">
 				<input type="text" name="subject" id="subject" placeholder="Sujet" value="<?=$contact['subject']?>">
 				<textarea name="message" id="message" rows="12" placeholder="Contenu de votre message"><?=$contact['message']?></textarea>
 				<? if($user->rankIsHigher("registered")) { ?>

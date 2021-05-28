@@ -74,9 +74,17 @@ form.form h1 {
 	margin-right: 0 !important;
 }
 
-.flex_line input[type=text] {
+.flex_line input[type=number], .flex_line input[type=text] {
 	flex: 1;
 	margin: 10px 5px 0 5px;
+}
+.noarrow::-webkit-inner-spin-button, 
+.noarrow::-webkit-outer-spin-button,
+.noarrow { 
+    -webkit-appearance: none;
+    -moz-appearance: textfield;
+    appearance: textfield;
+    margin: 0; 
 }
 
 form.form input[type=submit] {
