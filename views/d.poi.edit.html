@@ -74,13 +74,16 @@
 							$.each(this[type+'_jsonform'],function(index, value){
 									switch(index.charAt(0)) {
 										case 'b':
-											html_form+='<label class="threecb intermediate" for="'+index+'" onclick="update3State(\''+index+'\')" >'+value+'</label><input value="1" type="hidden" name="'+index+'" id="'+index+'"><br>'
+											html_form+='<label class="threecb intermediate" for="'+index+'" onclick="update3State(\''+index+'\')">'+value+'</label><input value="1" type="hidden" name="'+index+'" id="'+index+'"><br>'
 											break;
 										case 'n':
+											html_form+='<div class="flex_line"><label for="'+index+'">'+value+'</label><input min="0" max="100" type="number" name="'+index+'" id="'+index+'"></div>'
 											break;
 										case 't':
+											html_form+='<textarea name="'+index+'"  id="'+index+'" placeholder="'+value+'"></textarea>'
 											break;
 										case 'l':
+											html_form+='<div class="flex_line"><label for="'+index+'">'+value+'</label><input placeholder="https://" type="url" name="'+index+'" id="'+index+'"></div>'
 											break;
 										default:
 											console.log("ERROR: "+index+"'s type is not known");
