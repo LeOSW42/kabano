@@ -36,11 +36,13 @@
 					<div class="flex_line" id="type_selector">
 						<? foreach($poi_types as $type) { ?>
 							<input type="radio" name="poi_type" value="<?=$type[3]?>" id="<?=$type[3]?>">
-							<label for="<?=$type[3]?>" onclick='updateForm("<?=$type[3]?>")'><img src="<?=$config['views_url']?>img/<?=$type[3]?>.svg"><br><?=$type[0]?></label>
+							<label for="<?=$type[3]?>"><img src="<?=$config['views_url']?>img/<?=$type[3]?>.svg"><br><?=$type[0]?></label>
 						<? } ?>
 					</div>
 
 					<script type="text/javascript">
+						var unsaved = false;
+
 						// Used to store all the forms skeleton and abstracts
 						<? foreach($poi_types as $type) { ?>
 							<?=$type[3]?>_abstract="<?=$type[4]?>";
@@ -49,8 +51,8 @@
 
 						// Manages the three state checkbox feature
 						function update3State(id) {
-							input=$("input[name="+id+"]");
-							label=$("label[for="+id+"]");
+							var input=$("input[name="+id+"]");
+							var label=$("label[for="+id+"]");
 							switch(+input.val()) {
 								case 0:
 									input.val(1);
@@ -65,12 +67,14 @@
 									label.toggleClass('check uncheck')
 
 							}
+							unsaved = true; // The form values changed
 						}
 
 						// Updates the specific form section when changing poi type
 						function updateForm(type) {
-							$("#abstract").html(this[type+'_abstract']);
-							html_form="";
+							$("#abstract").html(this[type+'_abstract']); // Changes the abstract legend
+							var html_form="";
+							// Generates HTML for the sub-form
 							$.each(this[type+'_jsonform'],function(index, value){
 									switch(index.charAt(0)) {
 										case 'b':
@@ -89,8 +93,31 @@
 											console.log("ERROR: "+index+"'s type is not known");
 									}
 							});
-							$("#specific_form").html(html_form);
+							$("#specific_form").html(html_form); // Updates HTML
+
+							// Display an alert if the poi type is changed before reseting the form
+							unsaved = false;
+							$("#specific_form :input").change(function(){
+								unsaved = true;
+							});
 						}
+
+						// Handle click on type selector
+						$(document).ready(function(){
+							// First check if there is changes in the sub-form and if the user is OK to reset the form
+							$('#type_selector label').click(function(){
+								if(unsaved == true) {
+									if(confirm("Des changements ont été apportés et vont être supprimés, voulez-vous continuer ?")) {}
+									else {
+										return false; // Cancel radio switch action
+									}
+								}
+
+								// Updates the sub-form
+								updateForm($(this).prev().val());
+							});
+						});
+
 					</script>
 
 					<p id="abstract"></p>
