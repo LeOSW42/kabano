@@ -118,6 +118,9 @@ header li a {
 	display: block;
 	vertical-align: middle;
 }
+header li a:hover, header li a:focus-within {
+	color: white;
+}
 
 header li:hover a, header li:focus-within a {
 	border-bottom: 6px solid blue;
