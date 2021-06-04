@@ -16,7 +16,9 @@
 
 		<div id="footer-legend" style="display: none;">
 			<i class="fa fa-times close-link" aria-hidden="true"></i>
-			<p><i id="map-legend">Légende.</i></p>
+			<? foreach($poi_types as $type) { ?>
+				<span class="legend_item"><img src="<?=$config['views_url']?>img/<?=$type[3]?>.svg" class="poi_icon"> <?=$type[1]?></span>
+			<? } ?>
 		</div>
 
 		<? include('blocks/d.footer.html'); ?>

@@ -163,10 +163,12 @@ footer {
 	bottom: 0;
 	left: calc(50% - 425px);
 	z-index: 10000;
+	display: flex;
 }
 
 #footer-credits .close-link, #footer-legend .close-link {
-	float: right;
+	position: absolute;
+	right: 10px;
 	color: white;
 	padding: 0 8px;
 	cursor: pointer;
@@ -177,6 +179,14 @@ footer {
 }
 #footer-credits a:hover, #footer-legend a:hover {
 	color: white;
+}
+
+.legend_item {
+	flex: 1;
+	text-align: center;
+}
+.poi_icon {
+	height: 15px;
 }
 
 .leaflet-fullscreen-on .easy-button-container {

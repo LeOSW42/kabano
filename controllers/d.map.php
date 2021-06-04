@@ -14,6 +14,8 @@ else {
 	$head['third'] = "leaflet/leaflet.js;leaflet-fullscreen/Leaflet.fullscreen.min.js;leaflet-easybutton/easy-button.js";
 	$head['css'] .= ";d.map.css;../third/leaflet/leaflet.css;../third/leaflet-fullscreen/leaflet.fullscreen.css;../third/leaflet-easybutton/easy-button.css";
 	$head['js'] = "d.map.js";
+
+	require_once($config['includes_folder']."poi_types.struct.php");
 	include ($config['views_folder']."d.map.html");
 }
 
