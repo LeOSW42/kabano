@@ -18,13 +18,14 @@ switch ($controller->splitted_url[1]) {
 				$poi->lon = $_POST['lon'];
 				$poi->ele = $_POST['ele'];
 				$poi->author = $user->id;
-				if(!$blogArticle->checkPermalink($_POST['permalink'],1)) {
-					$blogArticle->permalink = $_POST['permalink'];
-					$blogArticle->insert();
-					header('Location: '.$config['rel_root_folder']."blog/".$blogArticle->permalink);
+				$poi->source = "k";
+				if(!$poi->checkPermalink($_POST['permalink'],1)) {
+					$poi->permalink = $_POST['permalink'];
+					$poi->insert();
+					header('Location: '.$config['rel_root_folder']."blog/".$poi->permalink);
 				}
 				else {
-					$head['title'] = $blogArticle->name;
+					$head['title'] = $poi->name;
 					$error = "permalink";
 				}
 			}
