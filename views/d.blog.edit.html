@@ -31,7 +31,7 @@
 				<textarea rows="30" name="content" id="content" placeholder="Contenu de l'article"><?=$blogArticle->content?></textarea>
 
 				<? if(isset($new) AND $new==1) { ?>
-					<input type="text" value="<?=$blogArticle->permalink?>" name="permalink" id="permalink" placeholder="URL">
+					<input type="text" name="permalink" id="permalink" placeholder="URL">
 				<? } ?>
 
 				<label for="is_commentable">
