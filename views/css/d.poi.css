@@ -158,6 +158,10 @@ form.form input[type=radio]+label img {
 	font-style: italic;
 }
 
+#permalink {
+	width: calc(100% - 20px);
+}
+
 /*****************************************
  Controls of the map
 *****************************************/
