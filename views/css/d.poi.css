@@ -65,6 +65,7 @@ form.form h1 {
 .flex_line {
 	display: flex;
 	flex-direction: row;
+	position: relative;
 }
 
 .flex_line > :first-child {
@@ -95,7 +96,11 @@ form.form input[type=submit] {
 }
 
 form.form input[type=radio] {
-	display: none;
+	position: absolute;
+	float: left;
+	opacity: 0%;
+	top: 50%;
+	left: 50%;
 }
 form.form input[type=radio]+label {
 	margin-top: 10px;

@@ -17,8 +17,9 @@
 				<? } 
 				else { ?>
 					<form class="form" action="<?=$config['rel_root_folder']?>poi/<?=$poi->permalink?>/edit" method="post">
-				<? } ?>					<h1 class="flex_line">
-						<input type="text" value="<?=$poi->name?>" name="name" id="name" placeholder="Nom de l'hébergement">
+				<? } ?>
+					<h1 class="flex_line">
+						<input type="text" value="<?=$poi->name?>" name="name" id="name" placeholder="Nom de l'hébergement" required>
 						<select name="locale" id="locale">
 							<? foreach($locales->objs as $locale) { ?>
 								<option <?=$poi->locale==$locale->name?'selected':''?> value="<?=$locale->name?>"><?=$locale->display_name?></option>
@@ -27,15 +28,15 @@
 					</h1>
 
 					<div class="flex_line">
-						<input type="number" class="noarrow" step="any" value="<?=$poi->lat?>" name="lat" id="lat" placeholder="Latitude">
-						<input type="number" class="noarrow" step="any" value="<?=$poi->lon?>" name="lon" id="lon" placeholder="Longitude">
+						<input type="number" class="noarrow" step="any" value="<?=$poi->lat?>" name="lat" id="lat" placeholder="Latitude" required>
+						<input type="number" class="noarrow" step="any" value="<?=$poi->lon?>" name="lon" id="lon" placeholder="Longitude" required>
 						<input type="number" class="noarrow last-child" step="any" value="<?=$poi->ele?>" name="ele" id="ele" placeholder="Altitude">
 						<div id="elevation_icon" style="display:none;" title="Calculer l'altitude"><i class="fas fa-search-location"></i></div>
 					</div>
 
 					<div class="flex_line" id="type_selector">
 						<? foreach($poi_types as $type) { ?>
-							<input type="radio" name="poi_type" value="<?=$type[3]?>" id="<?=$type[3]?>">
+							<input type="radio" name="poi_type" value="<?=$type[3]?>" id="<?=$type[3]?>" required>
 							<label for="<?=$type[3]?>"><img src="<?=$config['views_url']?>img/<?=$type[3]?>.svg"><br><?=$type[0]?></label>
 						<? } ?>
 					</div>
