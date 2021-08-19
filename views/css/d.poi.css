@@ -129,6 +129,7 @@ form.form input[type=radio]+label img {
 	width: 21px;
 	background: #ddd;
 	font-size: 25px;
+	border-radius: 100px;
 }
 #specific_form .threecb.check:after {
 	content: "\f058"; /* check */
@@ -163,6 +164,7 @@ form.form input[type=radio]+label img {
 
 #permalink_container {
 	position: relative;
+	margin: 2px 0;
 }
 #permalink {
 	width: calc(100% - 194px);
