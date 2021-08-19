@@ -25,7 +25,8 @@ a:hover {
 	text-decoration: none;
 }
 
-input {
+input, textarea {
+	font-family: "Fira Sans", "Open Sans",Helvetica,Arial,sans-serif;
 	border-bottom-left-radius: 3px;
 	border-bottom-right-radius: 3px;
 }

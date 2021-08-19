@@ -230,9 +230,20 @@ form.form label {
 	float: right;
 	font-size: 17px;
 }
-#permalink {
-	width: calc(100% - 20px);
+#permalink_container {
+	position: relative;
 }
+#permalink {
+	width: calc(100% - 225px);
+	padding-left: 215px;
+}
+#permalink_label {
+	position: absolute;
+	top: 10px;
+	left: 10px;
+	opacity: 0.8;
+}
+
 
 form.form input[type=submit] {
 	width: auto;
