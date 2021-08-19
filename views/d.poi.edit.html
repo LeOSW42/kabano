@@ -124,7 +124,10 @@
 					<div id="specific_form"></div>
 
 					<? if(isset($new) AND $new==1) { ?>
-						<input type="text" name="permalink" id="permalink" placeholder="Lien permanent" required>
+					<div id="permalink_container">
+						<label id="permalink_label" for="permalink"><?=$config['web_root_folder']?>poi/</label>
+						<input type="text" name="permalink" id="permalink" placeholder="URL">
+					</div>
 					<? } ?>
 
 					<script type="text/javascript">

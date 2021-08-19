@@ -42,10 +42,13 @@ html, body {
 /** Editor page                 **/
 /*********************************/
 
+form.form input, form.form textarea, #locale {
+	font-size: 16px;
+	padding: 10px;
+}
 form.form input, form.form textarea, form.form input[type=radio]:checked+label, #locale {
 	background: #ddd;
 	border-bottom: 2px solid #ccc;
-	padding: 10px;
 }
 
 form.form h1 input {
@@ -158,8 +161,19 @@ form.form input[type=radio]+label img {
 	font-style: italic;
 }
 
+#permalink_container {
+	position: relative;
+}
 #permalink {
-	width: calc(100% - 20px);
+	width: calc(100% - 194px);
+	padding-left: 184px;
+}
+#permalink_label {
+	position: absolute;
+	top: 10px;
+	left: 10px;
+	opacity: 0.8;
+	font-size: 16px;
 }
 
 /*****************************************
