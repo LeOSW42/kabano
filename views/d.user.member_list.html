@@ -45,8 +45,8 @@
 						<a class="username" href="<?=$config['rel_root_folder']?>user/p/<?=$row->id?>"><?=$row->name?></a>
 					</td>
 					<td><?=$row->get_rank()?></td>
-					<td><? echo strftime('%e %B %G',strtotime($row->register_date)) ?></td>
-					<td><? echo strftime('%e %B %G',strtotime($row->visit_date)) ?></td>
+					<td><? echo datefmt_format($user->date_format,strtotime($row->register_date)) ?></td>
+					<td><? echo datefmt_format($user->date_format,strtotime($row->visit_date)) ?></td>
 					<td>
 						<? if ($row->website != "") { ?>
 						<a target="_blank" href="<?=$row->website?>">Site internet <span class="external-link"><i class="fas fa-external-link-alt"></i></span></a>

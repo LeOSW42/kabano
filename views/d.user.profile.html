@@ -24,8 +24,8 @@
 						</aside>
 							<div id="description">
 								<p>Langue : <?=$userProfile->get_locale()?></p>
-								<p>Inscrit le <? echo strftime('%e %B %G, %kh%Mm%Ss',strtotime($userProfile->register_date)) ?> <small><abbr title="Temps Universel Coordonné">UTC</abbr></small></p>
-								<p>Dernière connexion le <? echo strftime('%e %B %G, %kh%Mm%Ss',strtotime($userProfile->visit_date)) ?> <small><abbr title="Temps Universel Coordonné">UTC</abbr></small></p>
+								<p>Inscrit le <? echo datefmt_format($user->datetime_format,strtotime($userProfile->register_date)) ?></p>
+								<p>Dernière connexion le <? echo datefmt_format($user->datetime_format,strtotime($userProfile->visit_date)) ?></p>
 								<p><?=$userProfile->get_rank()?></p>
 								<p>
 									<? if ($userProfile->website != "") { ?>

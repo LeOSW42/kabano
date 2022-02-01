@@ -15,7 +15,7 @@
 						<select id="wikihistory">
 							<? $i = 0;
 							foreach ($wikiHistory->objs as $row) { ?>
-								<option <?=$row->version_id==$wikiPage->version_id?'selected':''?> value="<?=$i?>"><?=$row->is_archive=="f"?'&bull; ':''?><? echo strftime('%d/%m/%Y %H:%M:%S',strtotime($row->update_date)) ?></option>
+								<option <?=$row->version_id==$wikiPage->version_id?'selected':''?> value="<?=$i?>"><?=$row->is_archive=="f"?'&bull; ':''?><? echo datefmt_format($user->datetimeshort_format,strtotime($row->update_date)) ?></option>
 							<? $i++;
 							} ?>
 						</select>
@@ -38,7 +38,7 @@
 				<?=$wikiPage->content_html?>
 			</div>
 
-			<p id="wikiTimestamp">Page mise à jour le <? echo strftime('%e %B %G, %kh%Mm%Ss',strtotime($wikiPage->update_date)) ?> <small><abbr title="Temps Universel Coordonné">UTC</abbr></small></p>
+			<p id="wikiTimestamp">Page mise à jour le <? echo datefmt_format($user->datetime_format,strtotime($wikiPage->update_date)) ?></p>
 
 			<div style="clear: both;"> </div>
 		</section>
