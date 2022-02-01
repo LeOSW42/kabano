@@ -3,6 +3,8 @@
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
+locale_set_default("fr_FR");
+date_default_timezone_set("UTC"); // Default tz for date manipulation is UTC. Display tz is in session.php
 
 
 /*****

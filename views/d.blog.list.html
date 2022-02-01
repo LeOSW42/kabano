@@ -27,7 +27,7 @@
 						<p class="article_legend">
 							<a class="article_link" href="<?=$config['rel_root_folder']?>blog/<?=$row->permalink?>">Lire la suite...</a>
 							<span class="article_infos">
-								Le <? echo datefmt_format($user->date_format,strtotime($row->update_date)) ?> par 
+								<? echo datefmt_format($user->date_format,date_create($row->update_date, new DateTimeZone("UTC"))) ?> par 
 								<? if ($user->rankIsHigher("registered")) { ?>
 									<a href="<?=$config['rel_root_folder']?>user/p/<?=$row->author?>"><?=$row->author_name?></a>
 								<? } 

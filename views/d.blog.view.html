@@ -15,7 +15,7 @@
 						<select id="bloghistory">
 							<? $i = 0;
 							foreach ($blogHistory->objs as $row) { ?>
-								<option <?=$row->version_id==$blogArticle->version_id?'selected':''?> value="<?=$i?>"><?=$row->is_archive=="f"?'&bull; ':''?><? echo datefmt_format($user->datetimeshort_format,strtotime($row->update_date)) ?></option>
+								<option <?=$row->version_id==$blogArticle->version_id?'selected':''?> value="<?=$i?>"><?=$row->is_archive=="f"?'&bull; ':''?><? echo datefmt_format($user->datetimeshort_format,date_create($row->update_date, new DateTimeZone("UTC"))) ?></option>
 							<? $i++;
 							} ?>
 						</select>
@@ -45,7 +45,7 @@
 			else { ?>
 				<?=$blogArticle->author_name?> 
 			<? } ?>
-			le <? echo datefmt_format($user->datetime_format,strtotime($blogArticle->creation_date)) ?></p>
+			le <? echo datefmt_format($user->datetime_format,date_create($blogArticle->creation_date, new DateTimeZone("UTC"))) ?></p>
 
 			<!-- COMMENTS -->
 
@@ -83,7 +83,7 @@
 								<? } else { ?>
 									<?=$comment->author_obj->name?>
 								<? } ?>
-								le <? echo datefmt_format($user->datetime_format,strtotime($comment->update_date)) ?></p>
+								le <? echo datefmt_format($user->datetime_format,date_create($comment->update_date, new DateTimeZone("UTC"))) ?></p>
 								<? if (($user->rankIsHigher("moderator") || $user->id == $comment->author) && $comment->is_public == 't') { ?>
 									<span class="delete_link"><a href="<?=$config['rel_root_folder']?>blog/<?=$blogArticle->permalink?>/delete_comment/<?=$comment->id?>"><i class="fas fa-trash"></i> Effacer le commentaire</a></span>
 								<? } ?>

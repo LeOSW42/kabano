@@ -15,14 +15,14 @@ if(isset($_SESSION['userid'])) {
 	}
 	else {
 		session_destroy();
-		$config['locale'] = locale_get_default();
-		$config['timezone'] = date_default_timezone_get();
+		$config['locale'] = "fr_FR";
+		$config['timezone'] = "Europe/Paris";
 		$user->rank = "visitor"; // All users are visitors
 	}
 }
 else {
-	$config['locale'] = locale_get_default();
-	$config['timezone'] = date_default_timezone_get();
+	$config['locale'] = "fr_FR";
+	$config['timezone'] = "Europe/Paris";
 	$user->rank = "visitor"; // All users are visitors
 }
 

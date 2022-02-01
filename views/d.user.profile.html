@@ -24,8 +24,8 @@
 						</aside>
 							<div id="description">
 								<p>Langue : <?=$userProfile->get_locale()?></p>
-								<p>Inscrit le <? echo datefmt_format($user->datetime_format,strtotime($userProfile->register_date)) ?></p>
-								<p>Dernière connexion le <? echo datefmt_format($user->datetime_format,strtotime($userProfile->visit_date)) ?></p>
+								<p>Inscrit le <? echo datefmt_format($user->datetime_format,date_create($userProfile->register_date, new DateTimeZone("UTC"))) ?></p>
+								<p>Dernière connexion le <? echo datefmt_format($user->datetime_format,date_create($userProfile->visit_date, new DateTimeZone("UTC"))) ?></p>
 								<p><?=$userProfile->get_rank()?></p>
 								<p>
 									<? if ($userProfile->website != "") { ?>
