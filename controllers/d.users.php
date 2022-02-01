@@ -126,6 +126,7 @@ if(isset($controller->splitted_url[1])) {
 						if($_POST['password']!='')
 							$userProfile->password=sha1($_POST['password']);
 						$userProfile->locale=$_POST['locale'];
+						$userProfile->timezone=$_POST['timezone'];
 						if($user->rankIsHigher("administrator"))
 							$userProfile->rank = $_POST['rank'];
 						$userProfile->website=$_POST['website'];

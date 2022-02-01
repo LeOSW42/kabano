@@ -47,6 +47,13 @@
 											<option <?=$userProfile->get_locale()==$locale->display_name?'selected':''?> value="<?=$locale->name?>"><?=$locale->display_name?></option>
 										<? } ?>
 									</select></li>
+								<li><label for="timezone">Fuseau horaire :</label>
+									<select name="timezone" id="timezone">
+										<? $timezones = timezone_identifiers_list();
+											foreach($timezones as $timezone) { ?>
+											<option <?=$userProfile->timezone==$timezone?'selected':''?> value="<?=$timezone?>"><?=$timezone?></option>
+										<? } ?>
+									</select></li>
 								<? if($user->rankIsHigher("administrator")) { ?>
 								<li><label for="rank">Rang : </label>
 									<select name="rank" id="rank">
