@@ -83,7 +83,7 @@
 								<? } else { ?>
 									<?=$comment->author_obj->name?>
 								<? } ?>
-								le <? echo datefmt_format($user->datetime_format,date_create($comment->update_date, new DateTimeZone("UTC"))) ?></p>
+								le <? echo datefmt_format($user->datetime_format,date_create($comment->update_date, new DateTimeZone("UTC"))) ?>
 								<? if (($user->rankIsHigher("moderator") || $user->id == $comment->author) && $comment->is_public == 't') { ?>
 									<span class="delete_link"><a href="<?=$config['rel_root_folder']?>blog/<?=$blogArticle->permalink?>/delete_comment/<?=$comment->id?>"><i class="fas fa-trash"></i> Effacer le commentaire</a></span>
 								<? } ?>
