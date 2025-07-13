@@ -39,6 +39,10 @@ class Poi
 	public $alt_position = NULL;
 	public $parameters = NULL;
 
+	public $lat;
+	public $lon;
+	public $ele;
+
 	/*****
 	** Checks if a page at this URL exists and return the ID
 	*****/
