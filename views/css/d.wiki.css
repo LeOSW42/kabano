@@ -50,15 +50,13 @@ form.form input[type=submit] {
 #wikiContent blockquote { margin-left: 40px; margin-right: 40px }
 #wikiContent ol, #wikiContent ul, #wikiContent dd { margin-left: 40px }
 #wikiContent ol ul, #wikiContent ul ol, #wikiContent ul ul, #wikiContent ol ol { margin-top: 0; margin-bottom: 0 }
+#wikiContent hr { border: 1px solid #bbb }
 
 #wikiContent .footnotes {
 	font-size: 0.8em;
 }
 #wikiContent .footnotes p {
 	margin: 0.4em 0;
-}
-#wikiContent hr {
-	border: 1px inset;
 }
 
 #wiki_page.archive {
