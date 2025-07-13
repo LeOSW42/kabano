@@ -30,6 +30,8 @@ class WikiPage
 	public $name = NULL;
 	public $content = NULL;
 
+	public $content_html;
+
 	/*****
 	** Checks if a page at this ermalink exists and return the populated element
 	*****/

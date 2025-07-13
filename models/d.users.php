@@ -38,6 +38,13 @@ class User
     public $visit_date = NULL;
     public $register_date = NULL;
 
+    public $date_format;
+    public $datetime_format;
+    public $datetimeshort_format;
+    public $locale_obj;
+    public $locale_loaded = false;
+
+
 	/*****
 	** Connect to correct account using ID and stores its ID
 	*****/
@@ -119,7 +126,7 @@ class User
 		return '<span class="userrole" style="color: '.$ranks[$this->rank][2].';">'.$ranks[$this->rank][1].'</span>';
 	}
 	public function get_locale() {
-		if( isset($this->locale_loaded) ) {
+		if( $this->locale_loaded) {
 			return $this->locale_obj->display_name;
 		}
 		else {
