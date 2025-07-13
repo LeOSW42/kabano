@@ -25,10 +25,10 @@ function generate_image_thumbnail($source_image_path, $thumbnail_image_path, $wi
 	// If the limitation is on the height (cuts on the width)
 	if($height*$source_image_width/$source_image_height > $width) {
 		$src_x = (int)(($source_image_width - $source_image_height * $width / $height) / 2);
-		$source_image_width = $source_image_height * $width / $height;
+		$source_image_width = (int)($source_image_height * $width / $height);
 	} else {
 		$src_y = (int)(($source_image_height - $source_image_width * $height / $width) / 2);
-		$source_image_height = $source_image_width * $height / $width;
+		$source_image_height = (int)($source_image_width * $height / $width);
 	}
 
 	$thumbnail_gd_image = imagecreatetruecolor($thumbnail_image_width, $thumbnail_image_height);
