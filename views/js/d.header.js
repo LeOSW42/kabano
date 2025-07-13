@@ -21,9 +21,15 @@ function reduce() {
 		}, 100, function() {
 			// Animation complete.
 	});
-	$( "header a.on-bar" ).animate({
+	$( "header li:not(.with-subtitle) a.on-bar" ).animate({
 		paddingTop: "15px",
 		paddingBottom: "5px"
+		}, 100, function() {
+			// Animation complete.
+	});
+	$( "header li.with-subtitle a.on-bar" ).animate({
+		paddingTop: "5px",
+		paddingBottom: "15px"
 		}, 100, function() {
 			// Animation complete.
 	});
@@ -50,9 +56,15 @@ function enlarge() {
 		}, 100, function() {
 			// Animation complete.
 	});
-	$( "header a.on-bar" ).animate({
+	$( "header li:not(.with-subtitle) a.on-bar" ).animate({
 		paddingTop: "25px",
 		paddingBottom: "15px"
+		}, 100, function() {
+			// Animation complete.
+	});
+	$( "header li.with-subtitle a.on-bar" ).animate({
+		paddingTop: "15px",
+		paddingBottom: "25px"
 		}, 100, function() {
 			// Animation complete.
 	});

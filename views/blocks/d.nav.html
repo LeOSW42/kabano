@@ -5,10 +5,18 @@
 				</a>
 				<nav>
 					<ul>
-						<li class="on-bar"><a class="on-bar" href="<?=$config['rel_root_folder']?>map">Carte</a></li>
-<!-- 						<li class="on-bar"><a class="on-bar" href="<?=$config['rel_root_folder']?>search">Recherche</a></li>
-						<li class="on-bar"><a class="on-bar" href="<?=$config['rel_root_folder']?>news">Nouveautés</a></li> -->
-						<li class="on-bar"><a class="on-bar" href="<?=$config['rel_root_folder']?>community">Contribuer</a></li>
+ 						<li class="on-bar with-subtitle"><a class="on-bar" href="<?=$config['rel_root_folder']?>restauration-de-refuges">Restauration<br>
+ 							<span class="subtitle">de refuges pastoraux</span></a></li>
+						<li class="on-bar with-subtitle"><a class="on-bar" href="<?=$config['rel_root_folder']?>metallerie">Métallerie<br>
+							<span class="subtitle">agricole</span></a></li>
+						<li class="on-bar has-sub with-subtitle">
+							<a class="on-bar" href="<?=$config['rel_root_folder']?>map">Inventaire<br>
+								<span class="subtitle">des cabanes de montagne</span></a>
+							<ul>
+								<li><a href="<?=$config['rel_root_folder']?>map">Carte</a></li>
+								<li><a href="<?=$config['rel_root_folder']?>community">Contribuer</a></li>
+							</ul>
+						</li>
 						<li class="on-bar has-sub">
 							<? if ($user->id == 0) { ?>
 							<a class="on-bar" href="#"><i class="icon fas fa-user"></i></a>
