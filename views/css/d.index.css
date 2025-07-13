@@ -322,7 +322,7 @@ footer a:hover {
 
 #indexFullW {
 	position: relative;
-	background: url('../img/aside.jpg') center center no-repeat #070707;
+	background: url('../img/aside.jpg') left center no-repeat #070707;
 	width: 100%;
 	height: 320px;
 	z-index: 100;
@@ -333,42 +333,62 @@ footer a:hover {
 	height: 320px;
 	width: 850px;
 	margin: auto;
+	position: relative;
 }
 
-#spacebeforesponsors {
-	height: 238px;
-}
-
-#sponsors {
-	height: 70px;
+#imglegend {
+	text-align: right;
 	background: rgba(0,0,0,0.5);
-	padding: 5px 30px;
-}
-
-#sponsors a {
-	float: right;
-	display: block;
-	padding-top: 5px;
-	padding-left: 5px;
-	padding-right: 5px;
-}
-
-#sponsors a img {
-	height: 60px;
-	display: inline;
-}
-
-#sponsors p {
-	float: left;
 	color: white;
-	font-size: 20px;
+	font-size: 14px;
 	font-variant: small-caps;
-	line-height: 70px;
+	line-height: 20px;
+	position: absolute;
+	width: 100%;
+	bottom: 0px;
+}
+#imglegend p {
+	padding: 5px;
+	height: 20px;
 }
 
-section .thumb {
+section .imglegend {
+	position: relative;
+	display: inline-block;
 	margin: 0 10px;
-	border: 1px solid #aaa;
+	border: 1px solid #bbb;
+}
+section .imglegend img {
+	display: block;
+}
+section .imglegend p {
+	display: block;
+	background: rgba(0,0,0,0.5);
+	color: white;
+	font-size: 14px;
+	font-variant: small-caps;
+	line-height: 20px;
+	position: absolute;
+	bottom: 0;
+	right: 0;
+	margin: 0;
+	padding: 2px 5px;
+}
+
+#index .container {
+	display: flex;
+}
+
+#index .colonne {
+	flex: 1;
+	padding: 1rem;
+	text-align: center;
+}
+#index .colonne a {
+	font-weight: bold;
+}
+#index .colonne p {
+	text-align: justify;
 }
 
 /*********************************/

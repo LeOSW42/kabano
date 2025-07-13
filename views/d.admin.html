@@ -8,7 +8,7 @@
 		<? include('blocks/d.nav.html'); ?>
 
 		<section>
-			<h1>Administration.</h1>
+			<h1>Administration</h1>
 			<br>
 			<? if($user->rankIsHigher("administrator")) { ?>
 				<a href="<?=$config['rel_root_folder']?>admin/git-pull" class="button"><i class="fas fa-sync-alt"></i> Mettre à jour</a> <small>Met à jour le logiciel depuis le dépôt GIT.</small><br><br>

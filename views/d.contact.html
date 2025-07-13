@@ -8,7 +8,7 @@
 		<? include('blocks/d.nav.html'); ?>
 
 		<section>
-			<h1>Nous contacter.</h1>
+			<h1>Me contacter</h1>
 			<form class="form" action="<?=$config['rel_root_folder']?>contact" method="post">
 				<? if($error=="name") { ?>
 					<p style="color: red;">Veuillez renseigner votre nom.</p>
@@ -43,8 +43,8 @@
 				else { ?>
 				<p id="captcha">
 					<input type="hidden" id="captchahidden" name="captcha" value="10">
-					<span id="captchatext">Merci d'attendre <b id="captchasec">10 s</b> avant de pouvoir nous contacter.<br>
-					<small>Ceci nous permet de laisser les robots à la porte.</small></span>
+					<span id="captchatext">Merci d'attendre <b id="captchasec">10 s</b> avant de pouvoir me contacter.<br>
+					<small>Ceci me permet de laisser les robots à la porte.</small></span>
 					<input disabled id="captchasubmit" style="display:none;" type="submit" name="submit" value="Envoyer">
 				</p>
 				<? } ?>

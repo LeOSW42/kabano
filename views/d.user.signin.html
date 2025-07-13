@@ -8,7 +8,7 @@
 		<? include('blocks/d.nav.html'); ?>
 
 		<section>
-			<h1>Inscription.</h1>
+			<h1>Inscription</h1>
 			<form class="form" action="<?=$config['rel_root_folder']?>user/signin" method="post" id="signin">
 				<? if(isset($_GET['error']) AND $_GET['error']=="name") { ?>
 					<p style="color: red;">Veuillez choisir un autre nom d'utilisateur.</p>
