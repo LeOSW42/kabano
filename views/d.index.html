@@ -16,10 +16,26 @@
 			</div> -->
 		</aside>
 
+<?
+	require_once($config['models_folder']."d.wiki.php");
+	$wikiPage = new Kabano\WikiPage();
+	$wikiPage->checkPermalink('index');
+	$wikiPage->md2html();
+?>
+
 		<section id="index">
-			<h1>Cabanes et bivouac en montagne.</h1>
-			<p><abbr title="Cabane en espéranto">Kabano</abbr> est une plateforme collaborative sur laquelle vous pouvez récupérer toutes les informations nécessaires relatives aux hébergements en montagne. Ces informations ont été ajoutées par vous, pour vous, c'est pourquoi il est primordial de ne pas cesser d'ajouter des commentaires, cabanes, refuges ou emplacements de bivouac. Attention toutefois, ces données ne sont en aucun cas garanties et des précautions dues à l'environnement montagnard sont à prendre.</p>
-			<br>
+			<h1><?=$wikiPage->name?></h1>
+
+			<? if($user->rankIsHigher('moderator')) { ?>
+				<span class="subtitle">
+					<a href="<?=$config['rel_root_folder']?>wiki/index/edit"><i class="fas fa-pencil-alt"></i> Éditer la page</a>
+				</span>
+			<? } ?>
+
+			<br><br>
+
+			<?=$wikiPage->content_html?>
+
 			<p style="text-align: center;">
 				<img alt="Illustration hut" src="<?=$config['views_url']?>img/thumb1.jpg" class="thumb" title="© ptit tapou - Forums Pyrénées Team">
 				<img alt="Illustration tent" src="<?=$config['views_url']?>img/thumb2.jpg" class="thumb">
