@@ -352,45 +352,6 @@ footer a:hover {
 	height: 20px;
 }
 
-section .imglegend {
-	position: relative;
-	display: inline-block;
-	margin: 0 10px;
-	border: 1px solid #bbb;
-}
-section .imglegend img {
-	display: block;
-}
-section .imglegend p {
-	display: block;
-	background: rgba(0,0,0,0.5);
-	color: white;
-	font-size: 14px;
-	font-variant: small-caps;
-	line-height: 20px;
-	position: absolute;
-	bottom: 0;
-	right: 0;
-	margin: 0;
-	padding: 2px 5px;
-}
-
-#index .container {
-	display: flex;
-}
-
-#index .colonne {
-	flex: 1;
-	padding: 1rem;
-	text-align: center;
-}
-#index .colonne a {
-	font-weight: bold;
-}
-#index .colonne p {
-	text-align: justify;
-}
-
 /*********************************/
 /** Community portal page       **/ 
 /*********************************/
