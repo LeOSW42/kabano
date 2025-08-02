@@ -12,7 +12,17 @@
 
 			<p class="subtitle">Fichiers attachés <?=$first?> à <?=$last?> sur les <?=$filenb?> présents</p>
 
-			<br><br>
+			<br>
+			<br>
+
+			<form action="<?=$config['rel_root_folder']?>admin/wiki-files/upload/" method="post" enctype="multipart/form-data" id="send_file">
+				<div>
+					<label for="file">Envoyer un fichier :</label>
+					<input type="file" id="file" name="file">
+				</div>
+				<input type="submit" value="Envoyer">
+			</form>
+
 
 			<table>
 				<tr class="first">
