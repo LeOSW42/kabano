@@ -42,6 +42,63 @@ if(isset($controller->splitted_url[1]) && $user->rankIsHigher("moderator")) {
 				$notfound = 1;
 			}
 			break;
+		case 'wiki-files':
+			if ($user->rankIsHigher("moderator")) {
+				$head['title'] = "Fichiers attachés au wiki";
+				$rows_per_pages = 50;
+				$files_folder = $config['medias_folder']."wiki/";
+
+				// Get the file list
+				$files_list = scandir($files_folder);
+				// Populate table
+				foreach ($files_list as $file) {
+					$file_path = $files_folder.$file;
+
+					if (is_file($file_path)) {
+						$file_info = [
+							'name' => $file,
+							'type' => mime_content_type($file_path),
+							'creation_date' => date("Y-m-d H:i:s", filectime($file_path)),
+							'size' => filesize($file_path),
+						];
+
+						$files[] = $file_info;
+					}
+				}
+				$filenb = count($files);
+
+				// Manage sorting
+				if(isset($_GET['orderby']))
+					$orderby = $_GET['orderby'];
+				else
+					$orderby = 'name';
+				if(isset($_GET['order']) && $_GET['order']=='ASC') {
+					$order = 'ASC';
+					usort($files, function ($a, $b) use ($orderby) { return $a[$orderby] <=> $b[$orderby]; });
+				}
+				else {
+					$order = 'DESC';
+					usort($files, function ($a, $b) use ($orderby) { return $b[$orderby] <=> $a[$orderby]; });
+				}
+
+				// Get the correct page number
+				if (!isset($controller->splitted_url[2]) OR $controller->splitted_url[2]=="" OR $controller->splitted_url[2]=="0" OR !is_numeric($controller->splitted_url[2])) {
+					$page = 0;
+				} else {
+					$page = $controller->splitted_url[2] - 1;
+				}
+				// In case the wanted page is too big
+				if($rows_per_pages * $page >= $filenb)
+					$page = 0;
+
+				$first = $page*$rows_per_pages+1;
+				$last = (($page+1)*$rows_per_pages > $filenb ? $filenb : ($page+1)*$rows_per_pages);
+				include ($config['views_folder']."d.admin.wiki-files.html");
+			}
+			else {
+				$notfound = 1;
+			}
+			break;
 		default:
 			$notfound = 1;
 			break;
@@ -53,6 +110,22 @@ else if($user->rankIsHigher("moderator")) {
 }
 else {
 	$notfound = 1;
+}
+
+function getFontAwesomeIcon($mimeType) {
+    $icons = [
+        'application/pdf' => 'fa-file-pdf',
+        'image/jpeg' => 'fa-file-image',
+        'image/png' => 'fa-file-image',
+        'application/zip' => 'fa-file-archive',
+        'text/plain' => 'fa-file-alt',
+        'application/vnd.ms-excel' => 'fa-file-excel',
+        'application/msword' => 'fa-file-word',
+        'video/mp4' => 'fa-file-video',
+        'audio/mpeg' => 'fa-file-audio',
+    ];
+
+    return $icons[$mimeType] ?? 'fa-file'; // Default
 }
 
 ?>
