@@ -7,7 +7,7 @@
 
 		<? include('blocks/d.nav.html'); ?>
 
-		<section>
+		<section id="wiki_files">
 			<h1><?=$head['title']?></h1>
 
 			<p class="subtitle">Fichiers attachés <?=$first?> à <?=$last?> sur les <?=$filenb?> présents</p>
@@ -40,7 +40,7 @@
 						<a href="<?=$config['rel_root_folder']?>medias/wiki/<?=$file['name']?>"><?=$file['name']?></a>
 					</td>
 					<td><i class='fas <?=getFontAwesomeIcon($file['type'])?>'></i> <?=$file['type']?></td>
-					<td><?=$file['size']?></td>
+					<td><?=formatBytes($file['size'], $user->locale)?></td>
 					<td><? echo datefmt_format($user->date_format,date_create($file['creation_date'], new DateTimeZone("UTC"))) ?></td>
 					<td>
 						<a href="<?=$file['name']?>"><span class="external-link"><i class="fas fa-trash"></i></span></a>
@@ -48,7 +48,6 @@
 				</tr>
 			<? } ?>
 			</table> 
-
 			<div class="pagebuttons">
 				<? if ($page != 0) { ?><a class="previous" href="<?=$config['rel_root_folder']?>admin/wiki-files/<?=$page?>?orderby=<?=$orderby?>&amp;order=<?=$order?>"><i class="fas fa-chevron-left fa-fw"></i></a><? }
 				if (($page+1)*$rows_per_pages < $filenb) { ?><a class="next" href="<?=$config['rel_root_folder']?>admin/wiki-files/<?=$page+2?>?orderby=<?=$orderby?>&amp;order=<?=$order?>"><i class="fas fa-chevron-right fa-fw"></i></a><? } ?>

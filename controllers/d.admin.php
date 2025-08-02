@@ -44,6 +44,7 @@ if(isset($controller->splitted_url[1]) && $user->rankIsHigher("moderator")) {
 			break;
 		case 'wiki-files':
 			if ($user->rankIsHigher("moderator")) {
+				$head['css'] = "d.index.css;d.admin.css";
 				$head['title'] = "Fichiers attachés au wiki";
 				$rows_per_pages = 50;
 				$files_folder = $config['medias_folder']."wiki/";
@@ -112,6 +113,8 @@ else {
 	$notfound = 1;
 }
 
+// Fonctions de mise en forme
+
 function getFontAwesomeIcon($mimeType) {
     $icons = [
         'application/pdf' => 'fa-file-pdf',
@@ -126,6 +129,25 @@ function getFontAwesomeIcon($mimeType) {
     ];
 
     return $icons[$mimeType] ?? 'fa-file'; // Default
+}
+
+function formatBytes($bytes, $locale = 'en', $precision = 2) {
+    $unitMap = [
+        'en' => ['B', 'KB', 'MB', 'GB', 'TB', 'PB'],
+        'fr' => ['o', 'Ko', 'Mo', 'Go', 'To', 'Po']
+    ];
+
+    $locale = explode('_', $locale)[0];
+    $units = $unitMap[$locale] ?? $unitMap['en'];
+
+    if ($bytes == 0) {
+        return '0 ' . $units[0];
+    }
+
+    $power = floor(log($bytes, 1024));
+    $formatted = round($bytes / pow(1024, $power), $precision);
+
+    return $formatted . ' ' . $units[$power];
 }
 
 ?>
