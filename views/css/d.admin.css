@@ -42,27 +42,6 @@
 	background: #ccc;
 }
 
-#wiki_files .username {
-	font-size: 1.2em;
-}
-
-#wiki_files .icon {
-	border: 1px solid #999;
-	border-radius: 3px;
-	margin: 0 3px 0 0;
-	padding: 4px 0;
-	line-height: 20px;
-	text-align: center;
-	width: 28px;
-	background: #ccc;
-	vertical-align: middle;
-}
-
-#wiki_files .icon.avatar {
-	padding: 0;
-	height: 28px;
-}
-
 #wiki_files .pagebuttons {
 	text-align: center;
 }
@@ -74,4 +53,11 @@
 }
 #wiki_files .pagebuttons .previous {
     margin-right: -1px;
+}
+
+#wiki_files td a {
+	display: block;
+}
+#wiki_files .center {
+	text-align: center;
 }
