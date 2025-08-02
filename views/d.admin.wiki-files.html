@@ -34,7 +34,7 @@
 					</th>
 					<th>Suppression</th>
 				</tr>
-			<? foreach ($files as $file) { ?>
+			<? foreach (array_slice($files, $first-1, $rows_per_pages, true) as $file) { ?>
 				<tr>
 					<td>
 						<a href="<?=$config['rel_root_folder']?>medias/wiki/<?=$file['name']?>"><?=$file['name']?></a>
