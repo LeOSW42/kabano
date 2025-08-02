@@ -49,9 +49,16 @@ if(isset($controller->splitted_url[1]) && $user->rankIsHigher("moderator")) {
 				$rows_per_pages = 50;
 				$files_folder = $config['medias_folder']."wiki/";
 
-				// Get the file list
+					// Effacer un fichier
+				if(isset($controller->splitted_url[2]) && $controller->splitted_url[2]=='delete' && isset($controller->splitted_url[3])) {
+					$filename=$files_folder.$controller->splitted_url[3];
+					if (file_exists($filename))
+						unlink($filename);
+				}
+
+					// Get the file list
 				$files_list = scandir($files_folder);
-				// Populate table
+					// Populate table
 				foreach ($files_list as $file) {
 					$file_path = $files_folder.$file;
 
@@ -68,7 +75,7 @@ if(isset($controller->splitted_url[1]) && $user->rankIsHigher("moderator")) {
 				}
 				$filenb = count($files);
 
-				// Manage sorting
+					// Manage sorting
 				if(isset($_GET['orderby']))
 					$orderby = $_GET['orderby'];
 				else
@@ -82,13 +89,13 @@ if(isset($controller->splitted_url[1]) && $user->rankIsHigher("moderator")) {
 					usort($files, function ($a, $b) use ($orderby) { return $b[$orderby] <=> $a[$orderby]; });
 				}
 
-				// Get the correct page number
+					// Get the correct page number
 				if (!isset($controller->splitted_url[2]) OR $controller->splitted_url[2]=="" OR $controller->splitted_url[2]=="0" OR !is_numeric($controller->splitted_url[2])) {
 					$page = 0;
 				} else {
 					$page = $controller->splitted_url[2] - 1;
 				}
-				// In case the wanted page is too big
+					// In case the wanted page is too big
 				if($rows_per_pages * $page >= $filenb)
 					$page = 0;
 
@@ -99,10 +106,10 @@ if(isset($controller->splitted_url[1]) && $user->rankIsHigher("moderator")) {
 			else {
 				$notfound = 1;
 			}
-			break;
+		break;
 		default:
 			$notfound = 1;
-			break;
+		break;
 	}
 }
 else if($user->rankIsHigher("moderator")) {
@@ -116,38 +123,38 @@ else {
 // Fonctions de mise en forme
 
 function getFontAwesomeIcon($mimeType) {
-    $icons = [
-        'application/pdf' => 'fa-file-pdf',
-        'image/jpeg' => 'fa-file-image',
-        'image/png' => 'fa-file-image',
-        'application/zip' => 'fa-file-archive',
-        'text/plain' => 'fa-file-alt',
-        'application/vnd.ms-excel' => 'fa-file-excel',
-        'application/msword' => 'fa-file-word',
-        'video/mp4' => 'fa-file-video',
-        'audio/mpeg' => 'fa-file-audio',
-    ];
+	$icons = [
+		'application/pdf' => 'fa-file-pdf',
+		'image/jpeg' => 'fa-file-image',
+		'image/png' => 'fa-file-image',
+		'application/zip' => 'fa-file-archive',
+		'text/plain' => 'fa-file-alt',
+		'application/vnd.ms-excel' => 'fa-file-excel',
+		'application/msword' => 'fa-file-word',
+		'video/mp4' => 'fa-file-video',
+		'audio/mpeg' => 'fa-file-audio',
+	];
 
     return $icons[$mimeType] ?? 'fa-file'; // Default
 }
 
 function formatBytes($bytes, $locale = 'en', $precision = 2) {
-    $unitMap = [
-        'en' => ['B', 'KB', 'MB', 'GB', 'TB', 'PB'],
-        'fr' => ['o', 'Ko', 'Mo', 'Go', 'To', 'Po']
-    ];
+	$unitMap = [
+		'en' => ['B', 'KB', 'MB', 'GB', 'TB', 'PB'],
+		'fr' => ['o', 'Ko', 'Mo', 'Go', 'To', 'Po']
+	];
 
-    $locale = explode('_', $locale)[0];
-    $units = $unitMap[$locale] ?? $unitMap['en'];
+	$locale = explode('_', $locale)[0];
+	$units = $unitMap[$locale] ?? $unitMap['en'];
 
-    if ($bytes == 0) {
-        return '0 ' . $units[0];
-    }
+	if ($bytes == 0) {
+		return '0 ' . $units[0];
+	}
 
-    $power = floor(log($bytes, 1024));
-    $formatted = round($bytes / pow(1024, $power), $precision);
+	$power = floor(log($bytes, 1024));
+	$formatted = round($bytes / pow(1024, $power), $precision);
 
-    return $formatted . ' ' . $units[$power];
+	return $formatted . ' ' . $units[$power];
 }
 
 ?>
