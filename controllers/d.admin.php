@@ -50,11 +50,13 @@ if(isset($controller->splitted_url[1]) && $user->rankIsHigher("moderator")) {
 				$files_folder = $config['medias_folder']."wiki/";
 
 					// Effacer un fichier
-				if(isset($controller->splitted_url[2]) && $controller->splitted_url[2]=='delete' && isset($controller->splitted_url[3])) {
-					$filename=$files_folder.$controller->splitted_url[3];
-					if (file_exists($filename)) {
-						unlink($filename);
-						error_log(date('r')." \t".$user->name." (".$user->id.") \tDELETE \tDelete wiki file '".$controller->splitted_url[3]."'\r\n",3,$config['logs_folder'].'wiki-files.log');
+				if ($user->rankIsHigher("administrator")) {
+					if(isset($controller->splitted_url[2]) && $controller->splitted_url[2]=='delete' && isset($controller->splitted_url[3])) {
+						$filename=$files_folder.$controller->splitted_url[3];
+						if (file_exists($filename)) {
+							unlink($filename);
+							error_log(date('r')." \t".$user->name." (".$user->id.") \tDELETE \tDelete wiki file '".$controller->splitted_url[3]."'\r\n",3,$config['logs_folder'].'wiki-files.log');
+						}
 					}
 				}
 

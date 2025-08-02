@@ -32,7 +32,9 @@
 						<a href="<?=$config['rel_root_folder']?>admin/wiki-files/<?=$page+1?>?orderby=creation_date&amp;order=<?=$order=='ASC'?'DESC':'ASC'?>">Date de création</a>
 						<?=$orderby=='creation_date'?$order=='ASC'?'<i class="fas fa-caret-down" aria-hidden="true"></i>':'<i class="fas fa-caret-up" aria-hidden="true"></i>':''?>
 					</th>
-					<th>Suppression</th>
+					<? if ($user->rankIsHigher("administrator")) { ?>
+						<th>Suppression</th>
+					<? } ?>
 				</tr>
 			<? foreach (array_slice($files, $first-1, $rows_per_pages, true) as $file) { ?>
 				<tr>
@@ -42,9 +44,11 @@
 					<td><i class='fas <?=getFontAwesomeIcon($file['type'])?>'></i> <?=$file['type']?></td>
 					<td><?=formatBytes($file['size'], $user->locale)?></td>
 					<td><? echo datefmt_format($user->date_format,date_create($file['creation_date'], new DateTimeZone("UTC"))) ?></td>
-					<td class="center">
-						<a href="<?=$config['rel_root_folder']?>admin/wiki-files/delete/<?=$file['name']?>?orderby=<?=$orderby?>&amp;order=<?=$order?>" onclick="return confirm('Es-tu sûr de vouloir supprimer ?');"><span class="external-link"><i class="fas fa-trash"></i></span></a>
-					</td>
+					<? if ($user->rankIsHigher("administrator")) { ?>
+						<td class="center">
+							<a href="<?=$config['rel_root_folder']?>admin/wiki-files/delete/<?=$file['name']?>?orderby=<?=$orderby?>&amp;order=<?=$order?>" onclick="return confirm('Es-tu sûr de vouloir supprimer ?');"><span class="external-link"><i class="fas fa-trash"></i></span></a>
+						</td>
+					<? } ?>
 				</tr>
 			<? } ?>
 			</table> 
