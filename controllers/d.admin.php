@@ -63,7 +63,10 @@ if(isset($controller->splitted_url[1]) && $user->rankIsHigher("moderator")) {
 					// Add a file
 				if(isset($controller->splitted_url[2]) && $controller->splitted_url[2]=='upload' && isset($_FILES['file'])) {
 					$filename=$config['medias_folder']."wiki/".$_FILES['file']['name'];
-					move_uploaded_file($_FILES['file']['tmp_name'], $filename);
+					if(move_uploaded_file($_FILES['file']['tmp_name'], $filename)) {
+						error_log(date('r')." \t".$user->name." (".$user->id.") \tUPLOAD Upload wiki file '".$_FILES['file']['name']."'\r\n",3,$config['logs_folder'].'wiki-files.log');
+					}
+
 				}
 
 					// Get the file list
