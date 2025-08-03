@@ -62,3 +62,27 @@ form.form input[type=submit] {
 #wiki_page.archive {
 	opacity: 0.5;
 }
+#wikiContent img { 
+	max-width: 100%;
+	border: 1px solid #bbb;
+}
+
+#wikiContent .imglegend {
+	position: relative;
+}
+#wikiContent .imglegend img {
+	display: block;
+}
+#wikiContent .imglegend p {
+	display: block;
+	background: rgba(0,0,0,0.5);
+	color: white;
+	font-size: 14px;
+	font-variant: small-caps;
+	line-height: 20px;
+	position: absolute;
+	bottom: 0;
+	right: 0;
+	margin: 0;
+	padding: 2px 5px;
+}
