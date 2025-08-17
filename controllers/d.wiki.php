@@ -69,6 +69,8 @@ else if(isset($controller->splitted_url[1]) && $wikiPage->checkPermalink($contro
 
 		$wikiPage->md2html();
 		$head['title'] = $wikiPage->name;
+		$head['css'] .= ";../third/simplelightbox/simple-lightbox.min.css";
+		$head['third'] = "simplelightbox/simple-lightbox.min.js";
 		include ($config['views_folder']."d.wiki.view.html");
 	}
 }
