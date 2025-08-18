@@ -244,7 +244,7 @@ header input:hover, header input:focus-within {
 		display: none;
 		background: #212121;
 		float: inherit;
-		position: inherit;
+		position: static;
 	}
 	.hamburger {
 		display: block;
@@ -263,10 +263,11 @@ header input:hover, header input:focus-within {
 	}
 	header li.has-sub ul {
 		width: 100%;
+		position: static;
 	}
 	header li.has-sub:hover ul, header li.has-sub:focus-within ul, header li.has-sub:hover ul li, header li.has-sub:focus-within ul li, header li.has-sub:hover ul a, header li.has-sub:focus-within ul a {
 		background-color: #555;
-		border: 0;	
+		border: 0;
 	}
 }
 
