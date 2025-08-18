@@ -72,11 +72,11 @@ function enlarge() {
 
 $(window).scroll(function() {
 	var position = $(window).scrollTop();
-	if (position>80 && small!=1) {
+	if (position>80 && small!=1 && $('body').width() > 800) {
 		small = 1;
 		reduce();
 	}
-	else if (position<=80 && small!=0) {
+	else if (position<=80 && small!=0 && $('body').width() > 800) {
 		small = 0;
 		enlarge();
 	}

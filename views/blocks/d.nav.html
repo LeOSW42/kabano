@@ -4,7 +4,8 @@
 					<img alt="Kabano logo" src="<?=$config['views_url'].'img/'?>header.svg">
 				</a>
 				<nav>
-					<ul>
+					<input type="checkbox" id="togglemenu"><label for="togglemenu" class="hamburger on-bar"><i class="icon fas fa-bars"></i></label>
+					<ul id="menu">
  						<li class="on-bar has-sub with-subtitle"><a class="on-bar" href="#">Restauration<br>
  							<span class="subtitle">de refuges pastoraux</span></a>
  							<ul>
@@ -22,7 +23,7 @@
 								<li><a href="<?=$config['rel_root_folder']?>community">Contribuer</a></li>
 							</ul>
 						</li>
-						<li class="on-bar has-sub">
+						<li class="on-bar has-sub menu-icon">
 							<? if ($user->id == 0) { ?>
 							<a class="on-bar" href="#"><i class="icon fas fa-user"></i></a>
 							<? } elseif ($user->is_avatar_present == 't') { ?>
@@ -50,7 +51,7 @@
 								<? } ?>
 							</ul>
 						</li>
-						<li class="on-bar has-sub"><a class="on-bar" href="#"><i class="icon fas fa-question"></i></a>
+						<li class="on-bar has-sub menu-icon"><a class="on-bar" href="#"><i class="icon fas fa-question"></i></a>
 							<ul>
 								<!--<li><a href="<?=$config['rel_root_folder']?>wiki/help">Aide</a></li>-->
 								<li><a href="<?=$config['rel_root_folder']?>blog">Blog</a></li>

@@ -101,7 +101,7 @@ header {
 	z-index: 1000;
 }
 
-header ul {
+#menu {
 	float: right;
 	position: relative;
 }
@@ -112,7 +112,7 @@ header li {
 	vertical-align: middle;
 }
 
-header li a {
+header li a, .hamburger {
 	color: white;
 	padding: 25px 15px 15px;
 	height: 20px;
@@ -157,7 +157,9 @@ header .icon.avatar {
 header li.has-sub:hover a, header li.has-sub:focus-within a {
 	border-bottom: 6px solid #212121;
 }
-
+header li.has-sub:hover > a {
+	cursor: default;
+}
 header li.has-sub:hover > ul, header li.has-sub:focus-within > ul {
 	display: block;
 }
@@ -229,8 +231,47 @@ header input:hover, header input:focus-within {
 	color: #222;
 }
 
+.hamburger {
+	display: none;
+	float: right;
+}
+#togglemenu {
+	display: none;
+}
+
+@media (max-width: 800px) {
+	#menu {
+		display: none;
+		background: #212121;
+		float: inherit;
+		position: inherit;
+	}
+	.hamburger {
+		display: block;
+	}
+	#togglemenu:checked ~ #menu {
+		display: block;
+	}
+	header li {
+		width: 100%;
+	}
+	header li.menu-icon {
+		width: unset;
+	}
+	header li .subtitle {
+		padding-left: 0px;
+	}
+	header li.has-sub ul {
+		width: 100%;
+	}
+	header li.has-sub:hover ul, header li.has-sub:focus-within ul, header li.has-sub:hover ul li, header li.has-sub:focus-within ul li, header li.has-sub:hover ul a, header li.has-sub:focus-within ul a {
+		background-color: #555;
+		border: 0;	
+	}
+}
+
 #Hcontent {
-	width: 850px;
+	max-width: 850px;
 	margin: 0 auto;
 }
 
@@ -255,7 +296,7 @@ section {
 	position: relative;
 	background: white;
 	margin: auto;
-	width: 820px;
+	max-width: 820px;
 	min-height: calc(100% - 94px);
 	z-index: 10;
 	padding: 15px;
@@ -293,7 +334,7 @@ section p {
 
 footer {
 	background: #212121;
-	width: 820px;
+	max-width: 820px;
 	padding: 15px;
 	margin: 15px auto 0 auto;
 	color: #c1c1c1;
@@ -331,7 +372,7 @@ footer a:hover {
 
 #AScontent {
 	height: 320px;
-	width: 850px;
+	max-width: 850px;
 	margin: auto;
 	position: relative;
 }
