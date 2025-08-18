@@ -22,7 +22,7 @@
 				<? foreach ($blogArticles->objs as $row) { ?>
 
 					<article<? if($row->is_public == 'f') echo ' class="article_archive" '; ?>>
-						<h2 class="article_title"><?=$row->name?>.</h2>
+						<h2 class="article_title"><?=$row->name?></h2>
 						<div class="article_content"><?=mb_substr($row->content_txt,0,200)?>...</div>
 						<p class="article_legend">
 							<a class="article_link" href="<?=$config['rel_root_folder']?>blog/<?=$row->permalink?>">Lire la suite...</a>
