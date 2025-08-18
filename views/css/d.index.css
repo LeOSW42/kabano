@@ -276,6 +276,9 @@ header input:hover, header input:focus-within {
 		border-left: 6px solid blue;
 		border-bottom: 0;
 	}
+	header form {
+		width: unset;
+	}
 }
 
 #Hcontent {
