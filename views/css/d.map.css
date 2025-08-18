@@ -9,7 +9,10 @@ body {
 footer {
 	position: absolute;
 	bottom: 0;
-	left: calc(50% - 425px);
+	right: 50%;
+	transform: translateX(50%);
+  	width: 100%;
+	max-width: 820px;
 	z-index: 10000;
 }
 

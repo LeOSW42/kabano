@@ -338,6 +338,16 @@ section p {
 	margin: 20px 0;
 }
 
+@media (max-width: 800px) {
+	section h1 {
+		font-size: 1.8rem;
+		text-align: left;
+	}
+	section#index h1 {
+		font-size: 1.7rem;
+	}
+}
+
 /***************************************/
 
 footer {
