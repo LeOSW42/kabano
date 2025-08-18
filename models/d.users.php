@@ -306,7 +306,7 @@ class User
 		$message .= "Cordialement,<br>\r\n";
 		$message .= "<br>\r\n";
 		$message .= "L'équipe Kabano.<br>\r\n";
-		$message .= "<small style='color:#777;'><i>Fait avec ♥ depuis Toulouse.</i></small><br>\r\n";
+		$message .= "<small style='color:#777;'><i>Fait avec ♥ en Ariège.</i></small><br>\r\n";
 
 		$headers = 'From: '. $config['bot_mail'] . "\r\n" .
 		'Reply-To: '. $config['bot_mail'] . "\r\n" .
