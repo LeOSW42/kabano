@@ -356,15 +356,12 @@ footer {
 	padding: 15px;
 	margin: 15px auto 0 auto;
 	color: #c1c1c1;
-	text-align: left;
-}
-footer {
 }
 
 footer #footernav {
-	float: right;
 	padding: 0;
 	margin: 0;
+	margin-left: auto;
 }
 
 footer a {
@@ -373,6 +370,12 @@ footer a {
 }
 footer a:hover {
 	color: white;
+}
+
+footer .flex {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 1rem;
 }
 
 /*********************************/
