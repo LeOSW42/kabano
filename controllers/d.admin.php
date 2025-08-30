@@ -128,6 +128,8 @@ if(isset($controller->splitted_url[1]) && $user->rankIsHigher("moderator")) {
 				$command = '/bin/bash -c \'(zcat '.implode(' ', $files).' && cat /var/log/nginx/kabano.org-access.log.1) | goaccess --log-format=COMBINED --no-progress -o '.escapeshellarg($report).'\' 2>&1';
 				$output = shell_exec($command);
 
+var_dump($files);
+
 				include ($config['views_folder']."d.admin.stats.html");
 			}
 			else {
