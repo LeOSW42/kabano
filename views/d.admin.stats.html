@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+	<? include('blocks/d.head.html'); ?>
+
+	<body>
+
+		<? include('blocks/d.nav.html'); ?>
+
+		<section>
+			<h1><?=$head['title']?></h1>
+			<br>
+			<br><h3>Retour de l'execution de la commande :</h3><br>
+			<pre><?
+			foreach($output as $line) {
+					echo $line."<br>";
+				}
+			?></pre>
+			<br>
+			<br><a href='/report.html' target='_blank'><i class="fas fa-chart-line"></i> Voir le rapport</a>
+		</section>
+
+		<? include('blocks/d.footer.html'); ?>
+
+	</body>
+</html>
