@@ -13,9 +13,6 @@
 			<h3>Retour de l'execution de la commande :</h3><br>
 			<pre><?
 			print_r($output);
-			echo ini_get('disable_functions');
-			echo ini_get('open_basedir');
-			
 			?></pre>
 			<? if (file_exists($report)) { ?>
 				<a href='/report.html' target='_blank'><i class="fas fa-chart-line"></i> Voir le rapport</a>
