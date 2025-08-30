@@ -10,14 +10,17 @@
 		<section>
 			<h1><?=$head['title']?></h1>
 			<br>
-			<br><h3>Retour de l'execution de la commande :</h3><br>
+			<h3>Retour de l'execution de la commande :</h3><br>
 			<pre><?
 			foreach($output as $line) {
 					echo $line."<br>";
 				}
 			?></pre>
-			<br>
-			<br><a href='/report.html' target='_blank'><i class="fas fa-chart-line"></i> Voir le rapport</a>
+			<? if ($result === 0 && file_exists($report)) { ?>
+				<a href='/report.html' target='_blank'><i class="fas fa-chart-line"></i> Voir le rapport</a>
+			<? } else { ?>
+				Echec de la commande
+			<? } ?>
 		</section>
 
 		<? include('blocks/d.footer.html'); ?>
