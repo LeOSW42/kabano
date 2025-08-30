@@ -128,14 +128,6 @@ if(isset($controller->splitted_url[1]) && $user->rankIsHigher("moderator")) {
 				$command = '/bin/bash -c \'(zcat '.implode(' ', $files).' && cat /var/log/nginx/kabano.org-access.log.1) | goaccess --log-format=COMBINED --no-progress -o '.escapeshellarg($report).'\' 2>&1';
 				$output = shell_exec($command);
 
-$file = '/var/log/nginx/kabano.org-access.log.10.gz';
-
-echo 'User: ' . get_current_user() . PHP_EOL;
-echo 'Exists: ' . (file_exists($file) ? '✅' : '❌') . PHP_EOL;
-echo 'Readable: ' . (is_readable($file) ? '✅' : '❌') . PHP_EOL;
-echo 'Content: ';
-echo @file_get_contents($file) ?: 'Erreur de lecture ❌';
-
 				include ($config['views_folder']."d.admin.stats.html");
 			}
 			else {
