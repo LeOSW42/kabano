@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+	<? include('blocks/d.head.html'); ?>
+
+	<body>
+
+		<? include('blocks/d.nav.html'); ?>
+
+		<section>
+			<h1><?=$head['title']?></h1>
+			<br>
+			<pre><?
+				foreach($output as $line) {
+					echo $line."<br>";
+				}
+			?></pre>
+			<br>
+
+			<? $i=0;
+			foreach($backup_file as $file) {
+			if (file_exists($file ?? '')) { ?>
+				<a href='<?=$config['rel_root_folder']?>tmp/<?=$backup_filename[$i]?>' target='_blank'><i class="fas fa-file-export"></i> Télécharger le fichier "<i><?=$backup_filename[$i]?></i>"</a><br>
+			<? 		} else { ?>
+				Fichier <?=$file?> non généré
+			<? 	} 
+				$i++;
+			}?>
+
+			<br>
+			<h4>Archives des anciennes sauvegardes</h4>
+			<ul style="padding: 1em 0 1em 40px;">
+			<?	foreach($backup_files as $file) { ?>
+					<li style="padding: 0 0 0.2em 0;"><?=basename($file)?> - <a href='<?=$config['rel_root_folder']?>tmp/<?=basename($file)?>' target='_blank'><i class="fas fa-download"></i> Télécharger</a> - <a href='<?=$config['rel_root_folder']?>admin/<?=$controller->splitted_url[1]?>/delete/<?=basename($file)?>'><i class="fas fa-trash"></i> Effacer</a></li>
+			<?	} ?>
+			</ul>
+		</section>
+
+		<? include('blocks/d.footer.html'); ?>
+
+	</body>
+</html>

@@ -142,25 +142,75 @@ if(isset($controller->splitted_url[1]) && $user->rankIsHigher("moderator")) {
 				if(isset($controller->splitted_url[2]) && $controller->splitted_url[2]=='delete' && isset($controller->splitted_url[3])) {
 					unlink($config['abs_root_folder'].'tmp/'.$controller->splitted_url[3]);
 					$output = Array();
-					$backup_file = null;
+					$backup_file = Array();
 				}
 				else {
 					// Nom du fichier de sauvegarde
 					$timestamp = date('Ymd_His');
-					$filename = $timestamp.'_backup.sql';
-					$backup_file = $config['abs_root_folder'].'tmp/'.$filename;
+					$backup_filename[0] = $timestamp.'_backup.sql';
+					$backup_file[0] = $config['abs_root_folder'].'tmp/'.$backup_filename[0];
 
 					// Construction de la commande pg_dump
-					$cmd = 'PGPASSWORD="'.$config['SQL_pass'].'" pg_dump -h '.$config['SQL_host'].' -U '.$config['SQL_user'].' -F c -b -v -f "'.$backup_file.'" '.$config['SQL_db'].' 2>&1';
+					$cmd = 'PGPASSWORD="'.$config['SQL_pass'].'" pg_dump -h '.$config['SQL_host'].' -U '.$config['SQL_user'].' -F c -b -v -f "'.$backup_file[0].'" '.$config['SQL_db'].' 2>&1';
 
 					$output = [];
 					$return_var = 0;
 					exec($cmd, $output, $return_var);
 				}
 
-				$sql_files = glob($config['abs_root_folder'].'tmp/*.sql');
+				$backup_files = glob($config['abs_root_folder'].'tmp/*.sql');
 
-				include ($config['views_folder']."d.admin.sql-dump.html");
+				include ($config['views_folder']."d.admin.backup.html");
+			}
+			else {
+				$notfound = 1;
+			}
+			break;
+		case 'files-backup':
+			if ($user->rankIsHigher("administrator")) {
+				$head['title'] = "Export des fichiers";
+				$output = Array();
+				$backup_file = Array();
+
+				if(isset($controller->splitted_url[2]) && $controller->splitted_url[2]=='delete' && isset($controller->splitted_url[3])) {
+					unlink($config['abs_root_folder'].'tmp/'.$controller->splitted_url[3]);
+				}
+				else {
+					// Nom du fichier de sauvegarde
+					$timestamp = date('Ymd_His');
+					$backup_source[0] = $config['abs_root_folder'].'medias/avatars';
+					$backup_source[1] = $config['abs_root_folder'].'medias/wiki';
+					$backup_filename[0] = $timestamp.'_avatar_files.zip';
+					$backup_filename[1] = $timestamp.'_wiki_files.zip';
+
+					for($i=0;$i<2;$i++) {
+						$backup_file[$i] = $config['abs_root_folder'].'tmp/'.$backup_filename[$i];
+
+						$backup[$i] = new ZipArchive();
+						if ($backup[$i]->open($backup_file[$i], ZipArchive::CREATE | ZipArchive::OVERWRITE) === TRUE) {
+						    $files = new RecursiveIteratorIterator(
+						        new RecursiveDirectoryIterator($backup_source[$i]),
+						        RecursiveIteratorIterator::LEAVES_ONLY
+						    );
+
+						    foreach ($files as $name => $file) {
+						        if (!$file->isDir()) {
+						            $filePath = $file->getRealPath();
+						            $relativePath = substr($filePath, strlen(realpath($backup_source[$i])) + 1);
+						            $backup[$i]->addFile($filePath, $relativePath);
+						        }
+						    }
+
+						    $backup[$i]->close();
+						} else {
+							$output[0] = "Erreur lors de la création de l'archive $backup_filename[$i] avec les avatars de $backup_source[$i]";
+						}
+					}
+				}
+
+				$backup_files = glob($config['abs_root_folder'].'tmp/*.zip');
+
+				include ($config['views_folder']."d.admin.backup.html");
 			}
 			else {
 				$notfound = 1;
