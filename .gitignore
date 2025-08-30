@@ -5,3 +5,4 @@ _ressources/dump.sql
 *.sublime-project
 *.sublime-workspace
 *.log
+/tmp/*
