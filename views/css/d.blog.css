@@ -89,6 +89,31 @@
 	border: 1px inset;
 }
 
+#blogContent img { 
+	max-width: 100%;
+	border: 1px solid #bbb;
+}
+
+#blogContent .imglegend {
+	position: relative;
+}
+#blogContent .imglegend img {
+	display: block;
+}
+#blogContent .imglegend p {
+	display: block;
+	background: rgba(0,0,0,0.5);
+	color: white;
+	font-size: 14px;
+	font-variant: small-caps;
+	line-height: 20px;
+	position: absolute;
+	bottom: 0;
+	right: 0;
+	margin: 0;
+	padding: 2px 5px;
+}
+
 #new_comment {
 	clear: both;
 	margin: 100px auto 0 auto;
