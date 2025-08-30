@@ -127,6 +127,7 @@ if(isset($controller->splitted_url[1]) && $user->rankIsHigher("moderator")) {
 				$files = glob('/var/log/nginx/kabano.org-access.log*.gz');
 				$command = '/bin/bash -c \'(zcat '.implode(' ', $files).' && cat /var/log/nginx/kabano.org-access.log.1) | goaccess --log-format=COMBINED --no-progress -o '.escapeshellarg($report).'\' 2>&1';
 				$output = shell_exec($command);
+				echo is_readable('/var/log/nginx/kabano.org-access.log.10.gz') ? 'Lisible ✅' : 'Non lisible ❌';
 
 				include ($config['views_folder']."d.admin.stats.html");
 			}
