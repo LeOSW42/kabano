@@ -124,8 +124,8 @@ if(isset($controller->splitted_url[1]) && $user->rankIsHigher("moderator")) {
 			if ($user->rankIsHigher("moderator")) {
 				$head['title'] = "Statistiques";
 				$report = $config['abs_root_folder'];
-				$command = '(zcat /var/log/nginx/kabano.org-access.log*.gz && cat /var/log/nginx/kabano.org-access.log.1) | goaccess --log-format=COMBINED --no-progress -o '.escapeshellarg($report);
-				exec($command, $output, $result);
+				$command = '(zcat /var/log/nginx/kabano.org-access.log*.gz && cat /var/log/nginx/kabano.org-access.log.1) | goaccess --log-format=COMBINED --no-progress -o '.escapeshellarg($report).' 2>&1';
+				$output = shell_exec($command);
 
 				include ($config['views_folder']."d.admin.stats.html");
 			}
