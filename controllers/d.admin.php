@@ -123,12 +123,44 @@ if(isset($controller->splitted_url[1]) && $user->rankIsHigher("moderator")) {
 		case 'stats':
 			if ($user->rankIsHigher("moderator")) {
 				$head['title'] = "Statistiques";
-				$report = $config['abs_root_folder'].'report.html';
+
+				$report = $config['abs_root_folder'].'tmp/report.html';
 				$files = glob('/var/log/nginx/kabano.org-access.log*.gz');
 				$command = '/bin/bash -c \'(zcat '.implode(' ', $files).' && cat /var/log/nginx/kabano.org-access.log.1) | goaccess --log-format=COMBINED --no-progress -o '.escapeshellarg($report).' - \' 2>&1';
 				$output = shell_exec($command);
 
 				include ($config['views_folder']."d.admin.stats.html");
+			}
+			else {
+				$notfound = 1;
+			}
+			break;
+		case 'sql-backup':
+			if ($user->rankIsHigher("administrator")) {
+				$head['title'] = "Export SQL";
+
+				if(isset($controller->splitted_url[2]) && $controller->splitted_url[2]=='delete' && isset($controller->splitted_url[3])) {
+					unlink($config['abs_root_folder'].'tmp/'.$controller->splitted_url[3]);
+					$output = Array();
+					$backup_file = null;
+				}
+				else {
+					// Nom du fichier de sauvegarde
+					$timestamp = date('Ymd_His');
+					$filename = $timestamp.'_backup.sql';
+					$backup_file = $config['abs_root_folder'].'tmp/'.$filename;
+
+					// Construction de la commande pg_dump
+					$cmd = 'PGPASSWORD="'.$config['SQL_pass'].'" pg_dump -h '.$config['SQL_host'].' -U '.$config['SQL_user'].' -F c -b -v -f "'.$backup_file.'" '.$config['SQL_db'].' 2>&1';
+
+					$output = [];
+					$return_var = 0;
+					exec($cmd, $output, $return_var);
+				}
+
+				$sql_files = glob($config['abs_root_folder'].'tmp/*.sql');
+
+				include ($config['views_folder']."d.admin.sql-dump.html");
 			}
 			else {
 				$notfound = 1;
