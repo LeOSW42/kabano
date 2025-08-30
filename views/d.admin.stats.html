@@ -10,10 +10,10 @@
 		<section>
 			<h1><?=$head['title']?></h1>
 			<br>
-			<h3>Retour de l'execution de la commande :</h3><br>
 			<pre><?
 			print_r($output);
 			?></pre>
+			<br>
 			<? if (file_exists($report)) { ?>
 				<a href='/report.html' target='_blank'><i class="fas fa-chart-line"></i> Voir le rapport</a>
 			<? } else { ?>
