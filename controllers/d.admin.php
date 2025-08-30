@@ -126,7 +126,7 @@ if(isset($controller->splitted_url[1]) && $user->rankIsHigher("moderator")) {
 				$report = $config['abs_root_folder'].'report.html';
 				$files = glob('/var/log/nginx/kabano.org-access.log*.gz');
 				$command = '(zcat '.implode(' ', $files).' && cat /var/log/nginx/kabano.org-access.log.1) | goaccess --log-format=COMBINED --no-progress -o '.escapeshellarg($report).' 2>&1';
-				$command = "echo '127.0.0.1 - - [30/Aug/2025:12:00:00 +0200] \"GET /index.html HTTP/1.1\" 200 1234' | /usr/bin/goaccess --log-format=COMBINED --no-progress -o /tmp/test.html";
+				$command = "echo '127.0.0.1 - - [30/Aug/2025:12:00:00 +0200] \"GET /index.html HTTP/1.1\" 200 1234' | goaccess --log-format=COMBINED --no-progress -o /tmp/test.html 2>&1";
 				$output = shell_exec($command);
 
 				include ($config['views_folder']."d.admin.stats.html");
