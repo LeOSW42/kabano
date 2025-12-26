@@ -146,6 +146,7 @@ if(isset($controller->splitted_url[1]) && $user->rankIsHigher("moderator")) {
 				         . ' -\' 2>&1';
 
 				$output = shell_exec($command);
+				echo shell_exec('id');
 
 				include ($config['views_folder']."d.admin.stats.html");
 			}
