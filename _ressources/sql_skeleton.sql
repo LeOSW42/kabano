@@ -2,9 +2,9 @@
 -- PostgreSQL database cluster dump
 --
 
--- Started on 2026-01-18 12:08:46 CET
+-- Started on 2026-01-18 13:24:51 CET
 
-\restrict Vo9pvwDXJIf75fDuoiSssKAh6h5MlmsSkxna9XzLsIIrNFMYy7ouBnJFgdYDTz1
+\restrict zBsV2i7KJ2Icq3HtbOeWFsgcJfohHtzREyc9ZWIzfgOdQcgw5ViINwJuAFQk0WY
 
 SET default_transaction_read_only = off;
 
@@ -31,7 +31,7 @@ ALTER ROLE postgres WITH SUPERUSER INHERIT CREATEROLE CREATEDB LOGIN REPLICATION
 
 
 
-\unrestrict Vo9pvwDXJIf75fDuoiSssKAh6h5MlmsSkxna9XzLsIIrNFMYy7ouBnJFgdYDTz1
+\unrestrict zBsV2i7KJ2Icq3HtbOeWFsgcJfohHtzREyc9ZWIzfgOdQcgw5ViINwJuAFQk0WY
 
 --
 -- Databases
@@ -47,12 +47,12 @@ ALTER ROLE postgres WITH SUPERUSER INHERIT CREATEROLE CREATEDB LOGIN REPLICATION
 -- PostgreSQL database dump
 --
 
-\restrict ummzFdMCuQi2hVOPV4ZG7xWN20nL1zOFWVZGCkEV2iYf3DgCWqzp9GP1t5yKc4x
+\restrict N4deUMF6T8wvIbcGzzGoslc1W6Ko7vIwj6D9iFxaEPdDC4n9DIcZ0MJIcNN0edI
 
 -- Dumped from database version 18.1
 -- Dumped by pg_dump version 18.1
 
--- Started on 2026-01-18 12:08:46 CET
+-- Started on 2026-01-18 13:24:51 CET
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -66,13 +66,13 @@ SET xmloption = content;
 SET client_min_messages = warning;
 SET row_security = off;
 
--- Completed on 2026-01-18 12:08:46 CET
+-- Completed on 2026-01-18 13:24:51 CET
 
 --
 -- PostgreSQL database dump complete
 --
 
-\unrestrict ummzFdMCuQi2hVOPV4ZG7xWN20nL1zOFWVZGCkEV2iYf3DgCWqzp9GP1t5yKc4x
+\unrestrict N4deUMF6T8wvIbcGzzGoslc1W6Ko7vIwj6D9iFxaEPdDC4n9DIcZ0MJIcNN0edI
 
 --
 -- Database "kabano" dump
@@ -82,12 +82,12 @@ SET row_security = off;
 -- PostgreSQL database dump
 --
 
-\restrict ZbJkJonWlBZt2UiRpHhM137JrUosggX2HYJ3KfVr0ctrypNzB9xAQ8c1QWAG9ym
+\restrict bSLw7Pr4TIr8dQjZ18Ar1YjCDA44ZzM9Sih1yiKYfw4huFAwIekfsvVnECWSWT0
 
 -- Dumped from database version 18.1
 -- Dumped by pg_dump version 18.1
 
--- Started on 2026-01-18 12:08:46 CET
+-- Started on 2026-01-18 13:24:51 CET
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -102,7 +102,7 @@ SET client_min_messages = warning;
 SET row_security = off;
 
 --
--- TOC entry 4518 (class 1262 OID 16389)
+-- TOC entry 4519 (class 1262 OID 16389)
 -- Name: kabano; Type: DATABASE; Schema: -; Owner: postgres
 --
 
@@ -111,9 +111,9 @@ CREATE DATABASE kabano WITH TEMPLATE = template0 ENCODING = 'UTF8' LOCALE_PROVID
 
 ALTER DATABASE kabano OWNER TO postgres;
 
-\unrestrict ZbJkJonWlBZt2UiRpHhM137JrUosggX2HYJ3KfVr0ctrypNzB9xAQ8c1QWAG9ym
+\unrestrict bSLw7Pr4TIr8dQjZ18Ar1YjCDA44ZzM9Sih1yiKYfw4huFAwIekfsvVnECWSWT0
 \connect kabano
-\restrict ZbJkJonWlBZt2UiRpHhM137JrUosggX2HYJ3KfVr0ctrypNzB9xAQ8c1QWAG9ym
+\restrict bSLw7Pr4TIr8dQjZ18Ar1YjCDA44ZzM9Sih1yiKYfw4huFAwIekfsvVnECWSWT0
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -146,7 +146,7 @@ CREATE EXTENSION IF NOT EXISTS postgis WITH SCHEMA public;
 
 
 --
--- TOC entry 4520 (class 0 OID 0)
+-- TOC entry 4521 (class 0 OID 0)
 -- Dependencies: 2
 -- Name: EXTENSION postgis; Type: COMMENT; Schema: -; Owner: 
 --
@@ -162,7 +162,8 @@ COMMENT ON EXTENSION postgis IS 'PostGIS geometry and geography spatial types an
 CREATE TYPE public.content_type_enum AS ENUM (
     'wiki',
     'blog',
-    'forum'
+    'forum',
+    'poi'
 );
 
 
@@ -374,7 +375,9 @@ CREATE TABLE public.contents (
     creation_date timestamp without time zone NOT NULL,
     is_public boolean DEFAULT true NOT NULL,
     is_commentable boolean DEFAULT true NOT NULL,
-    type public.content_type_enum NOT NULL
+    type public.content_type_enum NOT NULL,
+    poi_type public.poi_type_enum,
+    CONSTRAINT contents_subtype_required_for_poi CHECK (((type <> 'poi'::public.content_type_enum) OR (poi_type IS NOT NULL)))
 );
 
 
@@ -541,7 +544,7 @@ CREATE TABLE public.users (
 ALTER TABLE public.users OWNER TO kabano;
 
 --
--- TOC entry 4307 (class 2606 OID 16457)
+-- TOC entry 4308 (class 2606 OID 16457)
 -- Name: content_comments content_comments_pkey; Type: CONSTRAINT; Schema: public; Owner: kabano
 --
 
@@ -550,7 +553,7 @@ ALTER TABLE ONLY public.content_comments
 
 
 --
--- TOC entry 4309 (class 2606 OID 16458)
+-- TOC entry 4310 (class 2606 OID 16458)
 -- Name: content_contributors content_contributors_pkey; Type: CONSTRAINT; Schema: public; Owner: kabano
 --
 
@@ -559,7 +562,7 @@ ALTER TABLE ONLY public.content_contributors
 
 
 --
--- TOC entry 4311 (class 2606 OID 16459)
+-- TOC entry 4312 (class 2606 OID 16459)
 -- Name: content_contributors content_contributors_unique; Type: CONSTRAINT; Schema: public; Owner: kabano
 --
 
@@ -568,7 +571,7 @@ ALTER TABLE ONLY public.content_contributors
 
 
 --
--- TOC entry 4315 (class 2606 OID 16460)
+-- TOC entry 4316 (class 2606 OID 16460)
 -- Name: content_locales content_locales_pkey; Type: CONSTRAINT; Schema: public; Owner: kabano
 --
 
@@ -577,7 +580,7 @@ ALTER TABLE ONLY public.content_locales
 
 
 --
--- TOC entry 4317 (class 2606 OID 16461)
+-- TOC entry 4318 (class 2606 OID 16461)
 -- Name: content_locales content_locales_unique; Type: CONSTRAINT; Schema: public; Owner: kabano
 --
 
@@ -586,7 +589,7 @@ ALTER TABLE ONLY public.content_locales
 
 
 --
--- TOC entry 4349 (class 2606 OID 17906)
+-- TOC entry 4350 (class 2606 OID 17906)
 -- Name: content_version_position content_version_position_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -595,7 +598,7 @@ ALTER TABLE ONLY public.content_version_position
 
 
 --
--- TOC entry 4319 (class 2606 OID 16462)
+-- TOC entry 4320 (class 2606 OID 16462)
 -- Name: content_versions content_versions_pkey; Type: CONSTRAINT; Schema: public; Owner: kabano
 --
 
@@ -604,7 +607,7 @@ ALTER TABLE ONLY public.content_versions
 
 
 --
--- TOC entry 4321 (class 2606 OID 16463)
+-- TOC entry 4322 (class 2606 OID 16463)
 -- Name: content_versions content_versions_version_locale_key; Type: CONSTRAINT; Schema: public; Owner: kabano
 --
 
@@ -613,7 +616,7 @@ ALTER TABLE ONLY public.content_versions
 
 
 --
--- TOC entry 4324 (class 2606 OID 16464)
+-- TOC entry 4325 (class 2606 OID 16464)
 -- Name: contents contents_permalink_type_key; Type: CONSTRAINT; Schema: public; Owner: kabano
 --
 
@@ -622,7 +625,7 @@ ALTER TABLE ONLY public.contents
 
 
 --
--- TOC entry 4326 (class 2606 OID 16465)
+-- TOC entry 4327 (class 2606 OID 16465)
 -- Name: contents contents_pkey; Type: CONSTRAINT; Schema: public; Owner: kabano
 --
 
@@ -631,7 +634,7 @@ ALTER TABLE ONLY public.contents
 
 
 --
--- TOC entry 4328 (class 2606 OID 16466)
+-- TOC entry 4329 (class 2606 OID 16466)
 -- Name: locales locales_display_name_unique; Type: CONSTRAINT; Schema: public; Owner: kabano
 --
 
@@ -640,7 +643,7 @@ ALTER TABLE ONLY public.locales
 
 
 --
--- TOC entry 4330 (class 2606 OID 16467)
+-- TOC entry 4331 (class 2606 OID 16467)
 -- Name: locales locales_flag_name_unique; Type: CONSTRAINT; Schema: public; Owner: kabano
 --
 
@@ -649,7 +652,7 @@ ALTER TABLE ONLY public.locales
 
 
 --
--- TOC entry 4332 (class 2606 OID 16468)
+-- TOC entry 4333 (class 2606 OID 16468)
 -- Name: locales locales_pkey; Type: CONSTRAINT; Schema: public; Owner: kabano
 --
 
@@ -658,7 +661,7 @@ ALTER TABLE ONLY public.locales
 
 
 --
--- TOC entry 4334 (class 2606 OID 16478)
+-- TOC entry 4335 (class 2606 OID 16478)
 -- Name: sources sources_display_name_unique; Type: CONSTRAINT; Schema: public; Owner: kabano
 --
 
@@ -667,7 +670,7 @@ ALTER TABLE ONLY public.sources
 
 
 --
--- TOC entry 4336 (class 2606 OID 16479)
+-- TOC entry 4337 (class 2606 OID 16479)
 -- Name: sources sources_pkey; Type: CONSTRAINT; Schema: public; Owner: kabano
 --
 
@@ -676,7 +679,7 @@ ALTER TABLE ONLY public.sources
 
 
 --
--- TOC entry 4338 (class 2606 OID 16480)
+-- TOC entry 4339 (class 2606 OID 16480)
 -- Name: users users_email_unique; Type: CONSTRAINT; Schema: public; Owner: kabano
 --
 
@@ -685,7 +688,7 @@ ALTER TABLE ONLY public.users
 
 
 --
--- TOC entry 4341 (class 2606 OID 16481)
+-- TOC entry 4342 (class 2606 OID 16481)
 -- Name: users users_name_unique; Type: CONSTRAINT; Schema: public; Owner: kabano
 --
 
@@ -694,7 +697,7 @@ ALTER TABLE ONLY public.users
 
 
 --
--- TOC entry 4343 (class 2606 OID 16482)
+-- TOC entry 4344 (class 2606 OID 16482)
 -- Name: users users_pkey; Type: CONSTRAINT; Schema: public; Owner: kabano
 --
 
@@ -703,7 +706,7 @@ ALTER TABLE ONLY public.users
 
 
 --
--- TOC entry 4304 (class 1259 OID 16550)
+-- TOC entry 4305 (class 1259 OID 16550)
 -- Name: content_comments_is_archive_index; Type: INDEX; Schema: public; Owner: kabano
 --
 
@@ -711,7 +714,7 @@ CREATE INDEX content_comments_is_archive_index ON public.content_comments USING 
 
 
 --
--- TOC entry 4305 (class 1259 OID 16551)
+-- TOC entry 4306 (class 1259 OID 16551)
 -- Name: content_comments_is_public_index; Type: INDEX; Schema: public; Owner: kabano
 --
 
@@ -719,7 +722,7 @@ CREATE INDEX content_comments_is_public_index ON public.content_comments USING b
 
 
 --
--- TOC entry 4347 (class 1259 OID 17918)
+-- TOC entry 4348 (class 1259 OID 17918)
 -- Name: content_version_position_gix; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -727,7 +730,7 @@ CREATE INDEX content_version_position_gix ON public.content_version_position USI
 
 
 --
--- TOC entry 4322 (class 1259 OID 16552)
+-- TOC entry 4323 (class 1259 OID 16552)
 -- Name: contents_is_public_index; Type: INDEX; Schema: public; Owner: kabano
 --
 
@@ -735,7 +738,7 @@ CREATE INDEX contents_is_public_index ON public.contents USING btree (is_public)
 
 
 --
--- TOC entry 4312 (class 1259 OID 16553)
+-- TOC entry 4313 (class 1259 OID 16553)
 -- Name: fki_content_contributors_content_fkey; Type: INDEX; Schema: public; Owner: kabano
 --
 
@@ -743,7 +746,7 @@ CREATE INDEX fki_content_contributors_content_fkey ON public.content_contributor
 
 
 --
--- TOC entry 4313 (class 1259 OID 16554)
+-- TOC entry 4314 (class 1259 OID 16554)
 -- Name: fki_content_contributors_contributor_fkey; Type: INDEX; Schema: public; Owner: kabano
 --
 
@@ -751,7 +754,7 @@ CREATE INDEX fki_content_contributors_contributor_fkey ON public.content_contrib
 
 
 --
--- TOC entry 4339 (class 1259 OID 16557)
+-- TOC entry 4340 (class 1259 OID 16557)
 -- Name: users_is_archive_index; Type: INDEX; Schema: public; Owner: kabano
 --
 
@@ -759,7 +762,7 @@ CREATE INDEX users_is_archive_index ON public.users USING btree (is_archive);
 
 
 --
--- TOC entry 4344 (class 1259 OID 16558)
+-- TOC entry 4345 (class 1259 OID 16558)
 -- Name: users_register_date_index; Type: INDEX; Schema: public; Owner: kabano
 --
 
@@ -767,7 +770,7 @@ CREATE INDEX users_register_date_index ON public.users USING btree (register_dat
 
 
 --
--- TOC entry 4350 (class 2606 OID 16483)
+-- TOC entry 4351 (class 2606 OID 16483)
 -- Name: content_comments content_comments_author_fkey; Type: FK CONSTRAINT; Schema: public; Owner: kabano
 --
 
@@ -776,7 +779,7 @@ ALTER TABLE ONLY public.content_comments
 
 
 --
--- TOC entry 4351 (class 2606 OID 16488)
+-- TOC entry 4352 (class 2606 OID 16488)
 -- Name: content_comments content_comments_content_fkey; Type: FK CONSTRAINT; Schema: public; Owner: kabano
 --
 
@@ -785,7 +788,7 @@ ALTER TABLE ONLY public.content_comments
 
 
 --
--- TOC entry 4352 (class 2606 OID 16493)
+-- TOC entry 4353 (class 2606 OID 16493)
 -- Name: content_comments content_comments_locale_fkey; Type: FK CONSTRAINT; Schema: public; Owner: kabano
 --
 
@@ -794,7 +797,7 @@ ALTER TABLE ONLY public.content_comments
 
 
 --
--- TOC entry 4353 (class 2606 OID 16498)
+-- TOC entry 4354 (class 2606 OID 16498)
 -- Name: content_contributors content_contributors_content_fkey; Type: FK CONSTRAINT; Schema: public; Owner: kabano
 --
 
@@ -803,7 +806,7 @@ ALTER TABLE ONLY public.content_contributors
 
 
 --
--- TOC entry 4354 (class 2606 OID 16503)
+-- TOC entry 4355 (class 2606 OID 16503)
 -- Name: content_contributors content_contributors_contributor_fkey; Type: FK CONSTRAINT; Schema: public; Owner: kabano
 --
 
@@ -812,7 +815,7 @@ ALTER TABLE ONLY public.content_contributors
 
 
 --
--- TOC entry 4355 (class 2606 OID 16508)
+-- TOC entry 4356 (class 2606 OID 16508)
 -- Name: content_locales content_locales_author; Type: FK CONSTRAINT; Schema: public; Owner: kabano
 --
 
@@ -821,7 +824,7 @@ ALTER TABLE ONLY public.content_locales
 
 
 --
--- TOC entry 4356 (class 2606 OID 16513)
+-- TOC entry 4357 (class 2606 OID 16513)
 -- Name: content_locales content_locales_content; Type: FK CONSTRAINT; Schema: public; Owner: kabano
 --
 
@@ -830,7 +833,7 @@ ALTER TABLE ONLY public.content_locales
 
 
 --
--- TOC entry 4357 (class 2606 OID 16518)
+-- TOC entry 4358 (class 2606 OID 16518)
 -- Name: content_locales content_locales_locale; Type: FK CONSTRAINT; Schema: public; Owner: kabano
 --
 
@@ -839,7 +842,7 @@ ALTER TABLE ONLY public.content_locales
 
 
 --
--- TOC entry 4360 (class 2606 OID 17907)
+-- TOC entry 4361 (class 2606 OID 17907)
 -- Name: content_version_position content_version_position_content_version_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -848,7 +851,7 @@ ALTER TABLE ONLY public.content_version_position
 
 
 --
--- TOC entry 4358 (class 2606 OID 16523)
+-- TOC entry 4359 (class 2606 OID 16523)
 -- Name: content_versions content_versions_locale; Type: FK CONSTRAINT; Schema: public; Owner: kabano
 --
 
@@ -857,7 +860,7 @@ ALTER TABLE ONLY public.content_versions
 
 
 --
--- TOC entry 4359 (class 2606 OID 16568)
+-- TOC entry 4360 (class 2606 OID 16568)
 -- Name: users users_locale_fkey; Type: FK CONSTRAINT; Schema: public; Owner: kabano
 --
 
@@ -866,7 +869,7 @@ ALTER TABLE ONLY public.users
 
 
 --
--- TOC entry 4519 (class 0 OID 0)
+-- TOC entry 4520 (class 0 OID 0)
 -- Dependencies: 6
 -- Name: SCHEMA public; Type: ACL; Schema: -; Owner: postgres
 --
@@ -875,15 +878,15 @@ REVOKE USAGE ON SCHEMA public FROM PUBLIC;
 GRANT ALL ON SCHEMA public TO PUBLIC;
 
 
--- Completed on 2026-01-18 12:08:46 CET
+-- Completed on 2026-01-18 13:24:51 CET
 
 --
 -- PostgreSQL database dump complete
 --
 
-\unrestrict ZbJkJonWlBZt2UiRpHhM137JrUosggX2HYJ3KfVr0ctrypNzB9xAQ8c1QWAG9ym
+\unrestrict bSLw7Pr4TIr8dQjZ18Ar1YjCDA44ZzM9Sih1yiKYfw4huFAwIekfsvVnECWSWT0
 
--- Completed on 2026-01-18 12:08:46 CET
+-- Completed on 2026-01-18 13:24:51 CET
 
 --
 -- PostgreSQL database cluster dump complete
