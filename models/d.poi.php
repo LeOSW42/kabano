@@ -165,9 +165,183 @@ class Poi
 		error_log(
 			date('r')." \t".$user->name." (".$user->id.") \tINSERT \tCreate new poi '".$this->permalink."'\r\n",
 			3,
-			$config['logs_folder'].'wiki.log');
+			$config['logs_folder'].'poi.log');
 	}
 
+	/*****
+	** Edit a POI by archiving the current version and inserting a new one
+	*****/
+	public function update() {
+		global $config;
+		global $user;
+
+		if ($this->content_id == 0 || $this->locale_id == 0 || $this->version_id == 0)
+			die("Cannot update entry without giving ID");
+
+		$this->version++;
+
+		$con = pg_connect("host=".$config['SQL_host']." dbname=".$config['SQL_db']." user=".$config['SQL_user']." password=".$config['SQL_pass'])
+			or die ("Could not connect to server\n");
+
+		pg_query($con, "BEGIN");
+
+		// 1) Archive old versions
+		$query = "UPDATE content_versions SET is_archive = TRUE WHERE locale_id = $1";
+		pg_prepare($con, "poi_update_archive", $query);
+		pg_execute($con, "poi_update_archive", array($this->locale_id));
+
+		// 2) Insert new version
+		$query = "INSERT INTO content_versions (version, update_date, is_archive, name, content, locale_id) VALUES
+			($1, $2, FALSE, $3, $4, $5) RETURNING id";
+
+		pg_prepare($con, "poi_update_newversion", $query);
+
+		$result = pg_execute($con, "poi_update_newversion", array($this->version, date('r'), $this->name, json_encode($this->parameters), $this->locale_id));
+
+		$this->version_id = pg_fetch_assoc($result)['id'];
+
+		// 3) Insert new geometry + source info for this new version
+		$query = "INSERT INTO content_version_poi_specifications,(content_version_id, geom, source_id, remote_source_id) VALUES
+			($1, ST_SetSRID(ST_MakePoint($2, $3, $4), 4326), $5, $6)";
+
+		pg_prepare($con, "poi_insert_specs_update", $query);
+		pg_execute($con, "poi_insert_specs_update", array( $this->version_id, $this->lon, $this->lat, $this->ele, $this->source, $this->remote_source_id	));
+
+		// 4) Update is_commentable
+		$query = "UPDATE contents SET is_commentable = $1 WHERE id = $2";
+		pg_prepare($con, "poi_update_commentable", $query);
+		pg_execute($con, "poi_update_commentable", array( $this->is_commentable ? 't' : 'f', $this->content_id));
+
+		// 5) Add contributor
+		$query = "INSERT INTO content_contributors (content, contributor)
+				  VALUES ($1, $2) ON CONFLICT (content, contributor) DO NOTHING";
+
+		pg_prepare($con, "poi_update_contrib", $query);
+		pg_execute($con, "poi_update_contrib", array($this->content_id, $user->id));
+
+		pg_query($con, "COMMIT");
+		pg_close($con);
+
+		error_log(
+			date('r')." \t".$user->name." (".$user->id.") \tUPDATE \tEdit POI '".$this->permalink."'\r\n",
+			3,
+			$config['logs_folder'].'poi.log'
+		);
+	}
+
+	/*****
+	** Archive a POI
+	*****/
+	public function delete() {
+		global $config;
+		global $user;
+
+		$con = pg_connect("host=".$config['SQL_host']." dbname=".$config['SQL_db']." user=".$config['SQL_user']." password=".$config['SQL_pass'])
+			or die ("Could not connect to server\n");
+
+		$query = "UPDATE contents SET is_public = FALSE WHERE id = $1";
+
+		pg_prepare($con, "poi_delete", $query);
+		pg_execute($con, "poi_delete", array($this->content_id));
+
+		pg_close($con);
+
+		error_log(
+			date('r')." \t".$user->name." (".$user->id.") \tDELETE \tArchive POI '".$this->permalink."'\r\n",
+			3,
+			$config['logs_folder'].'poi.log'
+		);
+	}
+
+	/*****
+	** Restore a POI
+	*****/
+	public function restore() {
+		global $config;
+		global $user;
+
+		$con = pg_connect("host=".$config['SQL_host']." dbname=".$config['SQL_db']." user=".$config['SQL_user']." password=".$config['SQL_pass'])
+			or die ("Could not connect to server\n");
+
+		$query = "UPDATE contents SET is_public = TRUE WHERE id = $1";
+
+		pg_prepare($con, "poi_restore", $query);
+		pg_execute($con, "poi_restore", array($this->content_id));
+
+		pg_close($con);
+
+		error_log(
+			date('r')." \t".$user->name." (".$user->id.") \tRESTORE \tPublish POI '".$this->permalink."'\r\n",
+			3,
+			$config['logs_folder'].'poi.log'
+		);
+	}
+}
+
+class Pois
+{
+	public $objs = [];
+	public $number = 0;
+
+	public function listPois($first, $count, $archive=0) {
+		global $config;
+
+		$con = pg_connect("host=".$config['SQL_host']." dbname=".$config['SQL_db']." user=".$config['SQL_user']." password=".$config['SQL_pass'])
+			or die ("Could not connect to server\n");
+
+		$query = "
+			SELECT content_versions.id AS version_id, *
+			FROM contents
+			INNER JOIN content_locales ON contents.id = content_locales.content_id
+			INNER JOIN content_versions ON content_locales.id = content_versions.locale_id
+			WHERE type='poi' AND is_archive=FALSE
+		";
+
+		if ($archive != 1)
+			$query .= " AND is_public=TRUE ";
+
+		$query .= " ORDER BY update_date DESC LIMIT $1 OFFSET $2";
+
+		pg_prepare($con, "pois_list", $query);
+		$result = pg_execute($con, "pois_list", array($count, $first));
+
+		pg_close($con);
+
+		for ($i = 0; $i < pg_num_rows($result); $i++) {
+			$row = pg_fetch_assoc($result, $i);
+			$this->objs[$i] = new Poi;
+			$this->objs[$i]->populate($row);
+		}
+	}
+
+	public function getHistory($permalink) {
+		global $config;
+
+		$con = pg_connect("host=".$config['SQL_host']." dbname=".$config['SQL_db']." user=".$config['SQL_user']." password=".$config['SQL_pass'])
+			or die ("Could not connect to server\n");
+
+		$query = "
+			SELECT content_versions.id AS version_id, *
+			FROM contents
+			INNER JOIN content_locales ON contents.id = content_locales.content_id
+			INNER JOIN content_versions ON content_locales.id = content_versions.locale_id
+			WHERE permalink=$1 AND type='poi'
+			ORDER BY update_date DESC
+		";
+
+		pg_prepare($con, "poi_history", $query);
+		$result = pg_execute($con, "poi_history", array($permalink));
+
+		pg_close($con);
+
+		$this->number = pg_num_rows($result);
+
+		for ($i = 0; $i < $this->number; $i++) {
+			$row = pg_fetch_assoc($result, $i);
+			$this->objs[$i] = new Poi;
+			$this->objs[$i]->populate($row);
+		}
+	}
 }
 
 ?>

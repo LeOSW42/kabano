@@ -1,6 +1,7 @@
 <?
 
 require_once($config['models_folder']."d.blog.php");
+require_once($config['models_folder']."d.comments.php");
 require_once($config['models_folder']."d.users.php");
 
 $head['css'] = "d.index.css;d.blog.css";
@@ -129,32 +130,32 @@ switch ($controller->splitted_url[1]) {
 				// Manage comment creation
 				if (isset($controller->splitted_url[2]) && $controller->splitted_url[2]=="new_comment") {
 					if (isset($_POST['submit']) && $user->rankIsHigher("registered")) {
-						$blogComment = new Kabano\BlogComment();
-						$blogComment->locale = $user->locale;
-						$blogComment->author = $user->id;
-						$blogComment->content = $blogArticle->content_id;
-						$blogComment->comment = $_POST['comment'];
-						$blogComment->insert();
+						$Comment = new Kabano\Comment();
+						$Comment->locale = $user->locale;
+						$Comment->author = $user->id;
+						$Comment->content = $blogArticle->content_id;
+						$Comment->comment = $_POST['comment'];
+						$Comment->insert();
 					}
 				}
 
 				// Manage comment deletion
 				if (isset($controller->splitted_url[2]) && $controller->splitted_url[2]=="delete_comment") {
 					if (isset($controller->splitted_url[3]) && is_numeric($controller->splitted_url[3])) {
-						$blogComment = new Kabano\BlogComment();
-						if($blogComment->checkId($controller->splitted_url[3]))
-							if ($user->rankIsHigher("moderator") || $user->id == $blogComment->author)
-								$blogComment->delete();
+						$Comment = new Kabano\Comment();
+						if($Comment->checkId($controller->splitted_url[3]))
+							if ($user->rankIsHigher("moderator") || $user->id == $Comment->author)
+								$Comment->delete();
 					}
 				}
 
 				// Manage comment restoration
 				if (isset($controller->splitted_url[2]) && $controller->splitted_url[2]=="restore_comment") {
 					if (isset($controller->splitted_url[3]) && is_numeric($controller->splitted_url[3])) {
-						$blogComment = new Kabano\BlogComment();
-						if($blogComment->checkId($controller->splitted_url[3]))
-							if ($user->rankIsHigher("moderator") || $user->id == $blogComment->author)
-								$blogComment->restore();
+						$Comment = new Kabano\Comment();
+						if($Comment->checkId($controller->splitted_url[3]))
+							if ($user->rankIsHigher("moderator") || $user->id == $Comment->author)
+								$Comment->restore();
 					}
 				}
 
@@ -162,7 +163,7 @@ switch ($controller->splitted_url[1]) {
 
 				// Manage comments
 				if ($blogArticle->is_commentable == "t") {
-					$blogArticles_comments = new Kabano\BlogComments();
+					$blogArticles_comments = new Kabano\Comments();
 					$blogArticles_comments->listComments($blogArticle->content_id, ($user->rankIsHigher("premium")));
 
 					$i = 0;
