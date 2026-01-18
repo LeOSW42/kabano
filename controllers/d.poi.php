@@ -20,7 +20,7 @@ switch ($controller->splitted_url[1]) {
 				$poi->author = $user->id;
 				$poi->source = "kab";
 				$poi->is_commentable = isset($_POST['is_commentable'])?'t':'f';
-				$poi->parameters = '';
+				$poi->parameters = new \stdClass();
 				if(!$poi->checkPermalink($_POST['permalink'],1)) {
 					$poi->permalink = $_POST['permalink'];
 					$poi->insert();

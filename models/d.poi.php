@@ -111,12 +111,12 @@ class Poi
 
 		pg_query($con, "BEGIN");
 
-		$query = "INSERT INTO contents (is_commentable, is_public, permalink, creation_date, name, type, poi_type) VALUES
-			($1, TRUE, $2, $3, $4, $5, $6) RETURNING id";
+		$query = "INSERT INTO contents (is_commentable, is_public, permalink, creation_date, type, poi_type) VALUES
+			($1, TRUE, $2, $3, $4, $5) RETURNING id";
 
 		pg_prepare($con, "prepare1", $query) 
 			or die ("Cannot prepare statement\n");
-		$result = pg_execute($con, "prepare1", array($this->is_commentable, $this->permalink, date('r'), $this->name, $this->type, $this->poi_type))
+		$result = pg_execute($con, "prepare1", array($this->is_commentable, $this->permalink, date('r'), $this->type, $this->poi_type))
 			or die ("Cannot execute statement\n");
 
 		$this->content_id = pg_fetch_assoc($result)['id'];
