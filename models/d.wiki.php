@@ -102,6 +102,8 @@ class WikiPage
 		$con = pg_connect("host=".$config['SQL_host']." dbname=".$config['SQL_db']." user=".$config['SQL_user']." password=".$config['SQL_pass'])
 			or die ("Could not connect to server\n");
 
+		pg_query($con, "BEGIN");
+
 		$query = "UPDATE content_versions SET is_archive = TRUE WHERE locale_id = $1";
 
 		pg_prepare($con, "prepare1", $query) 
@@ -128,6 +130,8 @@ class WikiPage
 			or die ("Cannot prepare statement\n");
 		$result = pg_execute($con, "prepare3", array($this->locale_id, $user->id))
 			or die ("Cannot execute statement\n");
+
+		pg_query($con, "COMMIT");
 
 		pg_close($con);
 
@@ -197,6 +201,8 @@ class WikiPage
 		$con = pg_connect("host=".$config['SQL_host']." dbname=".$config['SQL_db']." user=".$config['SQL_user']." password=".$config['SQL_pass'])
 			or die ("Could not connect to server\n");
 
+		pg_query($con, "BEGIN");
+
 		$query = "INSERT INTO contents (permalink, creation_date, is_public, is_commentable, type) VALUES
 			($1, $2, TRUE, FALSE, 'wiki') RETURNING id";
 
@@ -236,6 +242,8 @@ class WikiPage
 			or die ("Cannot prepare statement\n");
 		$result = pg_execute($con, "prepare4", array($this->locale_id, $user->id))
 			or die ("Cannot execute statement\n");
+
+		pg_query($con, "COMMIT");
 
 		pg_close($con);
 
