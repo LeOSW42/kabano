@@ -392,4 +392,141 @@ form.form input[type="checkbox"]:checked + span:before {
     filter: drop-shadow(0 0 0.5px #000); /* bordure subtile sur la flèche */
 }
 
+/* Fiche d'identité POI */
+.poi-idcard {
+    width: 100%;
+    padding: 20px 15px;
+    background: rgba(200, 220, 255, 0.25);
+	border-bottom: 1px solid #bbb;
+    margin: 0;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+/* Ligne principale : coordonnées + type */
+.poi-id-main {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 19px; /* demandé */
+    font-weight: 600;
+}
+
+/* Coordonnées */
+.poi-id-coords {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.poi-id-coords a {
+    color: #0055aa;
+    text-decoration: none;
+}
+.poi-id-coords a:hover {
+    text-decoration: underline;
+}
+
+.poi-id-elev {
+    color: #333;
+}
+
+/* Type */
+.poi-id-type {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* Label discret */
+.poi-id-label {
+    font-weight: 500;
+    color: #444;
+}
+
+/* Dates en petit */
+.poi-id-dates {
+    font-size: 15px; /* demandé */
+    color: #555;
+    display: flex;
+    gap: 20px;
+}
+
+/* Mobile */
+@media (max-width: 700px) {
+    .poi-id-main {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 4px;
+    }
+    .poi-id-dates {
+        flex-direction: column;
+        gap: 2px;
+    }
+}
+
+
+/* Ligne principale : coordonnées + type */
+.poi-id-main {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 19px; /* demandé */
+    font-weight: 600;
+}
+
+/* Coordonnées */
+.poi-id-coords {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.poi-id-coords a {
+    color: #0055aa;
+    text-decoration: none;
+}
+.poi-id-coords a:hover {
+    text-decoration: underline;
+}
+
+.poi-id-elev {
+    color: #333;
+}
+
+/* Type */
+.poi-id-type {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* Label discret */
+.poi-id-label {
+    font-weight: 500;
+    color: #444;
+}
+
+/* Dates en petit */
+.poi-id-dates {
+    font-size: 15px; /* demandé */
+    color: #555;
+    display: flex;
+    gap: 20px;
+}
+
+/* Mobile */
+@media (max-width: 700px) {
+    .poi-id-main {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 4px;
+    }
+    .poi-id-dates {
+        flex-direction: column;
+        gap: 2px;
+    }
+}
 

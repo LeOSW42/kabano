@@ -21,6 +21,35 @@
                     </span>
                     <span><?=$poi->name?></span>
                 </h1>
+
+                <div class="poi-idcard">
+
+                    <div class="poi-id-main">
+                        <div class="poi-id-coords">
+                            <span class="poi-id-label">📍 Coordonnées</span>
+                            <a href="geo:<?=$poi->lat?>,<?=$poi->lon?>" class="poi-id-value">
+                                <?=$poi->lat?>, <?=$poi->lon?>
+                            </a>
+                            <?php if ($poi->ele !== null && $poi->ele !== '') { ?>
+                                <span class="poi-id-elev">⛰️ <?=$poi->ele?> m</span>
+                            <?php } ?>
+                        </div>
+
+                        <div class="poi-id-type">
+                            <span class="poi-id-label">🏷️ Type</span>
+                            <span class="poi-id-value">
+                                <?=$poi_types[$poi->poi_type][1] ?? $poi->poi_type?>
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="poi-id-dates">
+                        <span>Créé : <?=$poi->creation_date?></span>
+                        <span>Mis à jour : <?=$poi->update_date?></span>
+                    </div>
+
+                </div>
+
                 <? if($user->rankIsHigher('premium')) { ?>
                     <span class="subtitle">
                     <? if(isset($PoiHistory)) { ?>
@@ -46,20 +75,7 @@
                     </span>
                 <? } ?>
 
-				<div class="flex_line">
-					<div>
-						<strong>Latitude :</strong> <?=$poi->lat?><br>
-						<strong>Longitude :</strong> <?=$poi->lon?><br>
-						<? if ($poi->ele !== null && $poi->ele !== '') { ?>
-							<strong>Altitude :</strong> <?=$poi->ele?> m<br>
-						<? } ?>
-					</div>
-					<div>
-						<strong>Langue :</strong> <?=$poi->locale?><br>
-						<strong>Auteur :</strong> <?=$poi->author_name?><br>
-						<strong>Dernière mise à jour :</strong> <?=$poi->update_date?><br>
-					</div>
-				</div>
+                <br>
 
 				<h2>Description</h2>
 				<div class="poi-description">
