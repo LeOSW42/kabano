@@ -29,6 +29,9 @@ class BlogArticle
 	public $type = "blog";
 	public $name = NULL;
 	public $content = NULL;
+    public $content_html = NULL;
+    public $content_txt = NULL;
+    public $author_name = NULL;
 
 	/*****
 	** Checks if a page at this URL exists and return the ID
@@ -374,6 +377,8 @@ class BlogComment
 	public $content = NULL;
 	public $comment = NULL;
 	public $locale = NULL;
+	public $comment_html = NULL;
+	public $author_obj = NULL;
 
 
 	/*****
