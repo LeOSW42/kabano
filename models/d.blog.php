@@ -241,7 +241,7 @@ class BlogArticle
 
 		pg_prepare($con, "prepare4", $query) 
 			or die ("Cannot prepare statement\n");
-		$result = pg_execute($con, "prepare4", array($this->id, $user->id))
+		$result = pg_execute($con, "prepare4", array($this->locale_id, $user->id))
 			or die ("Cannot execute statement\n");
 
 		pg_close($con);
