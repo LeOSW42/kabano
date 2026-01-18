@@ -2,8 +2,6 @@
 -- PostgreSQL database dump
 --
 
-\restrict gyJUkrObqvFulliJLozdQgwL0i89fdQ03weNV6gdvzJFjdUBh32QJ0AJv7oGYRb
-
 -- Dumped from database version 18.1
 -- Dumped by pg_dump version 18.1
 
@@ -409,6 +407,24 @@ CREATE TABLE public.users (
 
 ALTER TABLE public.users OWNER TO kabano;
 
+
+--
+-- Data for Name: locales; Type: TABLE DATA; Schema: public; Owner: kabano
+--
+
+COPY public.locales (name, display_name, flag_name) FROM stdin;
+fr_FR	Français	fr
+\.
+
+
+--
+-- Data for Name: sources; Type: TABLE DATA; Schema: public; Owner: kabano
+--
+
+COPY public.sources (id, display_name, icon_name, website, license_name, license_url) FROM stdin;
+kab	Kabano	kabano	kabano.org	\N	\N
+\.
+
 --
 -- Name: content_comments content_comments_pkey; Type: CONSTRAINT; Schema: public; Owner: kabano
 --
@@ -714,8 +730,12 @@ GRANT ALL ON SCHEMA public TO PUBLIC;
 
 
 --
--- PostgreSQL database dump complete
+-- Name: TABLE content_version_poi_specifications; Type: ACL; Schema: public; Owner: postgres
 --
 
-\unrestrict gyJUkrObqvFulliJLozdQgwL0i89fdQ03weNV6gdvzJFjdUBh32QJ0AJv7oGYRb
+GRANT ALL ON TABLE public.content_version_poi_specifications TO kabano;
 
+
+--
+-- PostgreSQL database dump complete
+--
