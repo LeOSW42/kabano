@@ -13,30 +13,26 @@ namespace Kabano;
 require_once($config['third_folder']."Md/MarkdownExtra.inc.php");
 require_once($config['includes_folder']."poi_types.struct.php");
 
-
 class Poi
 {
-	public $poi_id = NULL;
+	public $content_id = NULL;
 	public $locale_id = NULL;
 	public $source_id = NULL;
 	public $version_id = NULL;
-	public $is_public = NULL;
 	public $permalink = NULL;
+	public $version = 0;
+	public $locale = 0;
 	public $creation_date = NULL;
+	public $update_date = NULL;
+	public $author = NULL;
+	public $is_public = NULL;
+	public $is_archive = NULL; // Means destroyed for a POI
+	public $is_commentable = NULL;
+	public $type = "poi";
+	public $poi_type = NULL;
 	public $name = NULL;
-	public $position = NULL;
-	public $type = NULL;
-	public $locale = NULL;
 	public $source = NULL;
 	public $remote_source_id = NULL;
-	public $author = NULL;
-	public $version = NULL;
-	public $update_date = NULL;
-	public $is_archive = NULL;
-	public $alt_type = NULL;
-	public $is_destroyed = NULL;
-	public $alt_name = NULL;
-	public $alt_position = NULL;
 	public $parameters = NULL;
 
 	public $lat;
@@ -52,7 +48,7 @@ class Poi
 		$con = pg_connect("host=".$config['SQL_host']." dbname=".$config['SQL_db']." user=".$config['SQL_user']." password=".$config['SQL_pass'])
 			or die ("Could not connect to server\n");
 
-		$query = "SELECT poi_versions.id AS version_id, * FROM pois INNER JOIN poi_locales ON pois.id = poi_locales.poi_id INNER JOIN poi_sources ON poi_locales.id = poi_sources.locale_id INNER JOIN poi_versions ON poi_sources.id = poi_versions.source_id WHERE permalink=$1";
+		$query = "SELECT content_versions.id AS version_id, * FROM contents INNER JOIN content_locales ON contents.id = content_locales.content_id INNER JOIN content_versions ON content_locales.id = content_versions.locale_id WHERE permalink=$1 AND type='poi'";
 		if($withArchive==0) {
 			$query .= " AND is_archive=FALSE AND is_public=TRUE";
 		}
@@ -79,32 +75,32 @@ class Poi
 	** Populate the object using its ID
 	*****/
 	public function populate($row) {
-		$this->$poi_id = $row['poi_id'];
-		$this->$locale_id = $row['locale_id'];
-		$this->$source_id = $row['source_id'];
-		$this->$version_id = $row['version_id'];
-		$this->$is_public = $row['is_public'];
-		$this->$permalink = $row['permalink'];
-		$this->$creation_date = $row['creation_date'];
-		$this->$name = $row['name'];
-		$this->$position = $row['position'];
-		$this->$type = $row['type'];
-		$this->$locale = $row['locale'];
-		$this->$source = $row['source'];
-		$this->$remote_source_id = $row['remote_source_id'];
-		$this->$author = $row['author'];
-		$this->$version = $row['version'];
-		$this->$update_date = $row['update_date'];
-		$this->$is_archive = $row['is_archive'];
-		$this->$alt_type = $row['alt_type'];
-		$this->$is_destroyed = $row['is_destroyed'];
-		$this->$alt_name = $row['alt_name'];
-		$this->$alt_position = $row['alt_position'];
-		$this->$parameters = $row['parameters'];
+		$this->content_id = $row['content_id'];
+		$this->locale_id = $row['locale_id'];
+		$this->source_id = $row['source_id'];
+		$this->version_id = $row['version_id'];
+		$this->permalink = $row['permalink'];
+		$this->version = $row['version'];
+		$this->locale = $row['locale'];
+		$this->creation_date = $row['creation_date'];
+		$this->update_date = $row['update_date'];
+		$this->author = $row['author'];
+		$this->is_public = $row['is_public'];
+		$this->is_archive = $row['is_archive'];
+		$this->is_commentable = $row['is_commentable'];
+		$this->type = $row['type'];
+		$this->poi_type = $row['poi_type'];
+		$this->name = $row['name'];
+		$this->parameters = json_decode($row['parameters'], true);
+		$this->lon = $row['lon'];
+		$this->lat = $row['lat'];
+		$this->ele = $row['ele'];
+		$this->source = $row['source'];
+		$this->remote_source_id = $row['remote_source_id'];
 	}
 
 	/*****
-	** Create a new poi, all field required except alt_*, *_id
+	** Create a new poi
 	*****/
 	public function insert() {
 		global $config;
@@ -113,57 +109,51 @@ class Poi
 		$con = pg_connect("host=".$config['SQL_host']." dbname=".$config['SQL_db']." user=".$config['SQL_user']." password=".$config['SQL_pass'])
 			or die ("Could not connect to server\n");
 
-		// Because it is the first insert.
-		$this->alt_type = $this->type;
-		$this->alt_name = $this->name;
-		$this->alt_position = $this->position;
-
-		$query = "INSERT INTO contents (is_public, permalink, creation_date, name, position, type) VALUES
+		$query = "INSERT INTO contents (is_public, permalink, creation_date, name, type, poi_type) VALUES
 			(TRUE, $1, $2, $3, $4, $5) RETURNING id";
 
 		pg_prepare($con, "prepare1", $query) 
 			or die ("Cannot prepare statement\n");
-		$result = pg_execute($con, "prepare1", array($this->permalink, date('r'), $this->name, $this->position, $this->type))
+		$result = pg_execute($con, "prepare1", array($this->permalink, date('r'), $this->name, $this->type, $this->poi_type))
 			or die ("Cannot execute statement\n");
 
 		$this->poi_id = pg_fetch_assoc($result)['id'];
 
-		$query = "INSERT INTO poi_locales (locale, poi_id) VALUES
-			($1, $2) RETURNING id";
+		$query = "INSERT INTO content_locales (content_id, locale, author) VALUES
+			($1, $2, $3) RETURNING id";
 
 		pg_prepare($con, "prepare2", $query) 
 			or die ("Cannot prepare statement\n");
-		$result = pg_execute($con, "prepare2", array($this->locale, $this->poi_id))
+		$result = pg_execute($con, "prepare2", array($this->content_id, $this->locale, $user->id))
 			or die ("Cannot execute statement\n");
 
 		$this->locale_id = pg_fetch_assoc($result)['id'];
 
-		$query = "INSERT INTO poi_sources (source, remote_source_id, author, locale_id) VALUES
-			($1, $2, $3, $4) RETURNING id";
+		$query = "INSERT INTO content_versions (version, update_date, is_archive, name, content, locale_id) VALUES
+			('0', $1, FALSE, $2, $3, $4) RETURNING id";
 
 		pg_prepare($con, "prepare3", $query) 
 			or die ("Cannot prepare statement\n");
-		$result = pg_execute($con, "prepare3", array($this->source, $this->remote_source_id, $this->author, $this->locale_id))
-			or die ("Cannot execute statement\n");
 
-		$this->source_id = pg_fetch_assoc($result)['id'];
-
-		$query = "INSERT INTO poi_versions (version, update_date, is_archive, alt_type, is_destroyed, alt_name, alt_position, parameters, source_id) VALUES
-			('0', $1, FALSE, $2, $3, $4, $5, $6, $7) RETURNING id";
-
-		pg_prepare($con, "prepare4", $query) 
-			or die ("Cannot prepare statement\n");
-		$result = pg_execute($con, "prepare4", array(date('r'), $this->alt_type, $this->is_destroyed, $this->alt_name, $this->alt_position, $this->parameters, $this->source_id))
+		$result = pg_execute($con, "prepare3", array(date('r'), $this->name, json_encode($this->parameters), $this->locale_id))
 			or die ("Cannot execute statement\n");
 
 		$this->version_id = pg_fetch_assoc($result)['id'];
 
-		$query = "INSERT INTO poi_contributors (poi, contributor) VALUES
+		$query = "INSERT INTO content_version_poi_specifications (content_version_id, geom, source_id, remote_source_id) VALUES
+			($1, ST_SetSRID(ST_MakePoint($2, $3, $4), 4326), $5, $6)";
+
+		pg_prepare($con, "prepare4", $query) 
+			or die ("Cannot prepare statement\n");
+		$result = pg_execute($con, "prepare4", array($this->version_id, $this->lon, $this->lat, $this->ele ,$this->source, $this->remote_source_id))
+			or die ("Cannot execute statement\n");
+
+		$query = "INSERT INTO content_contributors (content, contributor) VALUES
 			($1, $2)";
 
-		pg_prepare($con, "prepare5", $query) 
+		pg_prepare($con, "prepare4", $query) 
 			or die ("Cannot prepare statement\n");
-		$result = pg_execute($con, "prepare5", array($this->source_id, $user->id))
+		$result = pg_execute($con, "prepare4", array($this->locale_id, $user->id))
 			or die ("Cannot execute statement\n");
 
 		pg_close($con);
