@@ -2,6 +2,8 @@
 -- PostgreSQL database dump
 --
 
+\restrict gyJUkrObqvFulliJLozdQgwL0i89fdQ03weNV6gdvzJFjdUBh32QJ0AJv7oGYRb
+
 -- Dumped from database version 18.1
 -- Dumped by pg_dump version 18.1
 
@@ -180,16 +182,18 @@ CREATE TABLE public.content_locales (
 ALTER TABLE public.content_locales OWNER TO kabano;
 
 --
--- Name: content_version_position; Type: TABLE; Schema: public; Owner: postgres
+-- Name: content_version_poi_specifications; Type: TABLE; Schema: public; Owner: postgres
 --
 
-CREATE TABLE public.content_version_position (
-    content_version_id integer NOT NULL,
-    geom public.geometry(PointZ,4326) NOT NULL
+CREATE TABLE public.content_version_poi_specifications (
+    content_version_id integer CONSTRAINT content_version_position_content_version_id_not_null NOT NULL,
+    geom public.geometry(PointZ,4326) CONSTRAINT content_version_position_geom_not_null NOT NULL,
+    source_id character varying(3),
+    remote_source_id character varying(255)
 );
 
 
-ALTER TABLE public.content_version_position OWNER TO postgres;
+ALTER TABLE public.content_version_poi_specifications OWNER TO postgres;
 
 --
 -- Name: content_versions_sequence; Type: SEQUENCE; Schema: public; Owner: kabano
@@ -446,10 +450,10 @@ ALTER TABLE ONLY public.content_locales
 
 
 --
--- Name: content_version_position content_version_position_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+-- Name: content_version_poi_specifications content_version_position_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
-ALTER TABLE ONLY public.content_version_position
+ALTER TABLE ONLY public.content_version_poi_specifications
     ADD CONSTRAINT content_version_position_pkey PRIMARY KEY (content_version_id);
 
 
@@ -567,7 +571,7 @@ CREATE INDEX content_comments_is_public_index ON public.content_comments USING b
 -- Name: content_version_position_gix; Type: INDEX; Schema: public; Owner: postgres
 --
 
-CREATE INDEX content_version_position_gix ON public.content_version_position USING gist (geom);
+CREATE INDEX content_version_position_gix ON public.content_version_poi_specifications USING gist (geom);
 
 
 --
@@ -670,10 +674,10 @@ ALTER TABLE ONLY public.content_locales
 
 
 --
--- Name: content_version_position content_version_position_content_version_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+-- Name: content_version_poi_specifications content_version_position_content_version_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
-ALTER TABLE ONLY public.content_version_position
+ALTER TABLE ONLY public.content_version_poi_specifications
     ADD CONSTRAINT content_version_position_content_version_id_fkey FOREIGN KEY (content_version_id) REFERENCES public.content_versions(id) ON DELETE CASCADE;
 
 
@@ -683,6 +687,14 @@ ALTER TABLE ONLY public.content_version_position
 
 ALTER TABLE ONLY public.content_versions
     ADD CONSTRAINT content_versions_locale FOREIGN KEY (locale_id) REFERENCES public.content_locales(id);
+
+
+--
+-- Name: content_version_poi_specifications fk_content_version_poi_specifications_source; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.content_version_poi_specifications
+    ADD CONSTRAINT fk_content_version_poi_specifications_source FOREIGN KEY (source_id) REFERENCES public.sources(id) ON UPDATE CASCADE ON DELETE SET NULL;
 
 
 --
@@ -704,3 +716,6 @@ GRANT ALL ON SCHEMA public TO PUBLIC;
 --
 -- PostgreSQL database dump complete
 --
+
+\unrestrict gyJUkrObqvFulliJLozdQgwL0i89fdQ03weNV6gdvzJFjdUBh32QJ0AJv7oGYRb
+
