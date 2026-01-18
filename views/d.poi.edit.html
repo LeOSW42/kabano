@@ -123,10 +123,15 @@
 					<p id="abstract"></p>
 					<div id="specific_form"></div>
 
+					<label for="is_commentable">
+						<input type="checkbox" name="is_commentable" id="is_commentable" />
+						<span>Autoriser les commentaires</span>
+					</label>
+
 					<? if(isset($new) AND $new==1) { ?>
 					<div id="permalink_container">
 						<label id="permalink_label" for="permalink"><?=$config['web_root_folder']?>poi/</label>
-						<input type="text" name="permalink" id="permalink" placeholder="URL">
+						<input type="text" name="permalink" id="permalink" placeholder="URL" required>
 					</div>
 					<? } ?>
 

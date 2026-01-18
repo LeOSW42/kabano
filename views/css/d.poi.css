@@ -162,6 +162,30 @@ form.form input[type=radio]+label img {
 	font-style: italic;
 }
 
+form.form input[type="checkbox"] {
+	display:none;
+}
+
+form.form input[type="checkbox"] + span:before {
+	font-family: "Font Awesome 5 Free";
+	font-weight: 400;
+	vertical-align: middle;
+	padding: 2px 5px 2px 4px;
+	margin-right: 10px;
+	display: inline-block;
+	width: 21px;
+	background: #ddd;
+	font-size: 25px;
+}
+
+form.form input[type="checkbox"] + span:before {
+	content: "\f0c8"; /* check-empty */
+}
+
+form.form input[type="checkbox"]:checked + span:before {
+	content: "\f14a"; /* check */
+}
+
 #permalink_container {
 	position: relative;
 	margin: 2px 0;

@@ -18,11 +18,13 @@ switch ($controller->splitted_url[1]) {
 				$poi->lon = $_POST['lon'];
 				$poi->ele = $_POST['ele'];
 				$poi->author = $user->id;
-				$poi->source = "k";
+				$poi->source = "kab";
+				$poi->is_commentable = isset($_POST['is_commentable'])?'t':'f';
+				$poi->parameters = '';
 				if(!$poi->checkPermalink($_POST['permalink'],1)) {
 					$poi->permalink = $_POST['permalink'];
 					$poi->insert();
-					header('Location: '.$config['rel_root_folder']."blog/".$poi->permalink);
+					header('Location: '.$config['rel_root_folder']."poi/".$poi->permalink);
 				}
 				else {
 					$head['title'] = $poi->name;

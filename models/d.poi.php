@@ -109,15 +109,17 @@ class Poi
 		$con = pg_connect("host=".$config['SQL_host']." dbname=".$config['SQL_db']." user=".$config['SQL_user']." password=".$config['SQL_pass'])
 			or die ("Could not connect to server\n");
 
-		$query = "INSERT INTO contents (is_public, permalink, creation_date, name, type, poi_type) VALUES
-			(TRUE, $1, $2, $3, $4, $5) RETURNING id";
+		pg_query($con, "BEGIN");
+
+		$query = "INSERT INTO contents (is_commentable, is_public, permalink, creation_date, name, type, poi_type) VALUES
+			($1, TRUE, $2, $3, $4, $5, $6) RETURNING id";
 
 		pg_prepare($con, "prepare1", $query) 
 			or die ("Cannot prepare statement\n");
-		$result = pg_execute($con, "prepare1", array($this->permalink, date('r'), $this->name, $this->type, $this->poi_type))
+		$result = pg_execute($con, "prepare1", array($this->is_commentable, $this->permalink, date('r'), $this->name, $this->type, $this->poi_type))
 			or die ("Cannot execute statement\n");
 
-		$this->poi_id = pg_fetch_assoc($result)['id'];
+		$this->content_id = pg_fetch_assoc($result)['id'];
 
 		$query = "INSERT INTO content_locales (content_id, locale, author) VALUES
 			($1, $2, $3) RETURNING id";
@@ -151,10 +153,12 @@ class Poi
 		$query = "INSERT INTO content_contributors (content, contributor) VALUES
 			($1, $2)";
 
-		pg_prepare($con, "prepare4", $query) 
+		pg_prepare($con, "prepare5", $query) 
 			or die ("Cannot prepare statement\n");
-		$result = pg_execute($con, "prepare4", array($this->locale_id, $user->id))
+		$result = pg_execute($con, "prepare5", array($this->locale_id, $user->id))
 			or die ("Cannot execute statement\n");
+
+		pg_query($con, "COMMIT");
 
 		pg_close($con);
 
