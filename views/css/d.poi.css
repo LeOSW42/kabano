@@ -548,7 +548,6 @@ form.form input[type="checkbox"]:checked + span:before {
 }
 
 .bool-row.labels {
-    font-weight: 600;
     font-size: 16px;
 }
 

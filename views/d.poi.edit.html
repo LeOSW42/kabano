@@ -36,95 +36,150 @@
 
 					<div class="flex_line" id="type_selector">
 						<? foreach($poi_types as $type) { ?>
-							<input type="radio" name="poi_type" value="<?=$type[3]?>" id="<?=$type[3]?>" required>
-							<label for="<?=$type[3]?>"><img src="<?=$config['views_url']?>img/<?=$type[3]?>.svg"><br><?=$type[0]?></label>
+						    <input type="radio" name="poi_type" value="<?=$type[3]?>" id="<?=$type[3]?>" required
+						           <?=$poi->poi_type == $type[3] ? 'checked' : ''?>>
+						    <label for="<?=$type[3]?>"><img src="<?=$config['views_url']?>img/<?=$type[3]?>.svg"><br><?=$type[0]?></label>
 						<? } ?>
 					</div>
 
-					<script type="text/javascript">
-						var unsaved = false;
+<script type="text/javascript">
+<?php
+    $poi_params = $poi->parameters ?? new stdClass();
+?>
 
-						// Used to store all the forms skeleton and abstracts
-						<? foreach($poi_types as $type) { ?>
-							<?=$type[3]?>_abstract="<?=$type[4]?>";
-							<?=$type[3]?>_jsonform=<?=json_encode($type[5])?>;
-						<? } ?>
+var poi_params = <?= json_encode($poi_params) ?>;
+var current_poi_type = "<?= $poi->poi_type ?>";
 
-						// Manages the three state checkbox feature
-						function update3State(id) {
-							var input=$("input[name="+id+"]");
-							var label=$("label[for="+id+"]");
-							switch(+input.val()) {
-								case 0:
-									input.val(1);
-									label.toggleClass('uncheck intermediate')
-									break;
-								case 1:
-									input.val(2);
-									label.toggleClass('intermediate check')
-									break;
-								default:
-									input.val(0);
-									label.toggleClass('check uncheck')
+var unsaved = false;
 
-							}
-							unsaved = true; // The form values changed
-						}
+// Stocke les abstracts et les squelettes de formulaire
+<? foreach($poi_types as $type) { ?>
+    window["<?=$type[3]?>_abstract"] = "<?=$type[4]?>";
+    window["<?=$type[3]?>_jsonform"] = <?=json_encode($type[5])?>;
+<? } ?>
 
-						// Updates the specific form section when changing poi type
-						function updateForm(type) {
-							$("#abstract").html(this[type+'_abstract']); // Changes the abstract legend
-							var html_form="";
-							// Generates HTML for the sub-form
-							$.each(this[type+'_jsonform'],function(index, value){
-									switch(index.charAt(0)) {
-										case 'b':
-											html_form+='<label class="threecb intermediate" for="'+index+'" onclick="update3State(\''+index+'\')">'+value+'</label><input value="1" type="hidden" name="'+index+'" id="'+index+'"><br>'
-											break;
-										case 'n':
-											html_form+='<div class="flex_line"><label for="'+index+'">'+value+'</label><input min="0" type="number" name="'+index+'" id="'+index+'"></div>'
-											break;
-										case 't':
-											html_form+='<textarea name="'+index+'"  id="'+index+'" placeholder="'+value+'"></textarea>'
-											break;
-										case 'l':
-											html_form+='<div class="flex_line"><label for="'+index+'">'+value+'</label><input placeholder="https://" type="url" name="'+index+'" id="'+index+'"></div>'
-											break;
-										default:
-											console.log("ERROR: "+index+"'s type is not known");
-									}
-							});
-							$("#specific_form").html(html_form); // Updates HTML
+// 3 états : 0 = non, 1 = intermédiaire, 2 = oui
+function update3State(id) {
+    var input = $("input[name="+id+"]");
+    var label = $("label[for="+id+"]");
+    switch (+input.val()) {
+        case 0:
+            input.val(1);
+            label.toggleClass('uncheck intermediate');
+            break;
+        case 1:
+            input.val(2);
+            label.toggleClass('intermediate check');
+            break;
+        default:
+            input.val(0);
+            label.toggleClass('check uncheck');
+    }
+    unsaved = true;
+}
 
-							// Display an alert if the poi type is changed before reseting the form
-							unsaved = false;
-							$("#specific_form :input").change(function(){
-								unsaved = true;
-							});
-						}
+// Génère / met à jour le sous-formulaire selon le type
+function updateForm(type) {
+    $("#abstract").html(window[type + '_abstract']);
 
-						// Handle click on type selector
-						$(document).ready(function(){
-							// First check if there is changes in the sub-form and if the user is OK to reset the form
-							$('#type_selector label').click(function(){
-								if(unsaved == true) {
-									if(confirm("Des changements ont été apportés et vont être supprimés, voulez-vous continuer ?")) {}
-									else {
-										return false; // Cancel radio switch action
-									}
-								}
+    var html_form = "";
+    var jsonform = window[type + '_jsonform'];
 
-								// Updates the sub-form
-								updateForm($(this).prev().val());
-							});
-						});
-					</script>
+    $.each(jsonform, function(index, value) {
+        var prefix = index.charAt(0);
+        var existing = (poi_params && typeof poi_params[index] !== 'undefined')
+            ? poi_params[index]
+            : null;
 
+        switch (prefix) {
+            case 'b':
+                var cls = 'intermediate';
+                var val = 1;
+                if (existing === 0 || existing === "0") {
+                    cls = 'uncheck';
+                    val = 0;
+                } else if (existing === 2 || existing === "2") {
+                    cls = 'check';
+                    val = 2;
+                }
+                html_form +=
+                    '<label class="threecb ' + cls + '" for="' + index + '" onclick="update3State(\'' + index + '\')">' +
+                        value +
+                    '</label>' +
+                    '<input value="' + val + '" type="hidden" name="' + index + '" id="' + index + '"><br>';
+                break;
+
+            case 'n':
+                html_form +=
+                    '<div class="flex_line">' +
+                        '<label for="' + index + '">' + value + '</label>' +
+                        '<input min="0" type="number" name="' + index + '" id="' + index + '" ' +
+                            (existing !== null ? 'value="' + existing + '"' : '') +
+                        '>' +
+                    '</div>';
+                break;
+
+            case 't':
+                html_form +=
+                    '<textarea name="' + index + '" id="' + index + '" placeholder="' + value + '">';
+                if (existing !== null) {
+                    html_form += String(existing)
+                        .replace(/&/g, "&amp;")
+                        .replace(/</g, "&lt;")
+                        .replace(/>/g, "&gt;");
+                }
+                html_form += '</textarea>';
+                break;
+
+            case 'l':
+                html_form +=
+                    '<div class="flex_line">' +
+                        '<label for="' + index + '">' + value + '</label>' +
+                        '<input placeholder="https://" type="url" name="' + index + '" id="' + index + '" ' +
+                            (existing ? 'value="' + existing + '"' : '') +
+                        '>' +
+                    '</div>';
+                break;
+
+            default:
+                console.log("ERROR: " + index + "'s type is not known");
+        }
+    });
+
+    $("#specific_form").html(html_form);
+
+    unsaved = false;
+    $("#specific_form :input").change(function(){
+        unsaved = true;
+    });
+}
+
+$(document).ready(function(){
+		// Au chargement : générer le formulaire du type actuel
+    if (current_poi_type) {
+        updateForm(current_poi_type);
+    }
+
+		$('#type_selector label').click(function(){
+
+		    if (unsaved === true) {
+		        if (!confirm("Des changements ont été apportés et vont être supprimés, voulez-vous continuer ?")) {
+		            return false;
+		        }
+		    }
+
+		    const type = $(this).attr("for"); // robuste
+		    current_poi_type = type;
+
+		    updateForm(type);
+		});
+});
+</script>
 					<p id="abstract"></p>
 					<div id="specific_form"></div>
 
 					<label for="is_commentable">
-						<input type="checkbox" name="is_commentable" id="is_commentable" />
+						<input type="checkbox" name="is_commentable" id="is_commentable" <?=$poi->is_commentable ? 'checked' : ''?> />
 						<span>Autoriser les commentaires</span>
 					</label>
 
@@ -154,7 +209,7 @@ $( "#name" ).change(function() {
 });
 					</script>
 
-					<input name="submit" id="submit" type="submit" value="Ajouter l'hébergement">
+					<input name="submit" id="submit" type="submit" value="<?= isset($new) && $new == 1 ? "Ajouter l'hébergement" : "Mettre à jour l'hébergement" ?>">
 				</form>
 			</section>
 

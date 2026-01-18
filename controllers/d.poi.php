@@ -56,7 +56,6 @@ switch ($controller->splitted_url[1]) {
 				    }
 				}
 
-
 				$poi->parameters = json_encode($params, JSON_UNESCAPED_UNICODE);
 
 				if (!$poi->checkPermalink($_POST['permalink'], 1)) {
@@ -125,9 +124,44 @@ switch ($controller->splitted_url[1]) {
 					$poi->lat = $_POST['lat'];
 					$poi->lon = $_POST['lon'];
 					$poi->ele = $_POST['ele'];
-					$poi->is_commentable = isset($_POST['is_commentable']) ? 't' : 'f';
 					$poi->author = $user->id;
-					// $poi->parameters = ... // à remplir si tu veux éditer les champs dynamiques
+					$poi->source = "kab";
+					$poi->is_commentable = isset($_POST['is_commentable']) ? 't' : 'f';
+
+					$definition = $poi_types[$poi->poi_type][5];
+					$params = [];
+
+					foreach ($definition as $key => $label) {
+
+					    if (isset($_POST[$key])) {
+					        $value = $_POST[$key];
+
+					        if (str_starts_with($key, 'b_')) {
+					            // 3 états : 1 = oui, 0 = non, -1 = non renseigné
+					            $params[$key] = ($value === "1" ? 1 :
+					                             ($value === "0" ? 0 : -1));
+					        }
+					        elseif (str_starts_with($key, 'n_')) {
+					            $params[$key] = is_numeric($value) ? (0 + $value) : null;
+					        }
+					        elseif (str_starts_with($key, 't_') || str_starts_with($key, 'l_')) {
+					            $params[$key] = trim($value);
+					        }
+					        else {
+					            $params[$key] = $value;
+					        }
+
+					    } else {
+					        // Champ absent → booléen = -1 (non renseigné)
+					        if (str_starts_with($key, 'b_')) {
+					            $params[$key] = -1;
+					        } else {
+					            $params[$key] = null;
+					        }
+					    }
+					}
+
+					$poi->parameters = json_encode($params, JSON_UNESCAPED_UNICODE);
 					$poi->update();
 					header('Location: '.$config['rel_root_folder']."poi/".$poi->permalink);
 				} else {

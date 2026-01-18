@@ -250,9 +250,9 @@ class Poi
 		pg_execute($con, "poi_insert_specs_update", array( $this->version_id, $this->lon, $this->lat, $this->ele, $this->source, $this->remote_source_id	));
 
 		// 4) Update is_commentable
-		$query = "UPDATE contents SET is_commentable = $1 WHERE id = $2";
+		$query = "UPDATE contents SET is_commentable = $1, poi_type = $2 WHERE id = $3";
 		pg_prepare($con, "poi_update_commentable", $query);
-		pg_execute($con, "poi_update_commentable", array( $this->is_commentable ? 't' : 'f', $this->content_id));
+		pg_execute($con, "poi_update_commentable", array( $this->is_commentable ? 't' : 'f', $this->poi_type, $this->content_id));
 
 		// 5) Add contributor
 		$query = "INSERT INTO content_contributors (content, contributor)
