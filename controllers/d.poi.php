@@ -3,6 +3,7 @@
 require_once($config['models_folder']."d.poi.php");
 require_once($config['models_folder']."d.comments.php");
 require_once($config['models_folder']."d.users.php");
+require_once($config['includes_folder']."poi_types.struct.php");
 
 $head['css'] = "d.index.css;d.poi.css";
 
@@ -21,7 +22,42 @@ switch ($controller->splitted_url[1]) {
 				$poi->author = $user->id;
 				$poi->source = "kab";
 				$poi->is_commentable = isset($_POST['is_commentable']) ? 't' : 'f';
-				$poi->parameters = new \stdClass(); // tu pourras y mettre ton JSON plus tard
+
+				$definition = $poi_types[$poi->poi_type][5];
+				$params = [];
+
+				foreach ($definition as $key => $label) {
+
+				    if (isset($_POST[$key])) {
+				        $value = $_POST[$key];
+
+				        if (str_starts_with($key, 'b_')) {
+				            // 3 états : 1 = oui, 0 = non, -1 = non renseigné
+				            $params[$key] = ($value === "1" ? 1 :
+				                             ($value === "0" ? 0 : -1));
+				        }
+				        elseif (str_starts_with($key, 'n_')) {
+				            $params[$key] = is_numeric($value) ? (0 + $value) : null;
+				        }
+				        elseif (str_starts_with($key, 't_') || str_starts_with($key, 'l_')) {
+				            $params[$key] = trim($value);
+				        }
+				        else {
+				            $params[$key] = $value;
+				        }
+
+				    } else {
+				        // Champ absent → booléen = -1 (non renseigné)
+				        if (str_starts_with($key, 'b_')) {
+				            $params[$key] = -1;
+				        } else {
+				            $params[$key] = null;
+				        }
+				    }
+				}
+
+
+				$poi->parameters = json_encode($params, JSON_UNESCAPED_UNICODE);
 
 				if (!$poi->checkPermalink($_POST['permalink'], 1)) {
 					$poi->permalink = $_POST['permalink'];

@@ -76,32 +76,93 @@
                 <? } ?>
 
                 <br>
+                <br>
 
-				<h2>Description</h2>
-				<div class="poi-description">
-					<?=$poi->content_html?>
-				</div>
+                <?php
+                $fields = $poi_types[$poi->poi_type][5];
+                $values = $poi->parameters ?? [];
 
-				<hr>
+                // Séparer les booléens des autres champs
+                $bool_fields = [];
+                $other_fields = [];
 
-				<h2 id="abstract_title">Informations générales</h2>
-				<p id="abstract">
-					<?=$poi_types[$poi->poi_type][4] ?? ""?>
-				</p>
+                foreach ($fields as $key => $label) {
+                    if ($key[0] === 'b') {
+                        $bool_fields[$key] = $label;
+                    } else {
+                        $other_fields[$key] = $label;
+                    }
+                }
+                ?>
 
-				<h2>Caractéristiques</h2>
-				<div id="specific_form">
-					<? if (!empty($poi->parameters)) { ?>
-						<? foreach ($poi->parameters as $key => $value) { ?>
-							<div class="flex_line poi_param">
-								<label><strong><?=$key?></strong></label>
-								<span><?=$value?></span>
-							</div>
-						<? } ?>
-					<? } else { ?>
-						<p>Aucune information spécifique.</p>
-					<? } ?>
-				</div>
+                <div id="specific_form" class="view-mode">
+
+                    <!-- AUTRES CHAMPS (texte, nombre, lien) -->
+                    <?php foreach ($other_fields as $key => $label): ?>
+                        <?php
+                            $value = $values[$key] ?? null;
+                            $type = $key[0];
+                        ?>
+
+                        <div class="field field-<?= $type ?>">
+                            <label><?= $label ?></label>
+
+                            <?php if ($type === 'n'): ?>
+                                <span class="inline-value"><?= $value !== null ? $value : "<em>—</em>" ?></span>
+
+                            <?php elseif ($type === 't'): ?>
+                                <div class="field-value">
+                                    <?= $value ? nl2br(htmlspecialchars($value)) : "<em>Aucune information.</em>" ?>
+                                </div>
+
+                            <?php elseif ($type === 'l'): ?>
+                                <span class="inline-value">
+                                    <?php if ($value): ?>
+                                        <a href="<?= htmlspecialchars($value) ?>" target="_blank"><?= $value ?></a>
+                                    <?php else: ?>
+                                        <em>—</em>
+                                    <?php endif; ?>
+                                </span>
+
+                            <?php endif; ?>
+                        </div>
+
+
+                    <?php endforeach; ?>
+
+                    <!-- TABLEAU DES BOOLÉENS -->
+                    <?php if (!empty($bool_fields)): ?>
+                    <div class="bool-grid">
+
+                        <!-- Ligne des labels -->
+                        <div class="bool-row labels">
+                            <?php foreach ($bool_fields as $key => $label): ?>
+                                <div class="bool-label"><?= $label ?></div>
+                            <?php endforeach; ?>
+                        </div>
+
+                        <!-- Ligne des valeurs -->
+                        <div class="bool-row values">
+                            <?php foreach ($bool_fields as $key => $label): ?>
+                                <?php
+                                    $value = $values[$key] ?? -1;
+                                    $icon = [
+                                        1  => "<span class='boolean-pill boolean-yes'>✔️</span>",
+                                        0  => "<span class='boolean-pill boolean-no'>❌</span>",
+                                        -1 => "<span class='boolean-pill boolean-unknown'>❓</span>"
+                                    ][$value];
+                                ?>
+                                <div class="bool-cell">
+                                    <?= $icon ?>
+                                </div>
+                            <?php endforeach; ?>
+                        </div>
+
+                    </div>
+                    <?php endif; ?>
+
+                </div>
+
 
 				<? if ($poi->is_commentable == 't') { ?>
 					<h2>Commentaires</h2>

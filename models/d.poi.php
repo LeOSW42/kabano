@@ -179,7 +179,7 @@ class Poi
 		pg_prepare($con, "prepare3", $query) 
 			or die ("Cannot prepare statement\n");
 
-		$result = pg_execute($con, "prepare3", array(date('r'), $this->name, json_encode($this->parameters), $this->locale_id))
+		$result = pg_execute($con, "prepare3", array(date('r'), $this->name, $this->parameters, $this->locale_id))
 			or die ("Cannot execute statement\n");
 
 		$this->version_id = pg_fetch_assoc($result)['id'];
@@ -238,7 +238,7 @@ class Poi
 
 		pg_prepare($con, "poi_update_newversion", $query);
 
-		$result = pg_execute($con, "poi_update_newversion", array($this->version, date('r'), $this->name, json_encode($this->parameters), $this->locale_id));
+		$result = pg_execute($con, "poi_update_newversion", array($this->version, date('r'), $this->name, $this->parameters, $this->locale_id));
 
 		$this->version_id = pg_fetch_assoc($result)['id'];
 
