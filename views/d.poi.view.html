@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+	<? include('blocks/d.head.html'); ?>
+
+	<body>
+
+		<? include('blocks/d.nav.html'); ?>
+
+		<div id="mapid"></div>
+
+		<div id="sticky">
+			<section>
+				<i id="slide-icon" class="fas fa-chevron-up"></i>
+
+				<h1 class="flex_line">
+					<span><?=$poi->name?></span>
+					<span class="poi-type"><?=$poi->poi_type?></span>
+				</h1>
+
+				<div class="flex_line">
+					<div>
+						<strong>Latitude :</strong> <?=$poi->lat?><br>
+						<strong>Longitude :</strong> <?=$poi->lon?><br>
+						<? if ($poi->ele !== null && $poi->ele !== '') { ?>
+							<strong>Altitude :</strong> <?=$poi->ele?> m<br>
+						<? } ?>
+					</div>
+					<div>
+						<strong>Langue :</strong> <?=$poi->locale?><br>
+						<strong>Auteur :</strong> <?=$poi->author_name?><br>
+						<strong>Dernière mise à jour :</strong> <?=$poi->update_date?><br>
+					</div>
+				</div>
+
+				<? if ($user->rankIsHigher("moderator")) { ?>
+					<div class="flex_line admin_actions">
+						<a class="button" href="<?=$config['rel_root_folder']?>poi/<?=$poi->permalink?>/edit">Modifier</a>
+
+						<? if ($poi->is_public == 't') { ?>
+							<a class="button danger" href="<?=$config['rel_root_folder']?>poi/<?=$poi->permalink?>/delete">Supprimer</a>
+						<? } else { ?>
+							<a class="button success" href="<?=$config['rel_root_folder']?>poi/<?=$poi->permalink?>/restore">Restaurer</a>
+						<? } ?>
+					</div>
+				<? } ?>
+
+				<hr>
+
+				<h2>Description</h2>
+				<div class="poi-description">
+					<?=$poi->content_html?>
+				</div>
+
+				<hr>
+
+				<h2 id="abstract_title">Informations générales</h2>
+				<p id="abstract">
+					<?=$poi_types[$poi->poi_type][4] ?? ""?>
+				</p>
+
+				<h2>Caractéristiques</h2>
+				<div id="specific_form">
+					<? if (!empty($poi->parameters)) { ?>
+						<? foreach ($poi->parameters as $key => $value) { ?>
+							<div class="flex_line poi_param">
+								<label><strong><?=$key?></strong></label>
+								<span><?=$value?></span>
+							</div>
+						<? } ?>
+					<? } else { ?>
+						<p>Aucune information spécifique.</p>
+					<? } ?>
+				</div>
+
+				<hr>
+
+				<? if ($poi->is_commentable == 't') { ?>
+					<h2>Commentaires</h2>
+
+					<? if (isset($poi_comments) && $poi_comments->number > 0) { ?>
+						<div id="comments">
+							<? foreach ($poi_comments->objs as $comment) { ?>
+								<article class="comment">
+									<header>
+										<strong><?=$comment->author_obj->name?></strong>
+										<span><?=$comment->creation_date?></span>
+
+										<? if ($user->rankIsHigher("moderator") || $user->id == $comment->author) { ?>
+											<? if ($comment->is_public == 't') { ?>
+												<a href="<?=$config['rel_root_folder']?>poi/<?=$poi->permalink?>/delete_comment/<?=$comment->id?>">Supprimer</a>
+											<? } else { ?>
+												<a href="<?=$config['rel_root_folder']?>poi/<?=$poi->permalink?>/restore_comment/<?=$comment->id?>">Restaurer</a>
+											<? } ?>
+										<? } ?>
+									</header>
+
+									<div class="comment-body">
+										<?=$comment->comment_html?>
+									</div>
+								</article>
+							<? } ?>
+						</div>
+					<? } else { ?>
+						<p>Aucun commentaire pour le moment.</p>
+					<? } ?>
+
+					<? if ($user->rankIsHigher("registered")) { ?>
+						<form class="form" action="<?=$config['rel_root_folder']?>poi/<?=$poi->permalink?>/new_comment" method="post">
+							<h3>Ajouter un commentaire</h3>
+							<textarea name="comment" id="comment" required></textarea>
+							<input type="submit" name="submit" value="Envoyer">
+						</form>
+					<? } else { ?>
+						<p>Connectez-vous pour ajouter un commentaire.</p>
+					<? } ?>
+				<? } ?>
+
+			</section>
+
+			<? include('blocks/d.footer.html'); ?>
+		</div>
+
+		<script>
+			var poi_lat = <?=$poi->lat?>;
+			var poi_lon = <?=$poi->lon?>;
+			var poi_type = "<?=$poi->poi_type?>";
+			var poi_mode = "view";
+            var root = "<?=$config['rel_root_folder']?>";
+		</script>
+
+		<script type="text/javascript">
+			$( "#slide-icon" ).click(function() {
+				$( "html, body" ).animate({scrollTop: "300px"});
+			});
+		</script>
+
+	</body>
+</html>

@@ -158,6 +158,14 @@ $( "#name" ).change(function() {
 				</form>
 			</section>
 
+<script>
+	var poi_lat = <?=$poi->lat?>;
+	var poi_lon = <?=$poi->lon?>;
+	var poi_type = null;
+	var poi_mode = "edit";
+</script>
+
+
 		<script type="text/javascript">
 $( "#slide-icon" ).click(function() {
   $( "html, body" ).animate({scrollTop: "300px"});

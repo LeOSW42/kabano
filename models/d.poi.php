@@ -38,37 +38,79 @@ class Poi
 	public $lat;
 	public $lon;
 	public $ele;
+	public $author_name;
 
 	/*****
 	** Checks if a page at this URL exists and return the ID
 	*****/
 	public function checkPermalink($permalink, $withArchive=0, $elementNb=0) {
-		global $config;
-		
+	    global $config;
+
 		$con = pg_connect("host=".$config['SQL_host']." dbname=".$config['SQL_db']." user=".$config['SQL_user']." password=".$config['SQL_pass'])
 			or die ("Could not connect to server\n");
 
-		$query = "SELECT content_versions.id AS version_id, * FROM contents INNER JOIN content_locales ON contents.id = content_locales.content_id INNER JOIN content_versions ON content_locales.id = content_versions.locale_id WHERE permalink=$1 AND type='poi'";
-		if($withArchive==0) {
-			$query .= " AND is_archive=FALSE AND is_public=TRUE";
-		}
-		$query .= " ORDER BY update_date DESC LIMIT 1 OFFSET $2";
+	    $query = "SELECT
+            content_versions.id AS version_id,
+            content_versions.version,
+            content_versions.update_date,
+            content_versions.is_archive,
+            content_versions.name,
+            content_versions.content AS parameters,
 
-		pg_prepare($con, "prepare1", $query) 
-			or die ("Cannot prepare statement\n");
-		$result = pg_execute($con, "prepare1", array($permalink, $elementNb))
-			or die ("Cannot execute statement\n");
+            contents.id AS content_id,
+            contents.permalink,
+            contents.creation_date,
+            contents.is_public,
+            contents.is_commentable,
+            contents.type,
+            contents.poi_type,
 
-		pg_close($con);
+            content_locales.id AS locale_id,
+            content_locales.locale,
+            content_locales.author,
 
-		if(pg_num_rows($result) == 1) {
-			$row = pg_fetch_assoc($result);
-			$this->populate($row);
-			return 1;
-		}
-		else {
-			return 0;
-		}
+            specs.source_id,
+            specs.remote_source_id,
+            ST_X(specs.geom) AS lon,
+            ST_Y(specs.geom) AS lat,
+            ST_Z(specs.geom) AS ele,
+
+            sources.display_name AS source
+
+	        FROM contents
+	        INNER JOIN content_locales
+	            ON contents.id = content_locales.content_id
+	        INNER JOIN content_versions
+	            ON content_locales.id = content_versions.locale_id
+	        LEFT JOIN content_version_poi_specifications specs
+	            ON specs.content_version_id = content_versions.id
+	        LEFT JOIN sources
+	            ON sources.id = specs.source_id
+
+	        WHERE contents.permalink = $1
+	          AND contents.type = 'poi'";
+
+	    if ($withArchive == 0) {
+	        $query .= " AND content_versions.is_archive = FALSE AND contents.is_public = TRUE";
+	    }
+
+	    $query .= " ORDER BY content_versions.update_date DESC LIMIT 1 OFFSET $2";
+
+	    pg_prepare($con, "poi_check_permalink", $query)
+	        or die ("Cannot prepare statement\n");
+
+	    $result = pg_execute($con, "poi_check_permalink", [$permalink, $elementNb])
+	        or die ("Cannot execute statement\n");
+
+	    pg_close($con);
+
+	    if (pg_num_rows($result) == 1) {
+	        $row = pg_fetch_assoc($result);
+	        $this->populate($row);
+	        return 1;
+	    }
+
+	    return 0;
 	}
 
 	/*****
@@ -147,7 +189,7 @@ class Poi
 
 		pg_prepare($con, "prepare4", $query) 
 			or die ("Cannot prepare statement\n");
-		$result = pg_execute($con, "prepare4", array($this->version_id, $this->lon, $this->lat, $this->ele ,$this->source, $this->remote_source_id))
+		$result = pg_execute($con, "prepare4", array($this->version_id, $this->lon, $this->lat, $this->ele ,$this->source_id, $this->remote_source_id))
 			or die ("Cannot execute statement\n");
 
 		$query = "INSERT INTO content_contributors (content, contributor) VALUES
@@ -201,7 +243,7 @@ class Poi
 		$this->version_id = pg_fetch_assoc($result)['id'];
 
 		// 3) Insert new geometry + source info for this new version
-		$query = "INSERT INTO content_version_poi_specifications,(content_version_id, geom, source_id, remote_source_id) VALUES
+		$query = "INSERT INTO content_version_poi_specifications (content_version_id, geom, source_id, remote_source_id) VALUES
 			($1, ST_SetSRID(ST_MakePoint($2, $3, $4), 4326), $5, $6)";
 
 		pg_prepare($con, "poi_insert_specs_update", $query);
@@ -289,18 +331,51 @@ class Pois
 		$con = pg_connect("host=".$config['SQL_host']." dbname=".$config['SQL_db']." user=".$config['SQL_user']." password=".$config['SQL_pass'])
 			or die ("Could not connect to server\n");
 
-		$query = "
-			SELECT content_versions.id AS version_id, *
-			FROM contents
-			INNER JOIN content_locales ON contents.id = content_locales.content_id
-			INNER JOIN content_versions ON content_locales.id = content_versions.locale_id
-			WHERE type='poi' AND is_archive=FALSE
-		";
+		$query = "SELECT
+            content_versions.id AS version_id,
+            content_versions.version,
+            content_versions.update_date,
+            content_versions.is_archive,
+            content_versions.name,
+            content_versions.content AS parameters,
+
+            contents.id AS content_id,
+            contents.permalink,
+            contents.creation_date,
+            contents.is_public,
+            contents.is_commentable,
+            contents.type,
+            contents.poi_type,
+
+            content_locales.id AS locale_id,
+            content_locales.locale,
+            content_locales.author,
+
+            specs.source_id,
+            specs.remote_source_id,
+            ST_X(specs.geom) AS lon,
+            ST_Y(specs.geom) AS lat,
+            ST_Z(specs.geom) AS ele,
+
+            sources.display_name AS source
+
+	        FROM contents
+	        INNER JOIN content_locales
+	            ON contents.id = content_locales.content_id
+	        INNER JOIN content_versions
+	            ON content_locales.id = content_versions.locale_id
+	        LEFT JOIN content_version_poi_specifications specs
+	            ON specs.content_version_id = content_versions.id
+	        LEFT JOIN sources
+	            ON sources.id = specs.source_id
+
+	        WHERE contents.type = 'poi'
+	          AND content_versions.is_archive = FALSE";
 
 		if ($archive != 1)
-			$query .= " AND is_public=TRUE ";
+			$query .= " AND contents.is_public=TRUE ";
 
-		$query .= " ORDER BY update_date DESC LIMIT $1 OFFSET $2";
+		$query .= " ORDER BY content_versions.update_date DESC LIMIT $1 OFFSET $2";
 
 		pg_prepare($con, "pois_list", $query);
 		$result = pg_execute($con, "pois_list", array($count, $first));
@@ -320,13 +395,48 @@ class Pois
 		$con = pg_connect("host=".$config['SQL_host']." dbname=".$config['SQL_db']." user=".$config['SQL_user']." password=".$config['SQL_pass'])
 			or die ("Could not connect to server\n");
 
-		$query = "
-			SELECT content_versions.id AS version_id, *
-			FROM contents
-			INNER JOIN content_locales ON contents.id = content_locales.content_id
-			INNER JOIN content_versions ON content_locales.id = content_versions.locale_id
-			WHERE permalink=$1 AND type='poi'
-			ORDER BY update_date DESC
+		$query = "SELECT
+            content_versions.id AS version_id,
+            content_versions.version,
+            content_versions.update_date,
+            content_versions.is_archive,
+            content_versions.name,
+            content_versions.content AS parameters,
+
+            contents.id AS content_id,
+            contents.permalink,
+            contents.creation_date,
+            contents.is_public,
+            contents.is_commentable,
+            contents.type,
+            contents.poi_type,
+
+            content_locales.id AS locale_id,
+            content_locales.locale,
+            content_locales.author,
+
+            specs.source_id,
+            specs.remote_source_id,
+            ST_X(specs.geom) AS lon,
+            ST_Y(specs.geom) AS lat,
+            ST_Z(specs.geom) AS ele,
+
+            sources.display_name AS source
+
+	        FROM contents
+	        INNER JOIN content_locales
+	            ON contents.id = content_locales.content_id
+	        INNER JOIN content_versions
+	            ON content_locales.id = content_versions.locale_id
+	        LEFT JOIN content_version_poi_specifications specs
+	            ON specs.content_version_id = content_versions.id
+	        LEFT JOIN sources
+	            ON sources.id = specs.source_id
+
+	        WHERE contents.permalink = $1
+	          AND contents.type = 'poi'
+
+			ORDER BY content_versions.update_date DESC
 		";
 
 		pg_prepare($con, "poi_history", $query);
