@@ -68,6 +68,8 @@ class WikiPage
 	** Populate the object using raw data from SQL
 	*****/
 	public function populate($row) {
+		$json = json_decode($row['content'], true);
+
 		$this->content_id = $row['content_id'];
 		$this->locale_id = $row['locale_id'];
 		$this->version_id = $row['version_id'];
@@ -82,7 +84,7 @@ class WikiPage
 		$this->is_commentable = $row['is_commentable'];
 		$this->type = $row['type'];
 		$this->name = $row['name'];
-		$this->content = $row['content'];
+		$this->content = isset($json['text']) ? $json['text'] : '';
 	}
 
 	/*****
@@ -112,7 +114,9 @@ class WikiPage
 
 		pg_prepare($con, "prepare2", $query) 
 			or die ("Cannot prepare statement\n");
-		$result = pg_execute($con, "prepare2", array($this->version, date('r'), $this->name, $this->content, $this->locale_id))
+			
+		$jsonContent = json_encode(['text' => $this->content]);
+		$result = pg_execute($con, "prepare2", array($this->version, date('r'), $this->name, $jsonContent, $this->locale_id))
 			or die ("Cannot execute statement\n");
 
 		$this->version_id = pg_fetch_assoc($result)['id'];
@@ -218,7 +222,9 @@ class WikiPage
 
 		pg_prepare($con, "prepare3", $query) 
 			or die ("Cannot prepare statement\n");
-		$result = pg_execute($con, "prepare3", array(date('r'), $this->name, $this->content, $this->locale_id))
+
+		$jsonContent = json_encode(['text' => $this->content]);
+		$result = pg_execute($con, "prepare3", array(date('r'), $this->name, $jsonContent, $this->locale_id))
 			or die ("Cannot execute statement\n");
 
 		$this->version_id = pg_fetch_assoc($result)['id'];

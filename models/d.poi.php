@@ -118,7 +118,7 @@ class Poi
 		$this->alt_name = $this->name;
 		$this->alt_position = $this->position;
 
-		$query = "INSERT INTO pois (is_public, permalink, creation_date, name, position, type) VALUES
+		$query = "INSERT INTO contents (is_public, permalink, creation_date, name, position, type) VALUES
 			(TRUE, $1, $2, $3, $4, $5) RETURNING id";
 
 		pg_prepare($con, "prepare1", $query) 
