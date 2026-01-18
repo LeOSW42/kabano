@@ -130,6 +130,12 @@ class BlogArticle
 		$result = pg_execute($con, "prepare3", array($this->locale_id, $user->id))
 			or die ("Cannot execute statement\n");
 
+		$query = "UPDATE contents SET is_commentable = $1 WHERE id = $2";
+		pg_prepare($con, "prepare4", $query)
+			or die ("Cannot prepare statement\n");
+		pg_execute($con, "prepare4", array($this->is_commentable ? 't' : 'f', $this->content_id))
+			or die ("Cannot prepare statement\n");
+
 		pg_close($con);
 
 		error_log(

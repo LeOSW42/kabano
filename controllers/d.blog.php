@@ -104,7 +104,7 @@ switch ($controller->splitted_url[1]) {
 					$blogArticle->content = $_POST['content'];
 					$blogArticle->locale = $_POST['locale'];
 					$blogArticle->name = $_POST['name'];
-					$blogArticle->is_commentable = isset($_POST['is_commentable'])?'t':'f';
+					$blogArticle->is_commentable = $_POST['is_commentable'];
 					$blogArticle->author = $user->id;
 					$blogArticle->update();
 					header('Location: '.$config['rel_root_folder']."blog/".$blogArticle->permalink);
