@@ -349,3 +349,47 @@ form.form input[type="checkbox"]:checked + span:before {
 #elevation_icon i {
 	position: absolute;
 }
+
+/*****************************************
+ View page
+*****************************************/
+
+.poi-icon-wrapper {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    margin-right: 10px;
+}
+
+/* Tooltip */
+.poi-icon-wrapper[data-tooltip]:hover::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    left: 40px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(255, 255, 255, 0.9); /* blanc transparent */
+    color: #000;
+    padding: 6px 10px;
+    border-radius: 6px;
+    font-size: 15px; /* demandé */
+    border: 1px solid blue; /* bordure fine noire */
+    white-space: nowrap;
+    pointer-events: none;
+    z-index: 9999;
+}
+
+/* Petite flèche */
+.poi-icon-wrapper[data-tooltip]:hover::before {
+    content: "";
+    position: absolute;
+    left: 32px;
+    top: 50%;
+    transform: translateY(-50%);
+    border: 6px solid transparent;
+    border-right-color: blue; /* même couleur que la bulle */
+    z-index: 9999;
+    filter: drop-shadow(0 0 0.5px #000); /* bordure subtile sur la flèche */
+}
+
+

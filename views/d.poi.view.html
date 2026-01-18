@@ -13,10 +13,38 @@
 			<section>
 				<i id="slide-icon" class="fas fa-chevron-up"></i>
 
-				<h1 class="flex_line">
-					<span><?=$poi->name?></span>
-					<span class="poi-type"><?=$poi->poi_type?></span>
-				</h1>
+                <h1 class="flex_line">
+                    <span class="poi-icon-wrapper" data-tooltip="<?=htmlspecialchars($poi_types[$poi->poi_type][4] ?? '')?>">
+                        <img class="poi-icon"
+                             src="<?=$config['rel_root_folder']?>views/img/<?=$poi->poi_type?>.svg"
+                             alt="">
+                    </span>
+                    <span><?=$poi->name?></span>
+                </h1>
+                <? if($user->rankIsHigher('premium')) { ?>
+                    <span class="subtitle">
+                    <? if(isset($PoiHistory)) { ?>
+                        <select id="PoiHistory">
+                            <? $i = 0;
+                            foreach ($PoiHistory->objs as $row) { ?>
+                                <option <?=$row->version_id==$poi->version_id?'selected':''?> value="<?=$i?>"><?=$row->is_archive=="f"?'&bull; ':''?><? echo datefmt_format($user->datetimeshort_format,date_create($row->update_date, new DateTimeZone("UTC"))) ?></option>
+                            <? $i++;
+                            } ?>
+                        </select>
+                    <? } 
+                    if ($user->rankIsHigher('moderator') && isset($PoiHistory)) { ?>
+                         &mdash; 
+                    <? }
+                    if ($user->rankIsHigher("moderator")) { ?>
+                        <a href="<?=$config['rel_root_folder']?>poi/<?=$poi->permalink?>/edit"><i class="fas fa-pencil-alt"></i> Éditer le point</a> &mdash; 
+                        <? if ($poi->is_public == 't') { ?>
+                            <a href="<?=$config['rel_root_folder']?>poi/<?=$poi->permalink?>/delete"><i class="fas fa-trash"></i> Effacer le point</a>
+                        <? } else { ?>
+                            <a href="<?=$config['rel_root_folder']?>poi/<?=$poi->permalink?>/restore"><i class="fas fa-eye"></i> Restaurer le point</a>
+                        <? } ?>
+                    <? } ?>
+                    </span>
+                <? } ?>
 
 				<div class="flex_line">
 					<div>
@@ -32,20 +60,6 @@
 						<strong>Dernière mise à jour :</strong> <?=$poi->update_date?><br>
 					</div>
 				</div>
-
-				<? if ($user->rankIsHigher("moderator")) { ?>
-					<div class="flex_line admin_actions">
-						<a class="button" href="<?=$config['rel_root_folder']?>poi/<?=$poi->permalink?>/edit">Modifier</a>
-
-						<? if ($poi->is_public == 't') { ?>
-							<a class="button danger" href="<?=$config['rel_root_folder']?>poi/<?=$poi->permalink?>/delete">Supprimer</a>
-						<? } else { ?>
-							<a class="button success" href="<?=$config['rel_root_folder']?>poi/<?=$poi->permalink?>/restore">Restaurer</a>
-						<? } ?>
-					</div>
-				<? } ?>
-
-				<hr>
 
 				<h2>Description</h2>
 				<div class="poi-description">
@@ -72,8 +86,6 @@
 						<p>Aucune information spécifique.</p>
 					<? } ?>
 				</div>
-
-				<hr>
 
 				<? if ($poi->is_commentable == 't') { ?>
 					<h2>Commentaires</h2>

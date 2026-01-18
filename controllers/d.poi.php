@@ -111,8 +111,8 @@ switch ($controller->splitted_url[1]) {
 			else {
 				// Historique
 				if ($user->rankIsHigher("premium")) {
-					$Pois = new Kabano\Pois();
-					$Pois->getHistory($controller->splitted_url[1]);
+					$PoiHistory = new Kabano\Pois();
+					$PoiHistory->getHistory($controller->splitted_url[1]);
 				}
 				if (isset($controller->splitted_url[2]) && is_numeric($controller->splitted_url[2])) {
 					$poi->checkPermalink($controller->splitted_url[1], $user->rankIsHigher("premium"), $controller->splitted_url[2]);
