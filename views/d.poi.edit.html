@@ -216,8 +216,9 @@ $( "#name" ).change(function() {
 <script>
 	var poi_lat = <?=$poi->lat?>;
 	var poi_lon = <?=$poi->lon?>;
-	var poi_type = null;
+	var poi_type = "<?=$poi->poi_type?>";
 	var poi_mode = "edit";
+	var root = "<?=$config['rel_root_folder']?>";
 </script>
 
 
