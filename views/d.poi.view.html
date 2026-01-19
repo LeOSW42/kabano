@@ -10,7 +10,7 @@
 		<div id="mapid"></div>
 
 		<div id="sticky">
-			<section>
+			<section <?=$poi->is_archive=="t"||$poi->is_public=="f"?'class="archive"':''?>>
 				<i id="slide-icon" class="fas fa-chevron-up"></i>
 
                 <h1 class="flex_line">
@@ -147,9 +147,9 @@
                                 <?php
                                     $value = $values[$key] ?? -1;
                                     $icon = [
-                                        1  => "<span class='boolean-pill boolean-yes'>✔️</span>",
+                                        -1  => "<span class='boolean-pill boolean-yes'>✔️</span>",
                                         0  => "<span class='boolean-pill boolean-no'>❌</span>",
-                                        -1 => "<span class='boolean-pill boolean-unknown'>❓</span>"
+                                        1 => "<span class='boolean-pill boolean-unknown'>❓</span>"
                                     ][$value];
                                 ?>
                                 <div class="bool-cell">
@@ -165,43 +165,73 @@
 
 
 				<? if ($poi->is_commentable == 't') { ?>
-					<h2>Commentaires</h2>
+                    <div id="new_comment">
+                        <form class="form" action="<?=$config['rel_root_folder']?>poi/<?=$poi->permalink?>/new_comment" method="post">
+                            <div id="new_comment_label" <?=$user->rank=="visitor"?"class='sent' ":""?>>
+                                <? if ($poi->is_archive == "t" || $poi->is_public == "f") { ?>
+                                    <p>Impossible de commenter un point non publié</p>
+                                <? } else if ($user->rankIsHigher("registered")) { ?>
+                                    <input name="submit" type="submit" value="Envoyer">
+                                    <p>Ajouter un nouveau commentaire</p>
+                                <? } else { ?>
+                                    <p>Veuillez vous connecter pour ajouter un commentaire</p>
+                                <? } ?>
+                            </div>
+                            <div id="new_comment_form">
+                                <textarea id="comment" name="comment" rows="5" placeholder="Votre commentaire"></textarea>
+                            </div>
+                        </form>
+                    </div>
 
 					<? if (isset($poi_comments) && $poi_comments->number > 0) { ?>
 						<div id="comments">
 							<? foreach ($poi_comments->objs as $comment) { ?>
-								<article class="comment">
-									<header>
-										<strong><?=$comment->author_obj->name?></strong>
-										<span><?=$comment->creation_date?></span>
+								<article <? if($comment->is_archive == 't' || $comment->is_public == 'f') echo 'class="comment_archive" '; ?>>
+                                    <div class="comment_title">
 
-										<? if ($user->rankIsHigher("moderator") || $user->id == $comment->author) { ?>
-											<? if ($comment->is_public == 't') { ?>
-												<a href="<?=$config['rel_root_folder']?>poi/<?=$poi->permalink?>/delete_comment/<?=$comment->id?>">Supprimer</a>
-											<? } else { ?>
-												<a href="<?=$config['rel_root_folder']?>poi/<?=$poi->permalink?>/restore_comment/<?=$comment->id?>">Restaurer</a>
-											<? } ?>
-										<? } ?>
-									</header>
+                                        <? if ($comment->author_obj->is_avatar_present == 't') { ?>
+                                            <img alt="Avatar" class="icon avatar" src="<?=$config['rel_root_folder']?>medias/avatars/<?=$comment->author_obj->id?>_s.jpg">
+                                        <? } else { ?>
+                                            <i class="icon fas fa-user-secret"></i>
+                                        <? } ?>
 
-									<div class="comment-body">
-										<?=$comment->comment_html?>
-									</div>
-								</article>
+                                        <? if ($user->rankIsHigher("blocked")) { ?>
+                                            <a class="username" href="<?=$config['rel_root_folder']?>user/p/<?=$comment->author_obj->id?>">
+                                                <?=$comment->author_obj->name?>
+                                            </a>
+                                        <? } else { ?>
+                                            <?=$comment->author_obj->name?>
+                                        <? } ?>
+
+                                        le <? echo datefmt_format($user->datetime_format, date_create($comment->update_date, new DateTimeZone("UTC"))) ?>
+
+                                        <? if (($user->rankIsHigher("moderator") || $user->id == $comment->author) && $comment->is_public == 't') { ?>
+                                            <span class="delete_link">
+                                                <a href="<?=$config['rel_root_folder']?>poi/<?=$poi->permalink?>/delete_comment/<?=$comment->id?>">
+                                                    <i class="fas fa-trash"></i> Effacer le commentaire
+                                                </a>
+                                            </span>
+                                        <? } ?>
+
+                                        <? if (($user->rankIsHigher("moderator") || $user->id == $comment->author) && $comment->is_public == 'f') { ?>
+                                            <span class="delete_link">
+                                                <a href="<?=$config['rel_root_folder']?>poi/<?=$poi->permalink?>/restore_comment/<?=$comment->id?>">
+                                                    <i class="fas fa-eye"></i> Restaurer le commentaire
+                                                </a>
+                                            </span>
+                                        <? } ?>
+
+                                    </div>
+
+                                    <div class="comment_content">
+                                        <?=$comment->comment_html?>
+                                    </div>
+                                </article>
+
 							<? } ?>
-						</div>
+						<br></div>
 					<? } else { ?>
 						<p>Aucun commentaire pour le moment.</p>
-					<? } ?>
-
-					<? if ($user->rankIsHigher("registered")) { ?>
-						<form class="form" action="<?=$config['rel_root_folder']?>poi/<?=$poi->permalink?>/new_comment" method="post">
-							<h3>Ajouter un commentaire</h3>
-							<textarea name="comment" id="comment" required></textarea>
-							<input type="submit" name="submit" value="Envoyer">
-						</form>
-					<? } else { ?>
-						<p>Connectez-vous pour ajouter un commentaire.</p>
 					<? } ?>
 				<? } ?>
 
@@ -217,6 +247,24 @@
 			var poi_mode = "view";
             var root = "<?=$config['rel_root_folder']?>";
 		</script>
+
+<? if($user->rankIsHigher("premium")) { ?>
+        <script type="text/javascript">
+$( "#PoiHistory" ).change(function() {
+  window.location.href = "<?=$config['rel_root_folder']?>poi/<?=$poi->permalink?>/"+$( this ).val();
+});
+        </script>
+<? } ?>
+
+<? if($user->rankIsHigher("registered") && $poi->is_archive == "f" && $poi->is_public == "t") { ?>
+        <script type="text/javascript">
+$( "#new_comment_label" ).click(function() {
+  $( "#new_comment_form" ).show(400);
+  $( "#new_comment_label input" ).show(0);
+  $( "#new_comment_label").addClass('sent');
+});
+        </script>
+<? } ?>
 
 		<script type="text/javascript">
 			$( "#slide-icon" ).click(function() {

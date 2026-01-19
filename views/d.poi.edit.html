@@ -95,10 +95,10 @@ function updateForm(type) {
             case 'b':
                 var cls = 'intermediate';
                 var val = 1;
-                if (existing === 0 || existing === "0") {
+                if (existing == 0) {
                     cls = 'uncheck';
                     val = 0;
-                } else if (existing === 2 || existing === "2") {
+                } else if (existing == 2) {
                     cls = 'check';
                     val = 2;
                 }
@@ -121,7 +121,8 @@ function updateForm(type) {
 
             case 't':
                 html_form +=
-                    '<textarea name="' + index + '" id="' + index + '" placeholder="' + value + '">';
+                    '<label for="' + index + '">' + value + '</label>' +
+                    '<textarea name="' + index + '" id="' + index + '">';
                 if (existing !== null) {
                     html_form += String(existing)
                         .replace(/&/g, "&amp;")
@@ -159,6 +160,10 @@ $(document).ready(function(){
     if (current_poi_type) {
         updateForm(current_poi_type);
     }
+
+		if (poi_mode === "edit") {
+		    unsaved = true;
+		}
 
 		$('#type_selector label').click(function(){
 

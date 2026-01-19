@@ -11,6 +11,11 @@ html, body {
 	min-height: 0;
 	top: 65%;
 	z-index: 10;
+    pointer-events: none;
+}
+
+#sticky * {
+    pointer-events: auto;
 }
 
 @keyframes fadeinfadeout {
@@ -36,6 +41,95 @@ html, body {
 	height: 100%;
 	width: 100%;
 	top: 0;
+}
+
+section.archive > * {
+	opacity: 0.5;
+}
+
+/* Comments of a poi */
+
+
+#new_comment {
+	clear: both;
+	margin: 30px auto 0 auto;
+	width: 90%;
+	background: #efefef;
+	border: 1px solid #ccc;
+	border-bottom: 3px solid #ccc;
+}
+#new_comment_label {
+	background: #ccc;
+	padding: 15px 10px;
+	cursor: pointer;
+	font-weight: 500;
+	font-size: 1.1em;
+}
+#new_comment_label p {
+	margin: 0;
+}
+#new_comment_label input {
+	display: none;
+	margin: -2px;
+	float: right;
+	padding: 5px 10px;
+	position: relative;
+	top: -7px;
+	width: 140px;
+}
+#new_comment_form {
+	display: none;
+}
+#new_comment_form textarea {
+	margin: 0;
+	border: 0;
+}
+#new_comment_label.sent {
+	cursor: default;
+}
+
+section article {
+	margin: 30px auto 0 auto;
+	width: 90%;
+	background: #efefef;
+	border: 1px solid #ccc;
+	border-bottom: 2px solid #ccc;
+	border-bottom-right-radius: 5px;
+	border-bottom-left-radius: 5px;	
+}
+section .comment_title {
+	background: #ccc;
+	padding: 5px 10px;
+}
+
+section .delete_link {
+	font-variant: small-caps;
+	font-weight: 500;
+	padding: 4px 0;
+	float: right;
+}
+
+section .icon {
+	border: 1px solid #999;
+	border-radius: 3px;
+	margin: 0 3px 0 3px;
+	padding: 4px 0;
+	line-height: 20px;
+	text-align: center;
+	width: 28px;
+	background: #ccc;
+	vertical-align: middle;
+}
+
+section .icon.avatar {
+	padding: 0;
+	height: 28px;
+}
+section .comment_content {
+	padding: 5px 10px;
+}
+section article.comment_archive {
+	opacity: 0.5;
 }
 
 /*********************************/
@@ -205,6 +299,8 @@ form.form input[type="checkbox"]:checked + span:before {
 /*****************************************
  Controls of the map
 *****************************************/
+
+
 
 /* General */
 
