@@ -118,7 +118,7 @@ $(document).ready(function() {
 
         $("#elevation_icon").click(function(e) {
             $(this).find($(".fas")).removeClass('fa-search-location').addClass('fa-spinner').addClass('fa-spin');
-            $.get("./elevation_proxy", {location:$("#lat").val()+","+$("#lon").val()}, function(result){
+            $.get(root+"poi/elevation_proxy", {location:$("#lat").val()+","+$("#lon").val()}, function(result){
                 $("#ele").val(result.results[0].elevation);
                 $("#elevation_icon").find($(".fas")).removeClass('fa-spinner').removeClass('fa-spin').addClass('fa-search-location');
             });
