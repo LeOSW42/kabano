@@ -7,8 +7,8 @@
 
 		<? include('blocks/d.nav.html'); ?>
 
-		<div id="advert">En cours de création<span class="dots"><span>.</span><span>.</span><span>.</span></span><br>En attendant je vous recommande <a href="https://www.refuges.info/" target="_blank">refuges.info</a></div>
-
+<!-- 		<div id="advert">En cours de création<span class="dots"><span>.</span><span>.</span><span>.</span></span><br>En attendant je vous recommande <a href="https://www.refuges.info/" target="_blank">refuges.info</a></div>
+ -->
 		<div id="mapid" style="height: 100%;"></div>
 
 		<div id="footer-credits" style="display: none;">
@@ -24,6 +24,18 @@
 		</div>
 
 		<? include('blocks/d.footer.html'); ?>
+
+		<script>
+		    var root = "<?=$config['rel_root_folder']?>";
+
+		    // Icônes des POIs (déjà présentes dans ton système)
+		    window.poi_icons = {
+		        <? foreach($poi_types as $type) { ?>
+		            "<?=$type[3]?>": "<?=$config['views_url']?>img/<?=$type[3]?>.svg",
+		        <? } ?>
+		        "default": "<?=$config['views_url']?>img/default.svg"
+		    };
+		</script>
 
 	</body>
 </html>

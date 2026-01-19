@@ -1,4 +1,5 @@
 var mymap;
+var markers = [];
 
 $( document ).ready(function() {
 	// Differents layers for the map
@@ -61,4 +62,69 @@ $( document ).ready(function() {
 	mymap.on('baselayerchange', function(e) {
 		$("#map-credits").html(e.layer.getAttribution());
 	});
+
+	mymap.on("zoomend", function () {
+	    var z = mymap.getZoom();
+
+	    var size = 32;
+	    if (z < 8) size = 20;
+	    if (z < 6) size = 16;
+	    if (z < 4) size = 12;
+
+	    markers.forEach(function(marker) {
+	        var icon = marker.options.icon;
+	        icon.options.iconSize = [size, size];
+	        icon.options.iconAnchor = [size/2, size];
+	        marker.setIcon(icon);
+	    });
+	});
+
+    // ---------------------------------------------------------
+    //  CHARGEMENT DES POIs
+    // ---------------------------------------------------------
+
+    $.getJSON(root + "poi/api_list", function(pois) {
+
+        var icons = {};
+
+        // Préparer les icônes
+        for (const type in window.poi_icons) {
+            icons[type] = L.icon({
+                iconUrl: window.poi_icons[type],
+                iconSize: [32, 32],
+                iconAnchor: [16, 32],
+                popupAnchor: [0, -32]
+            });
+        }
+
+        // Ajouter les POIs
+		pois.forEach(function(poi) {
+
+		    var icon = icons[poi.type] || icons["default"];
+
+		    var marker = L.marker([poi.lat, poi.lon], { icon: icon })
+		        .addTo(mymap);
+
+		    // Tooltip discret au survol
+		    marker.bindTooltip(poi.name, {
+		        direction: "top",
+		        offset: [0, -10],
+		        opacity: 0.9,
+		        className: "poi-tooltip"
+		    });
+
+		    // Clic → ouvrir la fiche directement
+		    marker.on("click", function() {
+		        window.location = root + "poi/" + poi.permalink;
+		    });
+
+		    markers.push(marker);
+		});
+
+        // Ajuster la vue
+        if (markers.length > 0) {
+            var group = L.featureGroup(markers);
+            mymap.fitBounds(group.getBounds(), { padding: [30, 30] });
+        }
+    });
 });

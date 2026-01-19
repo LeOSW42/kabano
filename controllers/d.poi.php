@@ -99,6 +99,28 @@ switch ($controller->splitted_url[1]) {
 		}
 		break;
 
+	case "api_list":
+	    header("Content-Type: application/json; charset=utf-8");
+
+	    $pois = new Kabano\Pois();
+	    $pois->listPois();
+
+	    $out = [];
+
+	    foreach ($pois->objs as $poi) {
+	        $out[] = [
+	            "id"        => $poi->content_id,
+	            "name"      => $poi->name,
+	            "lat"       => floatval($poi->lat),
+	            "lon"       => floatval($poi->lon),
+	            "type"      => $poi->poi_type,
+	            "permalink" => $poi->permalink
+	        ];
+	    }
+
+	    echo json_encode($out, JSON_UNESCAPED_UNICODE);
+		break;
+
 	default:
 		// Affichage / édition / suppression d’un POI
 		if ($poi->checkPermalink($controller->splitted_url[1], $user->rankIsHigher("premium"))) {

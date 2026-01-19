@@ -325,7 +325,7 @@ class Pois
 	public $objs = [];
 	public $number = 0;
 
-	public function listPois($first, $count, $archive=0) {
+	public function listPois($archive=0) {
 		global $config;
 
 		$con = pg_connect("host=".$config['SQL_host']." dbname=".$config['SQL_db']." user=".$config['SQL_user']." password=".$config['SQL_pass'])
@@ -375,10 +375,10 @@ class Pois
 		if ($archive != 1)
 			$query .= " AND contents.is_public=TRUE ";
 
-		$query .= " ORDER BY content_versions.update_date DESC LIMIT $1 OFFSET $2";
+		$query .= " ORDER BY content_versions.update_date DESC";
 
 		pg_prepare($con, "pois_list", $query);
-		$result = pg_execute($con, "pois_list", array($count, $first));
+		$result = pg_execute($con, "pois_list", []);
 
 		pg_close($con);
 
