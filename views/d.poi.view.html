@@ -145,11 +145,12 @@
                         <div class="bool-row values">
                             <?php foreach ($bool_fields as $key => $label): ?>
                                 <?php
-                                    $value = $values[$key] ?? -1;
+                                    $value = $values[$key] ?? 2;
                                     $icon = [
-                                        -1  => "<span class='boolean-pill boolean-yes'>✔️</span>",
-                                        0  => "<span class='boolean-pill boolean-no'>❌</span>",
-                                        1 => "<span class='boolean-pill boolean-unknown'>❓</span>"
+                                        0 => "<span class='boolean-pill boolean-no'>❌</span>",
+                                        1 => "<span class='boolean-pill boolean-maybe'>❓</span>",
+                                        2 => "<span class='boolean-pill boolean-yes'>✔️</span>",
+                                        -1 => "<span class='boolean-pill boolean-unknown'>➖</span>"
                                     ][$value];
                                 ?>
                                 <div class="bool-cell">

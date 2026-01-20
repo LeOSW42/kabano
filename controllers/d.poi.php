@@ -31,11 +31,13 @@ switch ($controller->splitted_url[1]) {
 				    if (isset($_POST[$key])) {
 				        $value = $_POST[$key];
 
-				        if (str_starts_with($key, 'b_')) {
-				            // 3 états : 1 = oui, 0 = non, -1 = non renseigné
-				            $params[$key] = ($value === "1" ? 1 :
-				                             ($value === "0" ? 0 : -1));
-				        }
+						if (str_starts_with($key, 'b_')) {
+						    if ($value === "0" || $value === "1" || $value === "2") {
+						        $params[$key] = intval($value);
+						    } else {
+						        $params[$key] = -1; // non renseigné
+						    }
+						}
 				        elseif (str_starts_with($key, 'n_')) {
 				            $params[$key] = is_numeric($value) ? (0 + $value) : null;
 				        }
@@ -158,11 +160,13 @@ switch ($controller->splitted_url[1]) {
 					    if (isset($_POST[$key])) {
 					        $value = $_POST[$key];
 
-					        if (str_starts_with($key, 'b_')) {
-					            // 3 états : 1 = oui, 0 = non, -1 = non renseigné
-					            $params[$key] = ($value === "1" ? 1 :
-					                             ($value === "0" ? 0 : -1));
-					        }
+							if (str_starts_with($key, 'b_')) {
+							    if ($value === "0" || $value === "1" || $value === "2") {
+							        $params[$key] = intval($value);
+							    } else {
+							        $params[$key] = -1;
+							    }
+							}
 					        elseif (str_starts_with($key, 'n_')) {
 					            $params[$key] = is_numeric($value) ? (0 + $value) : null;
 					        }
