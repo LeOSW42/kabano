@@ -21,7 +21,7 @@ switch ($controller->splitted_url[1]) {
 				$poi->ele = $_POST['ele'];
 				$poi->author = $user->id;
 				$poi->source = "kab";
-				$poi->is_commentable = isset($_POST['is_commentable']) ? 't' : 'f';
+				$poi->is_commentable = 't';
 
 				$definition = $poi_types[$poi->poi_type][5];
 				$params = [];
@@ -148,9 +148,7 @@ switch ($controller->splitted_url[1]) {
 					$poi->lat = $_POST['lat'];
 					$poi->lon = $_POST['lon'];
 					$poi->ele = $_POST['ele'];
-					$poi->author = $user->id;
-					$poi->source = "kab";
-					$poi->is_commentable = isset($_POST['is_commentable']) ? 't' : 'f';
+					$poi->is_commentable = 't';
 
 					$definition = $poi_types[$poi->poi_type][5];
 					$params = [];
