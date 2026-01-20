@@ -68,7 +68,6 @@ $( document ).ready(function() {
 
 	    var size = 32;
 	    if (z < 8) size = 20;
-	    if (z < 6) size = 16;
 	    if (z < 4) size = 12;
 
 	    markers.forEach(function(marker) {

@@ -105,7 +105,7 @@ switch ($controller->splitted_url[1]) {
 	    header("Content-Type: application/json; charset=utf-8");
 
 	    $pois = new Kabano\Pois();
-	    $pois->listPois();
+		$pois->listPois($user->rankIsHigher("premium") ? 1 : 0);
 
 	    $out = [];
 
