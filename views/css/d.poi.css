@@ -70,7 +70,7 @@ section.archive > * {
 }
 #new_comment_label input {
 	display: none;
-	margin: -2px;
+	margin: 5px;
 	float: right;
 	padding: 5px 10px;
 	position: relative;
@@ -83,7 +83,10 @@ section.archive > * {
 #new_comment_form textarea {
 	margin: 0;
 	border: 0;
+	font-size: 14px;
+	width: calc(100% - 20px);
 }
+
 #new_comment_label.sent {
 	cursor: default;
 }
