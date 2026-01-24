@@ -13,6 +13,7 @@ namespace Kabano;
 require_once($config['third_folder']."Md/MarkdownExtra.inc.php");
 require_once($config['includes_folder']."database.php");
 
+// Objet représentant une page wiki.
 class WikiPage
 {
 	public $content_id = NULL;
@@ -38,6 +39,7 @@ class WikiPage
 			return '';
 		}
 
+		// Contenu stocké sous la forme {"text": "..."}.
 		$decoded = json_decode($value, true);
 		if (!is_array($decoded)) {
 			return '';
@@ -52,6 +54,7 @@ class WikiPage
 	public function checkPermalink($permalink, $withArchive=0, $elementNb=0) {
 		global $config;
 		
+		// Récupère la dernière version de la page.
 		$con = sql_connect();
 
 		$query = "SELECT content_versions.id AS version_id, * FROM contents INNER JOIN content_locales ON contents.id = content_locales.content_id INNER JOIN content_versions ON content_locales.id = content_versions.locale_id WHERE permalink=$1 AND type='wiki'";
@@ -85,6 +88,7 @@ class WikiPage
 			return;
 		}
 
+		// Mapping des champs SQL vers les propriétés.
 		$decodedContent = null;
 		if (array_key_exists('content', $row)) {
 			$decodedContent = $this->decodeJsonText($row['content']);
@@ -144,6 +148,7 @@ class WikiPage
 		global $config;
 		global $user;
 
+		// Protection contre les mises à jour sans IDs.
 		if($this->content_id == 0 || $this->locale_id == 0 || $this->version_id == 0)
 			die("Cannot update entry without giving ID");
 
@@ -172,6 +177,7 @@ class WikiPage
 
 		$this->version_id = pg_fetch_assoc($result)['id'];
 
+		// Ajout du contributeur si absent.
 		$query = "INSERT INTO content_contributors (content, contributor) VALUES
 			($1, $2) ON CONFLICT (content, contributor) DO NOTHING";
 
@@ -197,6 +203,7 @@ class WikiPage
 		global $config;
 		global $user;
 		
+		// Archivage logique de la page.
 		$con = sql_connect();
 
 		$query = "UPDATE contents SET is_public=FALSE WHERE permalink=$1 AND type='wiki'";
@@ -221,6 +228,7 @@ class WikiPage
 		global $config;
 		global $user;
 		
+		// Restauration d'une page archivée.
 		$con = sql_connect();
 
 		$query = "UPDATE contents SET is_public=TRUE WHERE permalink=$1 AND type='wiki'";
@@ -245,6 +253,7 @@ class WikiPage
 		global $config;
 		global $user;
 		
+		// Création d'une nouvelle page wiki.
 		$con = sql_connect();
 
 		pg_query($con, "BEGIN");
@@ -303,6 +312,7 @@ class WikiPage
 	** Converts the Markdown content to HTML
 	*****/
 	public function md2html() {
+		// Conversion Markdown -> HTML.
 		$this->content_html = \Michelf\MarkdownExtra::defaultTransform($this->content);
 	}
 }
@@ -315,11 +325,13 @@ class WikiPage
 ***********************************************************
 **********************************************************/
 
+// Liste de pages wiki.
 class WikiPages
 {
 	public $objs = array();
 	public $number = NULL;
 
+	// Historique des versions d'une page.
 	/*****
 	** Checks if a page at this URL exists and return the ID
 	*****/

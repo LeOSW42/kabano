@@ -1,16 +1,23 @@
 <?php
 
+/**
+ * Contrôleur de la page contact et traitement du formulaire.
+ */
+
+// Récupère un champ POST avec une valeur par défaut.
 function post($index) {
 	return isset($_POST[$index]) ? $_POST[$index] : '';
 }
 
 $error = "no";
 
+// Traitement de la soumission du formulaire.
 if(isset($_POST['submit'])) {
 	$message = "Message reçu depuis Kabano par ".post('name').".<br>\r\n";
 	$message .= "<hr>\r\n";
 	$message .= "<pre style='padding: 10px; background: #ccc;'>".strip_tags(post('message'))."</pre><br>\r\n";
 
+	// Nettoyage simple de l'email expéditeur.
 	$sender = str_replace(["\r", "\n"], '', post('email'));
 	$headers = 'From: '. $sender . "\r\n" .
 	'Reply-To: '. $sender . "\r\n" .
@@ -18,6 +25,7 @@ if(isset($_POST['submit'])) {
 	'MIME-Version: 1.0' . "\r\n" .
 	'Content-type: text/html; charset=UTF-8' . "\r\n"; 
 
+	// Anti-spam basique via champ caché et captcha.
 	if(post('ns') == '' && $_POST['captcha'] == -2) {
 		$send = true;
 		if(post('name') == '') {
@@ -49,6 +57,7 @@ if(isset($_POST['submit'])) {
 	}
 }
 
+// Préremplissage du formulaire avec les infos connues.
 if(post('name') != '')
 	$contact['name'] = post('name');
 else if($user->rankIsHigher("registered"))
@@ -68,6 +77,7 @@ $contact['message'] = post('message');
 $contact['ns'] = post('ns');
 
 
+// Chargement de la vue contact.
 $head['css'] = "d.index.css;d.user.css";
 $head['js'] = "d.captcha.js";
 $head['title'] = "Contact";

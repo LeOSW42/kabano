@@ -13,6 +13,7 @@ namespace Kabano;
 require_once($config['third_folder']."Md/MarkdownExtra.inc.php");
 require_once($config['includes_folder']."database.php");
 
+// Objet représentant un article de blog.
 class BlogArticle
 {
 	public $content_id = NULL;
@@ -39,6 +40,7 @@ class BlogArticle
 			return '';
 		}
 
+		// Le contenu est stocké comme {"text": "..."} en base.
 		$decoded = json_decode($value, true);
 		if (!is_array($decoded)) {
 			return '';
@@ -53,6 +55,7 @@ class BlogArticle
 	public function checkPermalink($permalink, $withArchive=0, $elementNb=0) {
 		global $config;
 		
+		// Recherche de la dernière version publiée.
 		$con = sql_connect();
 
 		$query = "SELECT content_versions.id AS version_id, * FROM contents INNER JOIN content_locales ON contents.id = content_locales.content_id INNER JOIN content_versions ON content_locales.id = content_versions.locale_id WHERE permalink=$1 AND type='blog'";
@@ -145,6 +148,7 @@ class BlogArticle
 		global $config;
 		global $user;
 
+		// Protection contre l'édition sans identifiants valides.
 		if($this->content_id == 0 || $this->locale_id == 0 || $this->version_id == 0)
 			die("Cannot update entry without giving ID");
 		
@@ -173,6 +177,7 @@ class BlogArticle
 
 		$this->version_id = pg_fetch_assoc($result)['id'];
 
+		// Association de l'auteur comme contributeur.
 		$query = "INSERT INTO content_contributors (content, contributor) VALUES
 			($1, $2) ON CONFLICT (content, contributor) DO NOTHING";
 
@@ -181,6 +186,7 @@ class BlogArticle
 		$result = pg_execute($con, "prepare3", array($this->locale_id, $user->id))
 			or die ("Cannot execute statement\n");
 
+		// Mise à jour du flag de commentaires.
 		$query = "UPDATE contents SET is_commentable = $1 WHERE id = $2";
 		pg_prepare($con, "prepare4", $query)
 			or die ("Cannot prepare statement\n");
@@ -252,6 +258,7 @@ class BlogArticle
 		global $config;
 		global $user;
 		
+		// Création d'un article publié par défaut.
 		$con = sql_connect();
 
 		pg_query($con, "BEGIN");
@@ -288,6 +295,7 @@ class BlogArticle
 
 		$this->version_id = pg_fetch_assoc($result)['id'];
 
+		// Ajout du contributeur.
 		$query = "INSERT INTO content_contributors (content, contributor) VALUES
 			($1, $2)";
 
@@ -310,6 +318,7 @@ class BlogArticle
 	** Converts the Markdown content to HTML
 	*****/
 	public function md2html() {
+		// Transforme le contenu Markdown en HTML.
 		$this->content_html = \Michelf\MarkdownExtra::defaultTransform($this->content);
 	}
 
@@ -317,6 +326,7 @@ class BlogArticle
 	** Converts the Markdown content to text
 	*****/
 	public function md2txt() {
+		// Transforme le contenu Markdown en texte brut.
 		$this->md2html();
 		$this->content_txt = strip_tags($this->content_html);
 	}
@@ -331,6 +341,7 @@ class BlogArticle
 ***********************************************************
 **********************************************************/
 
+// Liste paginée des articles de blog.
 class BlogArticles
 {
 	public $objs = array();
@@ -342,6 +353,7 @@ class BlogArticles
 	public function listArticles($first, $count, $archive=0) {
 		global $config;
 
+		// Récupère les versions non archivées.
 		$con = sql_connect();
 
 		$query = "SELECT content_versions.id AS version_id, * FROM contents INNER JOIN content_locales ON contents.id = content_locales.content_id INNER JOIN content_versions ON content_locales.id = content_versions.locale_id WHERE is_archive=FALSE ";
@@ -370,6 +382,7 @@ class BlogArticles
 	public function number($archive=0) {
 		global $config;
 
+		// Compte le nombre d'articles.
 		$con = sql_connect();
 
 		$query = "SELECT content_versions.id AS version_id, * FROM contents INNER JOIN content_locales ON contents.id = content_locales.content_id INNER JOIN content_versions ON content_locales.id = content_versions.locale_id WHERE is_archive=FALSE ";
@@ -393,6 +406,7 @@ class BlogArticles
 	public function getHistory($url) {
 		global $config;
 		
+		// Récupère l'historique des versions d'un article.
 		$con = sql_connect();
 
 		$query = "SELECT content_versions.id AS version_id, * FROM contents INNER JOIN content_locales ON contents.id = content_locales.content_id INNER JOIN content_versions ON content_locales.id = content_versions.locale_id WHERE permalink=$1 AND type='blog' ORDER BY update_date DESC";

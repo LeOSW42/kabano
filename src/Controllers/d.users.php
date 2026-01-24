@@ -1,9 +1,14 @@
 <?php
 
+/**
+ * Contrôleur des pages utilisateurs : authentification, profils, liste.
+ */
+
 require_once($config['models_folder']."d.users.php");
 
 $head['css'] = "d.index.css;d.user.css";
 
+// Routage des actions utilisateur.
 if(isset($controller->splitted_url[1])) {
 	switch ($controller->splitted_url[1]) {
 		case 'login':
@@ -38,6 +43,7 @@ if(isset($controller->splitted_url[1])) {
 			}
 			break;
 		case 'logout':
+			// Déconnexion et retour à la page précédente si locale.
 			session_destroy();
 			$redirect = $config['rel_root_folder'];
 			if (!empty($_SERVER['HTTP_REFERER'])) {
@@ -91,6 +97,7 @@ if(isset($controller->splitted_url[1])) {
 			}
 			break;
 		case 'password_lost':
+			// Demande de réinitialisation du mot de passe.
 			$head['title'] = "Récupération de mot de passe";
 			if ($user->rank == "visitor") {
 				if (isset($_POST['submit'])) {
@@ -198,6 +205,7 @@ if(isset($controller->splitted_url[1])) {
 			}
 			break;
 		case 'member_list':
+			// Liste des membres.
 			if ($user->rankIsHigher("registered")) {
 				$rows_per_pages = 50;
 				// Get the correct page number

@@ -1,4 +1,4 @@
-<?php 
+<?php /* Template: d.blog.list.rss */
 
 $ts = gmdate("D, d M Y H:i:s", time() + 60) . " GMT";
 header("Content-disposition: filename=blog.rss");

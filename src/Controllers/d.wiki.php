@@ -1,5 +1,9 @@
 <?php
 
+/**
+ * Contrôleur des pages wiki : lecture, édition, création.
+ */
+
 require_once($config['models_folder']."d.wiki.php");
 
 $head['css'] = "d.index.css;d.wiki.css";

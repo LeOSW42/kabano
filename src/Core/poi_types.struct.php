@@ -1,5 +1,8 @@
 <?php
 
+/**
+ * Catalogue des types de points d'intérêt (POI) et leurs champs de saisie.
+ */
 $poi_types = array(
 
     "basic_hut" => array("Abri sommaire", "Abri", "#ef2929", "basic_hut",

@@ -12,6 +12,7 @@ namespace Kabano;
 
 require_once($config['includes_folder']."database.php");
 
+// Objet représentant une locale (langue).
 class Locale
 {
     public $name = 0;
@@ -24,6 +25,7 @@ class Locale
 	public function checkName($name) {
 		global $config;
 		
+		// Chargement de la locale par son code.
 		$con = sql_connect();
 
 		$query = "SELECT * FROM locales WHERE name=$1";
@@ -53,6 +55,7 @@ class Locale
 			return;
 		}
 
+		// Mapping des champs SQL.
 		if (array_key_exists('name', $row)) {
 			$this->name = $row['name'];
 		}
@@ -78,12 +81,14 @@ class Locales
     public $number = 0;
     public $objs = array();
 
+    // Charge toutes les locales disponibles.
     /*****
 	** Get all locales
 	*****/
 	public function getAll() {
 		global $config;
 		
+		// Récupère la liste complète des locales.
 		$con = sql_connect();
 
 		$query = "SELECT * FROM locales";

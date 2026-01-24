@@ -23,6 +23,7 @@ $ranks = array(
 	"visitor"		=> array(0,"Visiteur", "black", "visitor")
 );
 
+// Objet représentant un utilisateur.
 class User
 {
     public $id = 0;
@@ -52,6 +53,7 @@ class User
 	public function checkID($id) {
 		global $config;
 		
+		// Recherche de l'utilisateur par identifiant.
 		$con = sql_connect();
 
 		$query = "SELECT * FROM users WHERE id=$1";
@@ -79,6 +81,7 @@ class User
 	public function login($login, $pass) {
 		global $config;
 		
+		// Connexion à partir du nom et du mot de passe.
 		$con = sql_connect();
 
 		$query = "SELECT * FROM users WHERE name=$1 AND password=$2";
@@ -105,6 +108,7 @@ class User
 			return;
 		}
 
+		// Mapping des champs SQL vers les propriétés.
 		if (array_key_exists('id', $row)) {
 			$this->id = $row['id'];
 		}
@@ -152,6 +156,7 @@ class User
 	public function get_rank() {
 		global $ranks;
 
+		// Renvoie l'affichage HTML du rang.
 		return '<span class="userrole" style="color: '.$ranks[$this->rank][2].';">'.$ranks[$this->rank][1].'</span>';
 	}
 	public function get_locale() {
@@ -174,6 +179,7 @@ class User
 	public function rankIsHigher($rank) {
 		global $ranks;
 
+		// Compare le niveau de rang.
 		return $ranks[$this->rank][0] >= $ranks[$rank][0];
 	}
 
@@ -183,6 +189,7 @@ class User
 	public function availableName() {
 		global $config;
 		
+		// Vérifie l'unicité du pseudo.
 		$con = sql_connect();
 
 		$query = "SELECT * FROM users WHERE lower(name)=$1";

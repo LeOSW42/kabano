@@ -1,4 +1,5 @@
 
+// Gestion de l'upload et suppression d'avatar côté client.
 $(window).ready(function() {
 	$("#deleteavatar").click(function() {
 		$("aside").removeClass("avatar").addClass("noavatar");
@@ -27,6 +28,7 @@ $(window).ready(function() {
 });
 
 
+// Prévisualisation du fichier image dans le profil.
 function readURL(input) {
     if (input.files && input.files[0]) {
         var reader = new FileReader();
@@ -37,4 +39,4 @@ function readURL(input) {
 
         reader.readAsDataURL(input.files[0]);
     }
-}$
+}
