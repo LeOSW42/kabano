@@ -23,7 +23,6 @@ $config['public_folder'] = $config['abs_root_folder']."public/";
 
 // This is the relative folder to the root of the website from the DocumentRoot (can also be called subfolder)
 $document_root = rtrim(realpath($_SERVER['DOCUMENT_ROOT']), DIRECTORY_SEPARATOR);
-$public_root = rtrim(realpath($config['public_folder']), DIRECTORY_SEPARATOR);
 $abs_root = rtrim(realpath($config['abs_root_folder']), DIRECTORY_SEPARATOR);
 $config['rel_root_folder'] = "";
 if ($document_root && $abs_root && $document_root === $abs_root) {
