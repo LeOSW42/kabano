@@ -28,8 +28,8 @@ $abs_root = rtrim(realpath($config['abs_root_folder']), DIRECTORY_SEPARATOR);
 $config['rel_root_folder'] = "";
 if ($document_root && $abs_root && $document_root === $abs_root) {
 	$config['rel_root_folder'] = "/";
-} elseif ($document_root && $public_root && strpos($public_root, $document_root) === 0) {
-	$config['rel_root_folder'] = substr($public_root, strlen($document_root));
+} elseif ($document_root && $abs_root && strpos($abs_root, $document_root) === 0) {
+	$config['rel_root_folder'] = substr($abs_root, strlen($document_root));
 }
 $config['web_root_folder']="https://kabano.test/";
 if($config['rel_root_folder']=="" || $config['rel_root_folder']=="/") {
