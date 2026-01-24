@@ -32,6 +32,19 @@ class WikiPage
 
 	public $content_html;
 
+	private function decodeJsonText($value) {
+		if ($value === null || $value === '') {
+			return '';
+		}
+
+		$decoded = json_decode($value, true);
+		if (!is_array($decoded)) {
+			return '';
+		}
+
+		return isset($decoded['text']) ? $decoded['text'] : '';
+	}
+
 	/*****
 	** Checks if a page at this ermalink exists and return the populated element
 	*****/
@@ -68,23 +81,60 @@ class WikiPage
 	** Populate the object using raw data from SQL
 	*****/
 	public function populate($row) {
-		$json = json_decode($row['content'], true);
+		if (!is_array($row)) {
+			return;
+		}
 
-		$this->content_id = $row['content_id'];
-		$this->locale_id = $row['locale_id'];
-		$this->version_id = $row['version_id'];
-		$this->permalink = $row['permalink'];
-		$this->version = $row['version'];
-		$this->locale = $row['locale'];
-		$this->creation_date = $row['creation_date'];
-		$this->update_date = $row['update_date'];
-		$this->author = $row['author'];
-		$this->is_public = $row['is_public'];
-		$this->is_archive = $row['is_archive'];
-		$this->is_commentable = $row['is_commentable'];
-		$this->type = $row['type'];
-		$this->name = $row['name'];
-		$this->content = isset($json['text']) ? $json['text'] : '';
+		$decodedContent = null;
+		if (array_key_exists('content', $row)) {
+			$decodedContent = $this->decodeJsonText($row['content']);
+		}
+
+		if (array_key_exists('content_id', $row)) {
+			$this->content_id = $row['content_id'];
+		}
+		if (array_key_exists('locale_id', $row)) {
+			$this->locale_id = $row['locale_id'];
+		}
+		if (array_key_exists('version_id', $row)) {
+			$this->version_id = $row['version_id'];
+		}
+		if (array_key_exists('permalink', $row)) {
+			$this->permalink = $row['permalink'];
+		}
+		if (array_key_exists('version', $row)) {
+			$this->version = $row['version'];
+		}
+		if (array_key_exists('locale', $row)) {
+			$this->locale = $row['locale'];
+		}
+		if (array_key_exists('creation_date', $row)) {
+			$this->creation_date = $row['creation_date'];
+		}
+		if (array_key_exists('update_date', $row)) {
+			$this->update_date = $row['update_date'];
+		}
+		if (array_key_exists('author', $row)) {
+			$this->author = $row['author'];
+		}
+		if (array_key_exists('is_public', $row)) {
+			$this->is_public = $row['is_public'];
+		}
+		if (array_key_exists('is_archive', $row)) {
+			$this->is_archive = $row['is_archive'];
+		}
+		if (array_key_exists('is_commentable', $row)) {
+			$this->is_commentable = $row['is_commentable'];
+		}
+		if (array_key_exists('type', $row)) {
+			$this->type = $row['type'];
+		}
+		if (array_key_exists('name', $row)) {
+			$this->name = $row['name'];
+		}
+		if ($decodedContent !== null) {
+			$this->content = $decodedContent;
+		}
 	}
 
 	/*****

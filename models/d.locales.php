@@ -48,9 +48,19 @@ class Locale
 	** Populate the object using raw data from SQL
 	*****/
 	public function populate($row) {
-	    $this->name = $row['name'];
-	    $this->display_name = $row['display_name'];
-	    $this->flag_name = $row['flag_name'];
+		if (!is_array($row)) {
+			return;
+		}
+
+		if (array_key_exists('name', $row)) {
+			$this->name = $row['name'];
+		}
+		if (array_key_exists('display_name', $row)) {
+			$this->display_name = $row['display_name'];
+		}
+		if (array_key_exists('flag_name', $row)) {
+			$this->flag_name = $row['flag_name'];
+		}
 	}
 }
 
