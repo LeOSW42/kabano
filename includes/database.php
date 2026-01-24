@@ -5,10 +5,10 @@ namespace Kabano;
 function sql_connect() {
 	global $config;
 
-	$connection = "host=".sql_escape_connection_value($config['SQL_host'])
-		." dbname=".sql_escape_connection_value($config['SQL_db'])
-		." user=".sql_escape_connection_value($config['SQL_user'])
-		." password=".sql_escape_connection_value($config['SQL_pass']);
+	$connection = "host='".sql_escape_connection_value($config['SQL_host'])."'"
+		." dbname='".sql_escape_connection_value($config['SQL_db'])."'"
+		." user='".sql_escape_connection_value($config['SQL_user'])."'"
+		." password='".sql_escape_connection_value($config['SQL_pass'])."'";
 
 	$con = pg_connect($connection);
 	if (!$con) {
@@ -23,8 +23,5 @@ function sql_connect() {
 function sql_escape_connection_value($value) {
 	$value = (string)$value;
 	$value = str_replace("\0", '', $value);
-	$value = str_replace(['\\', "'"], ['\\\\', "\\'"], $value);
-	return "'".$value."'";
+	return pg_escape_string($value);
 }
-
-?>
