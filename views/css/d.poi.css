@@ -673,4 +673,3 @@ form.form input[type="checkbox"]:checked + span:before {
         grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
     }
 }
-

@@ -32,12 +32,6 @@ form.form input {
 	font-size: 17px;
 }
 
-form.form input[type=submit] {
-	width: auto;
-	margin: auto;
-	border-bottom: 2px solid blue;
-}
-
 #wikiContent {
 	margin: 50px 0;
 }
