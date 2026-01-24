@@ -12,6 +12,7 @@ namespace Kabano;
 
 require_once($config['third_folder']."Md/MarkdownExtra.inc.php");
 require_once($config['includes_folder']."poi_types.struct.php");
+require_once($config['includes_folder']."database.php");
 
 class Poi
 {
@@ -46,8 +47,7 @@ class Poi
 	public function checkPermalink($permalink, $withArchive=0, $elementNb=0) {
 	    global $config;
 
-		$con = pg_connect("host=".$config['SQL_host']." dbname=".$config['SQL_db']." user=".$config['SQL_user']." password=".$config['SQL_pass'])
-			or die ("Could not connect to server\n");
+		$con = sql_connect();
 
 	    $query = "SELECT
             content_versions.id AS version_id,
@@ -148,8 +148,7 @@ class Poi
 		global $config;
 		global $user;
 		
-		$con = pg_connect("host=".$config['SQL_host']." dbname=".$config['SQL_db']." user=".$config['SQL_user']." password=".$config['SQL_pass'])
-			or die ("Could not connect to server\n");
+		$con = sql_connect();
 
 		pg_query($con, "BEGIN");
 
@@ -222,8 +221,7 @@ class Poi
 
 		$this->version++;
 
-		$con = pg_connect("host=".$config['SQL_host']." dbname=".$config['SQL_db']." user=".$config['SQL_user']." password=".$config['SQL_pass'])
-			or die ("Could not connect to server\n");
+		$con = sql_connect();
 
 		pg_query($con, "BEGIN");
 
@@ -278,8 +276,7 @@ class Poi
 		global $config;
 		global $user;
 
-		$con = pg_connect("host=".$config['SQL_host']." dbname=".$config['SQL_db']." user=".$config['SQL_user']." password=".$config['SQL_pass'])
-			or die ("Could not connect to server\n");
+		$con = sql_connect();
 
 		$query = "UPDATE contents SET is_public = FALSE WHERE id = $1";
 
@@ -302,8 +299,7 @@ class Poi
 		global $config;
 		global $user;
 
-		$con = pg_connect("host=".$config['SQL_host']." dbname=".$config['SQL_db']." user=".$config['SQL_user']." password=".$config['SQL_pass'])
-			or die ("Could not connect to server\n");
+		$con = sql_connect();
 
 		$query = "UPDATE contents SET is_public = TRUE WHERE id = $1";
 
@@ -328,8 +324,7 @@ class Pois
 	public function listPois($archive=0) {
 		global $config;
 
-		$con = pg_connect("host=".$config['SQL_host']." dbname=".$config['SQL_db']." user=".$config['SQL_user']." password=".$config['SQL_pass'])
-			or die ("Could not connect to server\n");
+		$con = sql_connect();
 
 		$query = "SELECT
             content_versions.id AS version_id,
@@ -392,8 +387,7 @@ class Pois
 	public function getHistory($permalink) {
 		global $config;
 
-		$con = pg_connect("host=".$config['SQL_host']." dbname=".$config['SQL_db']." user=".$config['SQL_user']." password=".$config['SQL_pass'])
-			or die ("Could not connect to server\n");
+		$con = sql_connect();
 
 		$query = "SELECT
             content_versions.id AS version_id,

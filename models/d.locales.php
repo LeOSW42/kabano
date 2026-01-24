@@ -1,5 +1,5 @@
 <?
-
+ 
 namespace Kabano;
 
 /**********************************************************
@@ -9,6 +9,8 @@ namespace Kabano;
 **  
 ***********************************************************
 **********************************************************/
+
+require_once($config['includes_folder']."database.php");
 
 class Locale
 {
@@ -22,8 +24,7 @@ class Locale
 	public function checkName($name) {
 		global $config;
 		
-		$con = pg_connect("host=".$config['SQL_host']." dbname=".$config['SQL_db']." user=".$config['SQL_user']." password=".$config['SQL_pass'])
-			or die ("Could not connect to server\n");
+		$con = sql_connect();
 
 		$query = "SELECT * FROM locales WHERE name=$1";
 
@@ -73,8 +74,7 @@ class Locales
 	public function getAll() {
 		global $config;
 		
-		$con = pg_connect("host=".$config['SQL_host']." dbname=".$config['SQL_db']." user=".$config['SQL_user']." password=".$config['SQL_pass'])
-			or die ("Could not connect to server\n");
+		$con = sql_connect();
 
 		$query = "SELECT * FROM locales";
 

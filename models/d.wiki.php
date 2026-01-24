@@ -11,6 +11,7 @@ namespace Kabano;
 **********************************************************/
 
 require_once($config['third_folder']."Md/MarkdownExtra.inc.php");
+require_once($config['includes_folder']."database.php");
 
 class WikiPage
 {
@@ -38,8 +39,7 @@ class WikiPage
 	public function checkPermalink($permalink, $withArchive=0, $elementNb=0) {
 		global $config;
 		
-		$con = pg_connect("host=".$config['SQL_host']." dbname=".$config['SQL_db']." user=".$config['SQL_user']." password=".$config['SQL_pass'])
-			or die ("Could not connect to server\n");
+		$con = sql_connect();
 
 		$query = "SELECT content_versions.id AS version_id, * FROM contents INNER JOIN content_locales ON contents.id = content_locales.content_id INNER JOIN content_versions ON content_locales.id = content_versions.locale_id WHERE permalink=$1 AND type='wiki'";
 		if($withArchive==0) {
@@ -99,8 +99,7 @@ class WikiPage
 
 		$this->version++;
 
-		$con = pg_connect("host=".$config['SQL_host']." dbname=".$config['SQL_db']." user=".$config['SQL_user']." password=".$config['SQL_pass'])
-			or die ("Could not connect to server\n");
+		$con = sql_connect();
 
 		pg_query($con, "BEGIN");
 
@@ -148,8 +147,7 @@ class WikiPage
 		global $config;
 		global $user;
 		
-		$con = pg_connect("host=".$config['SQL_host']." dbname=".$config['SQL_db']." user=".$config['SQL_user']." password=".$config['SQL_pass'])
-			or die ("Could not connect to server\n");
+		$con = sql_connect();
 
 		$query = "UPDATE contents SET is_public=FALSE WHERE permalink=$1 AND type='wiki'";
 
@@ -173,8 +171,7 @@ class WikiPage
 		global $config;
 		global $user;
 		
-		$con = pg_connect("host=".$config['SQL_host']." dbname=".$config['SQL_db']." user=".$config['SQL_user']." password=".$config['SQL_pass'])
-			or die ("Could not connect to server\n");
+		$con = sql_connect();
 
 		$query = "UPDATE contents SET is_public=TRUE WHERE permalink=$1 AND type='wiki'";
 
@@ -198,8 +195,7 @@ class WikiPage
 		global $config;
 		global $user;
 		
-		$con = pg_connect("host=".$config['SQL_host']." dbname=".$config['SQL_db']." user=".$config['SQL_user']." password=".$config['SQL_pass'])
-			or die ("Could not connect to server\n");
+		$con = sql_connect();
 
 		pg_query($con, "BEGIN");
 
@@ -280,8 +276,7 @@ class WikiPages
 	public function getHistory($url) {
 		global $config;
 		
-		$con = pg_connect("host=".$config['SQL_host']." dbname=".$config['SQL_db']." user=".$config['SQL_user']." password=".$config['SQL_pass'])
-			or die ("Could not connect to server\n");
+		$con = sql_connect();
 
 		$query = "SELECT content_versions.id AS version_id, * FROM contents INNER JOIN content_locales ON contents.id = content_locales.content_id INNER JOIN content_versions ON content_locales.id = content_versions.locale_id WHERE permalink=$1 AND type='wiki' ORDER BY update_date DESC";
 
