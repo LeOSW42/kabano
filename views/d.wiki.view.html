@@ -7,23 +7,38 @@
 
 		<?php include('blocks/d.nav.html'); ?>
 
-		<section id="wiki_page" <?=$wikiPage->is_archive=="t"||$wikiPage->is_public=="f"?'class="archive"':''?>>
+		<?php
+			$isArchiveOrPrivate = $wikiPage->is_archive == "t" || $wikiPage->is_public == "f";
+			$canViewHistory = $user->rankIsHigher('premium');
+			$canModerate = $user->rankIsHigher('moderator');
+			$hasHistory = isset($wikiHistory);
+		?>
+
+		<section id="wiki_page" <?=$isArchiveOrPrivate ? 'class="archive"' : ''?>>
 			<h1><?=$wikiPage->name?></h1>
-				<?php if($user->rankIsHigher('premium')) { ?>
+				<?php if ($canViewHistory) { ?>
 					<span class="subtitle">
-					<?php if(isset($wikiHistory)) { ?>
+					<?php if ($hasHistory) { ?>
 						<select id="wikihistory">
-							<?php $i = 0;
-							foreach ($wikiHistory->objs as $row) { ?>
-								<option <?=$row->version_id==$wikiPage->version_id?'selected':''?> value="<?=$i?>"><?=$row->is_archive=="f"?'&bull; ':''?><?php echo datefmt_format($user->datetimeshort_format,date_create($row->update_date, new DateTimeZone("UTC"))) ?></option>
-							<?php $i++;
-							} ?>
+							<?php $historyIndex = 0; ?>
+							<?php foreach ($wikiHistory->objs as $row) { ?>
+								<?php
+									$isSelected = $row->version_id == $wikiPage->version_id ? 'selected' : '';
+									$isActive = $row->is_archive == "f" ? '&bull; ' : '';
+									$formattedDate = datefmt_format(
+										$user->datetimeshort_format,
+										date_create($row->update_date, new DateTimeZone("UTC"))
+									);
+								?>
+								<option <?=$isSelected?> value="<?=$historyIndex?>"><?=$isActive?><?=$formattedDate?></option>
+								<?php $historyIndex++; ?>
+							<?php } ?>
 						</select>
-					<?php } 
-					if ($user->rankIsHigher('moderator') && isset($wikiHistory)) { ?>
+					<?php }
+					if ($canModerate && $hasHistory) { ?>
 						 &mdash; 
 					<?php }
-					if ($user->rankIsHigher('moderator')) { ?>
+					if ($canModerate) { ?>
 						<a href="<?=$config['rel_root_folder']?>wiki/<?=$wikiPage->permalink?>/edit"><i class="fas fa-pencil-alt"></i> Éditer la page</a> &mdash; 
 						<?php if ($wikiPage->is_public=="t") { ?>
 							<a href="<?=$config['rel_root_folder']?>wiki/<?=$wikiPage->permalink?>/delete"><i class="fas fa-trash"></i> Effacer la page</a>
@@ -43,11 +58,11 @@
 			<div style="clear: both;"> </div>
 		</section>
 
-<?php if($user->rankIsHigher('premium')) { ?>
+<?php if ($canViewHistory) { ?>
 		<script type="text/javascript">
-$( "#wikihistory" ).change(function() {
-  window.location.href = "<?=$config['rel_root_folder']?>wiki/<?=$wikiPage->permalink?>/"+$( this ).val();
-});
+			$( "#wikihistory" ).change(function() {
+				window.location.href = "<?=$config['rel_root_folder']?>wiki/<?=$wikiPage->permalink?>/"+$( this ).val();
+			});
 		</script>
 <?php } ?>
 
