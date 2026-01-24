@@ -24,12 +24,6 @@ form.form input {
 	font-size: 18px;
 }
 
-form.form input[type=submit] {
-	width: auto;
-	margin: auto;
-	border-bottom: 2px solid blue;
-}
-
 /*********************************/
 /** Profile page                **/ 
 /*********************************/
@@ -203,17 +197,4 @@ form.edituser #picturebuttons a {
 #member_list .icon.avatar {
 	padding: 0;
 	height: 28px;
-}
-
-#member_list .pagebuttons {
-	text-align: center;
-}
-#member_list .pagebuttons a {
-	background: #efefef;
-    border: 1px solid #ccc;
-    padding: 5px;
-    font-size: 1.5em;
-}
-#member_list .pagebuttons .previous {
-    margin-right: -1px;
 }

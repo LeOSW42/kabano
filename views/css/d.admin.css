@@ -42,19 +42,6 @@
 	background: #ccc;
 }
 
-#wiki_files .pagebuttons {
-	text-align: center;
-}
-#wiki_files .pagebuttons a {
-	background: #efefef;
-    border: 1px solid #ccc;
-    padding: 5px;
-    font-size: 1.5em;
-}
-#wiki_files .pagebuttons .previous {
-    margin-right: -1px;
-}
-
 #wiki_files td a {
 	display: block;
 }
