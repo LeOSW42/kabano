@@ -51,7 +51,7 @@ switch ($controller->splitted_url[0])
 }
 
 if($session==1) {
-	require_once('session.php');
+	require_once($config['includes_folder']."session.php");
 }
 if($controller->name != "") {
 	include ($config['controllers_folder'].$controller->prefix.$controller->name.".php");
@@ -61,7 +61,7 @@ if($view->name != "") {
 }
 
 if($notfound) {
-    require_once('session.php');
+    require_once($config['includes_folder']."session.php");
     require_once($config['models_folder']."d.wiki.php");
     $wikiPage = new Kabano\WikiPage();
     $wikiPage->checkPermalink('404');
