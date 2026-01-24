@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- Template: d.blog.edit.html -->
+<!-- Page: blog editor -->
 <html lang="fr">
 
 	<?php include('blocks/d.head.html'); ?>
@@ -8,15 +8,19 @@
 
 		<?php include('blocks/d.nav.html'); ?>
 
+		<!-- Blog edit form -->
 		<section>
 			<?php if(isset($new) AND $new==1) { ?>
+				<!-- Create article -->
 				<form class="form" action="<?=$config['rel_root_folder']?>blog/new" method="post">
 			<?php } 
 			else { ?>
+				<!-- Update article -->
 				<form class="form" action="<?=$config['rel_root_folder']?>blog/<?=$blogArticle->permalink?>/edit" method="post">
 			<?php } ?>
 			
 				<h1>
+					<!-- Locale and title -->
 					<select name="locale" id="locale">
 						<?php foreach($locales->objs as $locale) { ?>
 							<option <?=$blogArticle->locale==$locale->name?'selected':''?> value="<?=$locale->name?>"><?=$locale->display_name?></option>
@@ -26,18 +30,22 @@
 				</h1>
 
 				<?php if(isset($error) AND $error=="permalink") { ?>
+					<!-- Permalink error -->
 					<p style="color: red;">L'URL sélectionnée est déjà prise.</p>
 				<?php } ?>
 
+				<!-- Article content -->
 				<textarea rows="30" name="content" id="content" placeholder="Contenu de l'article"><?=$blogArticle->content?></textarea>
 
 				<?php if(isset($new) AND $new==1) { ?>
+					<!-- Permalink settings -->
 					<div id="permalink_container">
 						<label id="permalink_label" for="permalink"><?=$config['web_root_folder']?>blog/</label>
 						<input type="text" name="permalink" id="permalink" placeholder="URL" required>
 					</div>
 				<?php } ?>
 
+				<!-- Article options -->
 				<label for="is_commentable">
 					<input type="checkbox" name="is_commentable" id="is_commentable"
 					<?php if($blogArticle->is_commentable == 't') { ?>
@@ -47,10 +55,12 @@
 					<span>Autoriser les commentaires</span>
 				</label>
 
+				<!-- Form submission -->
 				<input name="submit" id="submit" type="submit" value="Envoyer">
 			</form>
 		</section>
 
+		<!-- Permalink generation -->
 		<script type="text/javascript">
 $( "#name" ).keyup(function() {
   permalink = $( "#name" ).val();

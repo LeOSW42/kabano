@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- Template: d.poi.edit.html -->
+<!-- Page: point of interest editor -->
 <html lang="fr">
 
 	<?php include('blocks/d.head.html'); ?>
@@ -8,17 +8,22 @@
 
 		<?php include('blocks/d.nav.html'); ?>
 
+		<!-- Map canvas -->
 		<div id="mapid"></div>
 
+		<!-- POI form panel -->
 		<div id="sticky">
 			<section>
 				<i id="slide-icon" class="fas fa-chevron-up"></i>
 				<?php if(isset($new) AND $new==1) { ?>
+					<!-- Create POI -->
 					<form class="form" action="<?=$config['rel_root_folder']?>poi/new" method="post">
 				<?php } 
 				else { ?>
+					<!-- Update POI -->
 					<form class="form" action="<?=$config['rel_root_folder']?>poi/<?=$poi->permalink?>/edit" method="post">
 				<?php } ?>
+					<!-- Basic fields -->
 					<h1 class="flex_line">
 						<input type="text" value="<?=$poi->name?>" name="name" id="name" placeholder="Nom de l'hébergement" required>
 						<select name="locale" id="locale">
@@ -28,6 +33,7 @@
 						</select>
 					</h1>
 
+					<!-- Location fields -->
 					<div class="flex_line">
 						<input type="number" class="noarrow" step="any" value="<?=$poi->lat?>" name="lat" id="lat" placeholder="Latitude" required>
 						<input type="number" class="noarrow" step="any" value="<?=$poi->lon?>" name="lon" id="lon" placeholder="Longitude" required>
@@ -35,6 +41,7 @@
 						<div id="elevation_icon" style="display:none;" title="Calculer l'altitude"><i class="fas fa-search-location"></i></div>
 					</div>
 
+					<!-- Type selector -->
 					<div class="flex_line" id="type_selector">
 						<?php foreach($poi_types as $type) { ?>
 						    <input type="radio" name="poi_type" value="<?=$type[3]?>" id="<?=$type[3]?>" required
@@ -43,6 +50,7 @@
 						<?php } ?>
 					</div>
 
+					<!-- Dynamic form data -->
 <script type="text/javascript">
 <?php
     $poi_params = $poi->parameters ?? new stdClass();
@@ -185,16 +193,20 @@ $(document).ready(function(){
 		});
 });
 </script>
+					<!-- Type description -->
 					<p id="abstract"></p>
+					<!-- Dynamic fields -->
 					<div id="specific_form"></div>
 
 					<?php if(isset($new) AND $new==1) { ?>
+					<!-- Permalink -->
 					<div id="permalink_container">
 						<label id="permalink_label" for="permalink"><?=$config['web_root_folder']?>poi/</label>
 						<input type="text" name="permalink" id="permalink" placeholder="URL" required>
 					</div>
 					<?php } ?>
 
+					<!-- Permalink generation -->
 					<script type="text/javascript">
 $( "#name" ).keyup(function() {
   permalink = $( "#name" ).val();
@@ -214,22 +226,25 @@ $( "#name" ).change(function() {
 });
 					</script>
 
+					<!-- Form submission -->
 					<input name="submit" id="submit" type="submit" value="<?= isset($new) && $new == 1 ? "Ajouter l'hébergement" : "Mettre à jour l'hébergement" ?>">
 				</form>
 			</section>
 
-<script>
-    <?php if($poi->lat != null && $poi->lon != null) { ?>
-	var poi_lat = <?=$poi->lat?>;
-	var poi_lon = <?=$poi->lon?>;
-    <?php } ?>
-	var poi_type = "<?=$poi->poi_type?>";
-    var is_new = <?= isset($new) && $new == 1 ? "true" : "false" ?>;
-	var root = "<?=$config['rel_root_folder']?>";
-</script>
+			<!-- Map variables -->
+			<script>
+				<?php if($poi->lat != null && $poi->lon != null) { ?>
+				var poi_lat = <?=$poi->lat?>;
+				var poi_lon = <?=$poi->lon?>;
+				<?php } ?>
+				var poi_type = "<?=$poi->poi_type?>";
+				var is_new = <?= isset($new) && $new == 1 ? "true" : "false" ?>;
+				var root = "<?=$config['rel_root_folder']?>";
+			</script>
 
 
-		<script type="text/javascript">
+			<!-- Scroll helper -->
+			<script type="text/javascript">
 $( "#slide-icon" ).click(function() {
   $( "html, body" ).animate({scrollTop: "300px"});
 });

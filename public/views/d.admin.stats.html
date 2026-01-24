@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- Template: d.admin.stats.html -->
+<!-- Page: admin statistics -->
 <html lang="fr">
 
 	<?php include('blocks/d.head.html'); ?>
@@ -8,13 +8,16 @@
 
 		<?php include('blocks/d.nav.html'); ?>
 
+		<!-- Statistics summary -->
 		<section>
 			<h1><?=$head['title']?></h1>
 			<br>
+			<!-- Command output -->
 			<pre><?php
 			print_r($output);
 			?></pre>
 			<br>
+			<!-- Report link -->
 			<?php if (file_exists($report)) { ?>
 				<a href='<?=$config['rel_root_folder']?>tmp/report.html' target='_blank'><i class="fas fa-chart-line"></i> Voir le rapport</a>
 			<?php } else { ?>

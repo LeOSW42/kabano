@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- Template: d.admin.logs.html -->
+<!-- Page: admin logs -->
 <html lang="fr">
 
 	<?php include('blocks/d.head.html'); ?>
@@ -8,8 +8,10 @@
 
 		<?php include('blocks/d.nav.html'); ?>
 
+		<!-- Logs viewer -->
 		<section>
 			<h1><?=$head['title']?></h1>
+				<!-- Log file selector -->
 				<span class="subtitle">
 					<select id="logfile">
 						<?php $i = 0;
@@ -23,6 +25,7 @@
 				</span>
 			<br>
 			<br>
+			<!-- Log content -->
 			<pre><?php
 			foreach($output as $line) {
 					echo $line."<br>";
@@ -30,6 +33,7 @@
 			?></pre>
 		</section>
 
+		<!-- Log file navigation -->
 		<script type="text/javascript">
 $( "#logfile" ).change(function() {
   window.location.href = "<?=$config['rel_root_folder']?>admin/logs/"+$( this ).val();

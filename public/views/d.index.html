@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- Template: d.index.html -->
+<!-- Page: homepage -->
 <html lang="fr">
 
 	<?php include('blocks/d.head.html'); ?>
@@ -8,6 +8,7 @@
 
 		<?php include('blocks/d.nav.html'); ?>
 
+		<!-- Hero image -->
 		<aside id="indexFullW">
 			<div id="AScontent">
 				<div id="imglegend">
@@ -16,6 +17,7 @@
 			</div>
 		</aside>
 
+		<!-- Load wiki content -->
 <?php
 	require_once($config['models_folder']."d.wiki.php");
 	$wikiPage = new Kabano\WikiPage();
@@ -23,10 +25,12 @@
 	$wikiPage->md2html();
 ?>
 
+		<!-- Main content -->
 		<section id="index">
 			<h1><?=$wikiPage->name?></h1>
 
 			<?php if($user->rankIsHigher('moderator')) { ?>
+				<!-- Edit shortcut -->
 				<span class="subtitle">
 					<a href="<?=$config['rel_root_folder']?>wiki/index/edit"><i class="fas fa-pencil-alt"></i> Éditer la page</a>
 				</span>

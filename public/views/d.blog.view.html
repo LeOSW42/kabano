@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- Template: d.blog.view.html -->
+<!-- Page: blog article -->
 <html lang="fr">
 
 	<?php include('blocks/d.head.html'); ?>
@@ -9,6 +9,7 @@
 		<?php include('blocks/d.nav.html'); ?>
 
 		<?php
+			// Droits et état de l'article
 			$isArchiveOrPrivate = $blogArticle->is_archive == "t" || $blogArticle->is_public == "f";
 			$canViewHistory = $user->rankIsHigher('premium');
 			$canModerate = $user->rankIsHigher('moderator');
@@ -19,9 +20,11 @@
 			$isCommentable = $blogArticle->is_commentable == "t";
 		?>
 
+		<!-- Blog article -->
 		<section id="blog_article" <?=$isArchiveOrPrivate ? 'class="archive"' : ''?>>
 			<h1><?=$blogArticle->name?></h1>
 				<?php if ($canViewHistory) { ?>
+					<!-- History and actions -->
 					<span class="subtitle">
 					<?php if ($hasHistory) { ?>
 						<select id="bloghistory">
@@ -54,10 +57,12 @@
 					</span>
 				<?php } ?>
 
+			<!-- Article content -->
 			<div id="blogContent">
 				<?=$blogArticle->content_html?>
 			</div>
 
+			<!-- Signature -->
 			<p id="blogTimestamp">Article écrit par 
 			<?php if ($user->rankIsHigher("blocked")) { ?>
 				<a href="<?=$config['rel_root_folder']?>user/p/<?=$blogArticle->author?>"><?=$blogArticle->author_name?></a>
@@ -66,9 +71,10 @@
 			<?php } ?>
 			le <?php echo datefmt_format($user->datetime_format,date_create($blogArticle->creation_date, new DateTimeZone("UTC"))) ?></p>
 
-			<!-- COMMENTS -->
+			<!-- Comments -->
 
 			<?php if ($isCommentable) { ?>
+				<!-- Comment form -->
 				<div id="new_comment">
 					<form class="form" action="<?=$config['rel_root_folder']?>blog/<?=$blogArticle->permalink?>/new_comment" method="post">
 						<div id="new_comment_label" <?=$isVisitor ? "class='sent' " : ""?>>
@@ -87,6 +93,7 @@
 					</form>
 				</div>
 
+				<!-- Comment list -->
 				<?php foreach ($blogArticles_comments->objs as $comment) { ?>
 					<?php $canManageComment = $canModerate || $user->id == $comment->author; ?>
 
@@ -118,12 +125,14 @@
 				<?php }
 			} ?>
 
+			<!-- Footer spacing -->
 			<br>
 			<br>
 			<div style="clear: both;"> </div>
 		</section>
 
 <?php if ($canViewHistory) { ?>
+		<!-- History switch -->
 		<script type="text/javascript">
 			$( "#bloghistory" ).change(function() {
 				window.location.href = "<?=$config['rel_root_folder']?>blog/<?=$blogArticle->permalink?>/"+$( this ).val();
@@ -131,6 +140,7 @@
 		</script>
 <?php } ?>
 <?php if ($canOpenCommentForm) { ?>
+		<!-- Comment form toggle -->
 		<script type="text/javascript">
 			$( "#new_comment_label" ).click(function() {
 				$( "#new_comment_form" ).show(400);

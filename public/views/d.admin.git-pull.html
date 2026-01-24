@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- Template: d.admin.git-pull.html -->
+<!-- Page: admin git pull -->
 <html lang="fr">
 
 	<?php include('blocks/d.head.html'); ?>
@@ -11,6 +11,7 @@
 		<section>
 			<h1><?=$head['title']?></h1>
 			<br>
+			<!-- Command output -->
 			<pre><?php
 			foreach($output as $line) {
 					echo $line."<br>";

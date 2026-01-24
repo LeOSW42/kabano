@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- Template: d.community.html -->
+<!-- Page: community contributions -->
 <html lang="fr">
 
 	<?php include('blocks/d.head.html'); ?>
@@ -8,17 +8,20 @@
 
 		<?php include('blocks/d.nav.html'); ?>
 
+		<!-- Main content -->
 		<section>
 			<h1>Contribuer au projet Kabano</h1>
 			<p>&Eacute;tant un projet collaboratif, Kabano se repose sur vos contributions pour diffuser des informations au plus proche de la réalité. En participant au projet Kabano, vous acceptez de placer vos collaborations sous <a href="<?=$config['rel_root_folder']?>wiki/licences">nos licences libres</a>.</p>
 			<br>
 
+			<!-- Contribution: add POI -->
 			<div class="action">
 				<?php if($user->rankIsHigher("registered")) { ?>
 				<div class="title"><i class="fas fa-home"></i>
 					<a href="<?=$config['rel_root_folder']?>poi/new">Ajouter un hébergement de montagne</a>
 				</div>
 				<?php } else { ?>
+				<!-- Login required -->
 				<div class="title" id="js_open_1"><i class="fas fa-home"></i>
 					<p>Ajouter un hébergement de montagne</p>
 				</div>
@@ -28,6 +31,7 @@
 				<?php } ?>
 			</div>
 
+			<!-- Contribution: comments -->
 			<div class="action">
 				<div class="title" id="js_open_2"><i class="fas fa-comment"></i>
 					<p>Ajouter un commentaire sur un hébergement</p>
@@ -37,6 +41,7 @@
 				</div>
 			</div>
 
+			<!-- Contribution: maintenance -->
 			<div class="action">
 				<div class="title" id="js_open_3"><i class="fas fa-wrench"></i>
 					<p>Faire une demande de travaux</p>
@@ -48,6 +53,7 @@
 
 		</section>
 
+		<!-- Description toggles -->
 		<script type="text/javascript">
 $( "#js_open_1" ).click(function() {
   $( "#js_openned_1" ).show(400);
