@@ -68,7 +68,9 @@ if(isset($controller->splitted_url[1]) && $user->rankIsHigher("moderator")) {
 					$filename = $files_folder_root . DIRECTORY_SEPARATOR . $safe_name;
 					$real_filename = realpath($filename);
 					if ($real_filename && str_starts_with($real_filename, $files_folder_root . DIRECTORY_SEPARATOR)) {
-						unlink($real_filename);
+						if (file_exists($real_filename)) {
+							unlink($real_filename);
+						}
 						error_log(date('r')." \t".$user->name." (".$user->id.") \tDELETE \tDelete wiki file '".$safe_name."'\r\n",3,$config['logs_folder'].'wiki-files.log');
 					}
 				}
@@ -180,7 +182,9 @@ if(isset($controller->splitted_url[1]) && $user->rankIsHigher("moderator")) {
 					$delete_path = $tmp_folder_root . DIRECTORY_SEPARATOR . $safe_name;
 					$real_delete_path = realpath($delete_path);
 					if ($real_delete_path && str_starts_with($real_delete_path, $tmp_folder_root . DIRECTORY_SEPARATOR)) {
-						unlink($real_delete_path);
+						if (file_exists($real_delete_path)) {
+							unlink($real_delete_path);
+						}
 					}
 				}
 				$output = Array();
@@ -222,7 +226,9 @@ if(isset($controller->splitted_url[1]) && $user->rankIsHigher("moderator")) {
 					$delete_path = $tmp_folder_root . DIRECTORY_SEPARATOR . $safe_name;
 					$real_delete_path = realpath($delete_path);
 					if ($real_delete_path && str_starts_with($real_delete_path, $tmp_folder_root . DIRECTORY_SEPARATOR)) {
-						unlink($real_delete_path);
+						if (file_exists($real_delete_path)) {
+							unlink($real_delete_path);
+						}
 					}
 				}
 			}
