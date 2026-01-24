@@ -102,19 +102,49 @@ class User
 	** Populate the object using raw data from SQL
 	*****/
 	public function populate($row) {
-	    $this->id = $row['id'];
-	    $this->name = $row['name'];
-	    $this->version = $row['version'];
-	    $this->email = $row['email'];
-	    $this->password = $row['password'];
-	    $this->website = $row['website'];
-	    $this->is_avatar_present = $row['is_avatar_present'];
-	    $this->is_archive = $row['is_archive'];
-	    $this->rank = $row['rank'];
-	    $this->locale = $row['locale'];
-	    $this->timezone = $row['timezone'];
-	    $this->visit_date = $row['visit_date'];
-	    $this->register_date = $row['register_date'];
+		if (!is_array($row)) {
+			return;
+		}
+
+		if (array_key_exists('id', $row)) {
+			$this->id = $row['id'];
+		}
+		if (array_key_exists('name', $row)) {
+			$this->name = $row['name'];
+		}
+		if (array_key_exists('version', $row)) {
+			$this->version = $row['version'];
+		}
+		if (array_key_exists('email', $row)) {
+			$this->email = $row['email'];
+		}
+		if (array_key_exists('password', $row)) {
+			$this->password = $row['password'];
+		}
+		if (array_key_exists('website', $row)) {
+			$this->website = $row['website'];
+		}
+		if (array_key_exists('is_avatar_present', $row)) {
+			$this->is_avatar_present = $row['is_avatar_present'];
+		}
+		if (array_key_exists('is_archive', $row)) {
+			$this->is_archive = $row['is_archive'];
+		}
+		if (array_key_exists('rank', $row)) {
+			$this->rank = $row['rank'];
+		}
+		if (array_key_exists('locale', $row)) {
+			$this->locale = $row['locale'];
+		}
+		if (array_key_exists('timezone', $row)) {
+			$this->timezone = $row['timezone'];
+		}
+		if (array_key_exists('visit_date', $row)) {
+			$this->visit_date = $row['visit_date'];
+		}
+		if (array_key_exists('register_date', $row)) {
+			$this->register_date = $row['register_date'];
+		}
 	}
 
 	/*****

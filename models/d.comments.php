@@ -60,16 +60,40 @@ class Comment
 	** Populate the object using its ID
 	*****/
 	public function populate($row) {
-		$this->id = $row['id'];
-		$this->version = $row['version'];
-		$this->creation_date = $row['creation_date'];
-		$this->update_date = $row['update_date'];
-		$this->author = $row['author'];
-		$this->is_public = $row['is_public'];
-		$this->is_archive = $row['is_archive'];
-		$this->content = $row['content'];
-		$this->comment = $row['comment'];
-		$this->locale = $row['locale'];
+		if (!is_array($row)) {
+			return;
+		}
+
+		if (array_key_exists('id', $row)) {
+			$this->id = $row['id'];
+		}
+		if (array_key_exists('version', $row)) {
+			$this->version = $row['version'];
+		}
+		if (array_key_exists('creation_date', $row)) {
+			$this->creation_date = $row['creation_date'];
+		}
+		if (array_key_exists('update_date', $row)) {
+			$this->update_date = $row['update_date'];
+		}
+		if (array_key_exists('author', $row)) {
+			$this->author = $row['author'];
+		}
+		if (array_key_exists('is_public', $row)) {
+			$this->is_public = $row['is_public'];
+		}
+		if (array_key_exists('is_archive', $row)) {
+			$this->is_archive = $row['is_archive'];
+		}
+		if (array_key_exists('content', $row)) {
+			$this->content = $row['content'];
+		}
+		if (array_key_exists('comment', $row)) {
+			$this->comment = $row['comment'];
+		}
+		if (array_key_exists('locale', $row)) {
+			$this->locale = $row['locale'];
+		}
 	}
 
 	/*****
