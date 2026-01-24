@@ -1,4 +1,4 @@
-<? 
+<?php 
 
 $ts = gmdate("D, d M Y H:i:s", time() + 60) . " GMT";
 header("Content-disposition: filename=blog.rss");
@@ -26,7 +26,7 @@ echo ('<?xml version="1.0" encoding="UTF-8"?>'); ?>
 		<width>154</width>
 	</image>
 
-	<? foreach ($blogArticles->objs as $row) { ?>
+	<?php foreach ($blogArticles->objs as $row) { ?>
 
 		<item>
 			<title><?=$row->name?></title>
@@ -38,7 +38,7 @@ echo ('<?xml version="1.0" encoding="UTF-8"?>'); ?>
 				]]></description>
 		</item>
 
-	<? } ?>
+	<?php } ?>
 
 
 </channel>

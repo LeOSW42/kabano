@@ -1,45 +1,45 @@
 <!DOCTYPE html>
 <html lang="fr">
 
-	<? include('blocks/d.head.html'); ?>
+	<?php include('blocks/d.head.html'); ?>
 
 	<body>
 
-		<? include('blocks/d.nav.html'); ?>
+		<?php include('blocks/d.nav.html'); ?>
 
 		<section>
 			<h1>Me contacter</h1>
 			<form class="form" action="<?=$config['rel_root_folder']?>contact" method="post">
-				<? if($error=="name") { ?>
+				<?php if($error=="name") { ?>
 					<p style="color: red;">Veuillez renseigner votre nom.</p>
-				<? } ?>
-				<? if($error=="subject") { ?>
+				<?php } ?>
+				<?php if($error=="subject") { ?>
 					<p style="color: red;">Veuillez renseigner un sujet.</p>
-				<? } ?>
-				<? if($error=="email") { ?>
+				<?php } ?>
+				<?php if($error=="email") { ?>
 					<p style="color: red;">Veuillez renseigner une adresse mail.</p>
-				<? } ?>
-				<? if($error=="message") { ?>
+				<?php } ?>
+				<?php if($error=="message") { ?>
 					<p style="color: red;">Veuillez renseigner un message.</p>
-				<? } ?>
-				<? if($error=="unknown") { ?>
+				<?php } ?>
+				<?php if($error=="unknown") { ?>
 					<p style="color: red;">Une erreur est survenue.</p>
-				<? } ?>
-				<? if($error=="spam") { ?>
+				<?php } ?>
+				<?php if($error=="spam") { ?>
 					<p style="color: red;">Veuillez n'envoyer qu'un message et attendre la fin du compte à rebours.<br>
 					Avez-vous javascript activé et attendu la fin du compte à rebours ?</p>
-				<? } ?>
-				<? if($error=="none") { ?>
+				<?php } ?>
+				<?php if($error=="none") { ?>
 					<p style="color: green;">Message bien envoyé.</p>
-				<? } ?>
+				<?php } ?>
 				<input type="text" name="name" id="name" placeholder="Nom" value="<?=$contact['name']?>">
 				<input type="email" name="email" id="email" placeholder="Adresse mail" value="<?=$contact['email']?>">
 				<input type="text" name="subject" id="subject" placeholder="Sujet" value="<?=$contact['subject']?>">
 				<textarea name="message" id="message" rows="12" placeholder="Contenu de votre message"><?=$contact['message']?></textarea>
-				<? if($user->rankIsHigher("registered")) { ?>
+				<?php if($user->rankIsHigher("registered")) { ?>
 					<input type="hidden" name="captcha" value="-2">
 					<input type="submit" name="submit" value="Envoyer">
-				<? } 
+				<?php } 
 				else { ?>
 				<p id="captcha">
 					<input type="hidden" id="captchahidden" name="captcha" value="10">
@@ -47,12 +47,12 @@
 					<small>Ceci me permet de laisser les robots à la porte.</small></span>
 					<input disabled id="captchasubmit" style="display:none;" type="submit" name="submit" value="Envoyer">
 				</p>
-				<? } ?>
+				<?php } ?>
 				<input type="hidden" name="ns" value="<?=$contact['ns']?>"/>
 			</form>
 		</section>
 
-		<? include('blocks/d.footer.html'); ?>
+		<?php include('blocks/d.footer.html'); ?>
 
 	</body>
 </html>

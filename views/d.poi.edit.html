@@ -1,29 +1,29 @@
 <!DOCTYPE html>
 <html lang="fr">
 
-	<? include('blocks/d.head.html'); ?>
+	<?php include('blocks/d.head.html'); ?>
 
 	<body>
 
-		<? include('blocks/d.nav.html'); ?>
+		<?php include('blocks/d.nav.html'); ?>
 
 		<div id="mapid"></div>
 
 		<div id="sticky">
 			<section>
 				<i id="slide-icon" class="fas fa-chevron-up"></i>
-				<? if(isset($new) AND $new==1) { ?>
+				<?php if(isset($new) AND $new==1) { ?>
 					<form class="form" action="<?=$config['rel_root_folder']?>poi/new" method="post">
-				<? } 
+				<?php } 
 				else { ?>
 					<form class="form" action="<?=$config['rel_root_folder']?>poi/<?=$poi->permalink?>/edit" method="post">
-				<? } ?>
+				<?php } ?>
 					<h1 class="flex_line">
 						<input type="text" value="<?=$poi->name?>" name="name" id="name" placeholder="Nom de l'hébergement" required>
 						<select name="locale" id="locale">
-							<? foreach($locales->objs as $locale) { ?>
+							<?php foreach($locales->objs as $locale) { ?>
 								<option <?=$poi->locale==$locale->name?'selected':''?> value="<?=$locale->name?>"><?=$locale->display_name?></option>
-							<? } ?>
+							<?php } ?>
 						</select>
 					</h1>
 
@@ -35,11 +35,11 @@
 					</div>
 
 					<div class="flex_line" id="type_selector">
-						<? foreach($poi_types as $type) { ?>
+						<?php foreach($poi_types as $type) { ?>
 						    <input type="radio" name="poi_type" value="<?=$type[3]?>" id="<?=$type[3]?>" required
 						           <?=$poi->poi_type == $type[3] ? 'checked' : ''?>>
 						    <label for="<?=$type[3]?>"><img src="<?=$config['views_url']?>img/<?=$type[3]?>.svg"><br><?=$type[0]?></label>
-						<? } ?>
+						<?php } ?>
 					</div>
 
 <script type="text/javascript">
@@ -53,10 +53,10 @@ var current_poi_type = "<?= $poi->poi_type ?>";
 var unsaved = false;
 
 // Stocke les abstracts et les squelettes de formulaire
-<? foreach($poi_types as $type) { ?>
+<?php foreach($poi_types as $type) { ?>
     window["<?=$type[3]?>_abstract"] = "<?=$type[4]?>";
     window["<?=$type[3]?>_jsonform"] = <?=json_encode($type[5])?>;
-<? } ?>
+<?php } ?>
 
 // 3 états : 0 = non, 1 = intermédiaire, 2 = oui
 function update3State(id) {
@@ -187,12 +187,12 @@ $(document).ready(function(){
 					<p id="abstract"></p>
 					<div id="specific_form"></div>
 
-					<? if(isset($new) AND $new==1) { ?>
+					<?php if(isset($new) AND $new==1) { ?>
 					<div id="permalink_container">
 						<label id="permalink_label" for="permalink"><?=$config['web_root_folder']?>poi/</label>
 						<input type="text" name="permalink" id="permalink" placeholder="URL" required>
 					</div>
-					<? } ?>
+					<?php } ?>
 
 					<script type="text/javascript">
 $( "#name" ).keyup(function() {
@@ -218,10 +218,10 @@ $( "#name" ).change(function() {
 			</section>
 
 <script>
-    <? if($poi->lat != null && $poi->lon != null) { ?>
+    <?php if($poi->lat != null && $poi->lon != null) { ?>
 	var poi_lat = <?=$poi->lat?>;
 	var poi_lon = <?=$poi->lon?>;
-    <? } ?>
+    <?php } ?>
 	var poi_type = "<?=$poi->poi_type?>";
     var is_new = <?= isset($new) && $new == 1 ? "true" : "false" ?>;
 	var root = "<?=$config['rel_root_folder']?>";
@@ -234,7 +234,7 @@ $( "#slide-icon" ).click(function() {
 });
 		</script>
 
-			<? include('blocks/d.footer.html'); ?>
+			<?php include('blocks/d.footer.html'); ?>
 		</div>
 	</body>
 </html>

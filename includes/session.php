@@ -1,4 +1,4 @@
-<?
+<?php
 
 require_once($config['models_folder']."d.users.php");
 

@@ -1,4 +1,4 @@
-<?
+<?php
 
 /*****
 ** This file contains the routing from any request to the correct view and controller

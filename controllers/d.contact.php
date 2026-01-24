@@ -1,4 +1,4 @@
-<?
+<?php
 
 function post($index) {
 	return isset($_POST[$index]) ? $_POST[$index] : '';

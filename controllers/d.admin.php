@@ -1,4 +1,4 @@
-<?
+<?php
 
 if(isset($controller->splitted_url[1]) && $user->rankIsHigher("moderator")) {
 	switch ($controller->splitted_url[1]) {

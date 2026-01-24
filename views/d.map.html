@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html lang="fr">
 
-	<? include('blocks/d.head.html'); ?>
+	<?php include('blocks/d.head.html'); ?>
 	
 	<body>
 
-		<? include('blocks/d.nav.html'); ?>
+		<?php include('blocks/d.nav.html'); ?>
 
 <!-- 		<div id="advert">En cours de création<span class="dots"><span>.</span><span>.</span><span>.</span></span><br>En attendant je vous recommande <a href="https://www.refuges.info/" target="_blank">refuges.info</a></div>
  -->
@@ -18,21 +18,21 @@
 
 		<div id="footer-legend" style="display: none;">
 			<i class="fa fa-times close-link" aria-hidden="true"></i>
-			<? foreach($poi_types as $type) { ?>
+			<?php foreach($poi_types as $type) { ?>
 				<span class="legend_item"><img src="<?=$config['views_url']?>img/<?=$type[3]?>.svg" class="poi_icon"> <?=$type[1]?></span>
-			<? } ?>
+			<?php } ?>
 		</div>
 
-		<? include('blocks/d.footer.html'); ?>
+		<?php include('blocks/d.footer.html'); ?>
 
 		<script>
 		    var root = "<?=$config['rel_root_folder']?>";
 
 		    // Icônes des POIs (déjà présentes dans ton système)
 		    window.poi_icons = {
-		        <? foreach($poi_types as $type) { ?>
+		        <?php foreach($poi_types as $type) { ?>
 		            "<?=$type[3]?>": "<?=$config['views_url']?>img/<?=$type[3]?>.svg",
-		        <? } ?>
+		        <?php } ?>
 		        "default": "<?=$config['views_url']?>img/default.svg"
 		    };
 		</script>
