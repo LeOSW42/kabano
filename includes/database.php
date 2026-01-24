@@ -4,7 +4,8 @@ namespace Kabano;
 
 function sql_escape_connection_value($value) {
 	$value = (string)$value;
-	$value = str_replace(['\\', "'"], ['\\\\', "\\'"], $value);
+	$value = str_replace("\0", '', $value);
+	$value = str_replace(['\\', "'", '"'], ['\\\\', "\\'", '\\"'], $value);
 	return "'".$value."'";
 }
 
@@ -16,7 +17,7 @@ function sql_connect() {
 		." user=".sql_escape_connection_value($config['SQL_user'])
 		." password=".sql_escape_connection_value($config['SQL_pass']);
 
-	$con = @pg_connect($connection);
+	$con = pg_connect($connection);
 	if (!$con) {
 		$error = error_get_last();
 		$message = $error && isset($error['message']) ? $error['message'] : "unknown error";
