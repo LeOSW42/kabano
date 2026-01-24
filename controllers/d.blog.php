@@ -189,5 +189,3 @@ switch ($controller->splitted_url[1]) {
 		}
 		break;
 }
-
-?>

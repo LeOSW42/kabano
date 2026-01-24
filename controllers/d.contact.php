@@ -72,6 +72,3 @@ $head['js'] = "d.captcha.js";
 $head['title'] = "Contact";
 
 include ($config['views_folder']."d.contact.html");
-
-
-?>

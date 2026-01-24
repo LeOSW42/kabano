@@ -283,5 +283,3 @@ function formatBytes($bytes, $locale = 'en', $precision = 2) {
 
 	return $formatted . ' ' . $units[$power];
 }
-
-?>
