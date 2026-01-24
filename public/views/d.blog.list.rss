@@ -19,7 +19,7 @@ echo ('<?xml version="1.0" encoding="UTF-8"?>'); ?>
 	<description>L'actualité du blog officiel de Kabano : Plateforme collaborative de recensement de cabanes et refuges.</description>
 	<language>fr</language>
 	<image>
-		<url><?=$config['web_root_folder']?>public/views/img/header_rss.svg</url>
+		<url><?=$config['web_root_folder']?>views/img/header_rss.svg</url>
 		<title>Kabano</title>
 		<link><?=$config['web_root_folder']?></link>
 		<height>44</height>

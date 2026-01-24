@@ -9,4 +9,4 @@
   - `Models/` : modèles MVC backend (ancien `models/`)
   - `Thirds/` : dépendances tierces backend (ancien `third/`)
 
-Note: configure the web server at the repository root; requests to `/` are routed to `public/` via `.htaccess`.
+Note: configure the web server at the repository root; requests to `/` are routed to `public/` via `.htaccess`, and URLs are generated from the app root.
