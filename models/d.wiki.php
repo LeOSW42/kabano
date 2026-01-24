@@ -46,7 +46,7 @@ class WikiPage
 	}
 
 	/*****
-	** Checks if a page at this ermalink exists and return the populated element
+	** Checks if a page at this permalink exists and return the populated element
 	*****/
 	public function checkPermalink($permalink, $withArchive=0, $elementNb=0) {
 		global $config;
