@@ -19,12 +19,15 @@ $config['public_folder'] = $config['abs_root_folder']."public/";
 // This is the relative folder to the root of the website from the DocumentRoot (can also be called subfolder)
 $document_root = rtrim(realpath($_SERVER['DOCUMENT_ROOT']), DIRECTORY_SEPARATOR);
 $public_root = rtrim(realpath($config['public_folder']), DIRECTORY_SEPARATOR);
+$abs_root = rtrim(realpath($config['abs_root_folder']), DIRECTORY_SEPARATOR);
 $config['rel_root_folder'] = "";
-if ($document_root && $public_root && strpos($public_root, $document_root) === 0) {
+if ($document_root && $abs_root && $document_root === $abs_root) {
+	$config['rel_root_folder'] = "/";
+} elseif ($document_root && $public_root && strpos($public_root, $document_root) === 0) {
 	$config['rel_root_folder'] = substr($public_root, strlen($document_root));
 }
 $config['web_root_folder']="https://kabano.test/";
-if($config['rel_root_folder']=="") {
+if($config['rel_root_folder']=="" || $config['rel_root_folder']=="/") {
 	$config['rel_root_folder']="/";
 } else {
 	$config['rel_root_folder'] = "/".trim($config['rel_root_folder'],"/")."/";
