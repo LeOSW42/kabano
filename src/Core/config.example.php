@@ -28,8 +28,20 @@ $abs_root = rtrim(realpath($config['abs_root_folder']), DIRECTORY_SEPARATOR);
 $config['rel_root_folder'] = "";
 if ($document_root && $abs_root && $document_root === $abs_root) {
 	$config['rel_root_folder'] = "/";
+} elseif ($document_root && $abs_root && strpos($abs_root, $document_root) === 0) {
+	// Prefer app root when the document root points above the repository.
+	$config['rel_root_folder'] = substr($abs_root, strlen($document_root));
+} elseif ($document_root && $public_root && $document_root === $public_root) {
+	$config['rel_root_folder'] = "/";
 } elseif ($document_root && $public_root && strpos($public_root, $document_root) === 0) {
+	// Fallback when the public folder sits under the document root.
 	$config['rel_root_folder'] = substr($public_root, strlen($document_root));
+	$public_suffix = "/".trim(basename(rtrim($config['public_folder'], "/")), "/");
+	$public_suffix_length = strlen($public_suffix);
+	if (strlen($config['rel_root_folder']) >= $public_suffix_length
+		&& substr($config['rel_root_folder'], -$public_suffix_length) === $public_suffix) {
+		$config['rel_root_folder'] = substr($config['rel_root_folder'], 0, -$public_suffix_length);
+	}
 }
 $config['web_root_folder']="https://kabano.test/";
 if($config['rel_root_folder']=="" || $config['rel_root_folder']=="/") {
