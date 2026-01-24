@@ -1,7 +1,7 @@
-/includes/config.php
-/medias/*
-/_maps
-_ressources/dump.sql
+/src/Core/config.php
+/public/medias/*
+/public/_maps
+/public/_ressources/dump.sql
 *.sublime-project
 *.sublime-workspace
 *.log
