@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- Template: d.contact.html -->
+<!-- Page: contact -->
 <html lang="fr">
 
 	<?php include('blocks/d.head.html'); ?>
@@ -8,9 +8,11 @@
 
 		<?php include('blocks/d.nav.html'); ?>
 
+		<!-- Contact form -->
 		<section>
 			<h1>Me contacter</h1>
 			<form class="form" action="<?=$config['rel_root_folder']?>contact" method="post">
+				<!-- Error messages -->
 				<?php if($error=="name") { ?>
 					<p style="color: red;">Veuillez renseigner votre nom.</p>
 				<?php } ?>
@@ -33,15 +35,18 @@
 				<?php if($error=="none") { ?>
 					<p style="color: green;">Message bien envoyé.</p>
 				<?php } ?>
+				<!-- Fields -->
 				<input type="text" name="name" id="name" placeholder="Nom" value="<?=$contact['name']?>">
 				<input type="email" name="email" id="email" placeholder="Adresse mail" value="<?=$contact['email']?>">
 				<input type="text" name="subject" id="subject" placeholder="Sujet" value="<?=$contact['subject']?>">
 				<textarea name="message" id="message" rows="12" placeholder="Contenu de votre message"><?=$contact['message']?></textarea>
+				<!-- Anti-spam -->
 				<?php if($user->rankIsHigher("registered")) { ?>
 					<input type="hidden" name="captcha" value="-2">
 					<input type="submit" name="submit" value="Envoyer">
 				<?php } 
 				else { ?>
+				<!-- Required wait -->
 				<p id="captcha">
 					<input type="hidden" id="captchahidden" name="captcha" value="10">
 					<span id="captchatext">Merci d'attendre <b id="captchasec">10 s</b> avant de pouvoir me contacter.<br>

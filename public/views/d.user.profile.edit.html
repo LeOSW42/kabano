@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- Template: d.user.profile.edit.html -->
+<!-- Page: profile editor -->
 <html lang="fr">
 
 	<?php include('blocks/d.head.html'); ?>
@@ -8,10 +8,12 @@
 
 		<?php include('blocks/d.nav.html'); ?>
 
+		<!-- Profile form -->
 		<section id="profile">
 			<?php if ($userProfile->id != 0) { ?>
 				<h1><?=$userProfile->name?></h1>
 				<article>
+					<!-- Status messages -->
 					<?php if(isset($nameError) AND $nameError==1) { ?>
 						<p style="color: #660000;">Veuillez choisir un autre nom d'utilisateur.</p>
 					<?php } ?>
@@ -21,6 +23,7 @@
 					<?php if(isset($updated) AND $updated==1) { ?>
 						<p style="color: #006600;">Le profil a été mis à jour.</p>
 					<?php } ?>
+					<!-- Profile fields -->
 					<form action="<?=$config['rel_root_folder']?>user/p/<?=$userProfile->id?>/edit" method="post" class="edituser" enctype="multipart/form-data">
 						<aside class="<?=$userProfile->is_avatar_present=='t'?'':'no'?>avatar">
 							<div id="picturebuttonscontainer">

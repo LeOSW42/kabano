@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- Template: d.wiki.view.html -->
+<!-- Page: wiki view -->
 <html lang="fr">
 
 	<?php include('blocks/d.head.html'); ?>
@@ -15,9 +15,11 @@
 			$hasHistory = isset($wikiHistory);
 		?>
 
+		<!-- Wiki content -->
 		<section id="wiki_page" <?=$isArchiveOrPrivate ? 'class="archive"' : ''?>>
 			<h1><?=$wikiPage->name?></h1>
 				<?php if ($canViewHistory) { ?>
+					<!-- History and actions -->
 					<span class="subtitle">
 					<?php if ($hasHistory) { ?>
 						<select id="wikihistory">
@@ -50,16 +52,19 @@
 					</span>
 				<?php } ?>
 
+			<!-- Page body -->
 			<div id="wikiContent">
 				<?=$wikiPage->content_html?>
 			</div>
 
+			<!-- Timestamp -->
 			<p id="wikiTimestamp">Page mise à jour le <?php echo datefmt_format($user->datetime_format,date_create($wikiPage->update_date, new DateTimeZone("UTC"))) ?></p>
 
 			<div style="clear: both;"> </div>
 		</section>
 
 <?php if ($canViewHistory) { ?>
+		<!-- History selector -->
 		<script type="text/javascript">
 			$( "#wikihistory" ).change(function() {
 				window.location.href = "<?=$config['rel_root_folder']?>wiki/<?=$wikiPage->permalink?>/"+$( this ).val();

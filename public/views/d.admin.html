@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- Template: d.admin.html -->
+<!-- Page: admin dashboard -->
 <html lang="fr">
 
 	<?php include('blocks/d.head.html'); ?>
@@ -8,14 +8,17 @@
 
 		<?php include('blocks/d.nav.html'); ?>
 
+		<!-- Admin actions -->
 		<section>
 			<h1>Administration</h1>
 			<br>
 			<?php if($user->rankIsHigher("administrator")) { ?>
+				<!-- Administrator tools -->
 				<a href="<?=$config['rel_root_folder']?>admin/git-pull" class="button"><i class="fas fa-sync-alt"></i> Mettre à jour</a> <small>Met à jour le logiciel depuis le dépôt GIT.</small><br><br>
 				<a href="<?=$config['rel_root_folder']?>admin/sql-backup" class="button"><i class="fas fa-file-export"></i> Sauvegarde SQL</a><a href="<?=$config['rel_root_folder']?>admin/files-backup" class="button"><i class="fas fa-file-export"></i> Archive des médias</a><small>Génère un dump SQL et une archive de fichiers téléchargeable.</small><br><br>
 			<?php } ?>
 			<?php if($user->rankIsHigher("moderator")) { ?>
+				<!-- Moderator tools -->
 				<a href="<?=$config['rel_root_folder']?>admin/logs" class="button"><i class="fas fa-history"></i> Voir les logs</a> <small>Permet d'accéder aux 200 dernières lignes des logs bruts des actions sur la base de données.</small><br><br>
 				<a href="<?=$config['rel_root_folder']?>admin/wiki-files" class="button"><i class="fas fa-paperclip"></i> Fichiers attachés</a><small>Gérer les fichiers attachés pour le wiki : liste, ajout, suppression...</small><br><br>
 				<a href="<?=$config['rel_root_folder']?>admin/stats" class="button"><i class="fas fa-chart-line"></i> Statistiques</a><small>Analyser les logs et afficher les statistiques.</small><br><br>

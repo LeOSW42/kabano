@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- Template: d.blog.list.html -->
+<!-- Page: blog list -->
 <html lang="fr">
 
 	<?php include('blocks/d.head.html'); ?>
@@ -8,8 +8,10 @@
 
 		<?php include('blocks/d.nav.html'); ?>
 
+		<!-- Blog listing -->
 		<section id="blog_list">
 			<h1>Blog</h1>
+			<!-- Actions and pagination -->
 			<p class="subtitle">
 				<?php if ($user->rankIsHigher("moderator")) { ?>
 					<a href="<?=$config['rel_root_folder']?>blog/new"><i class="fas fa-plus"></i> Nouvel article</a> &mdash; 
@@ -18,6 +20,7 @@
 				Articles <?=$first?> à <?=$last?> sur <?=$blogArticles->number?>
 			</p>
 
+			<!-- Article cards -->
 			<div id="articles_list">
 
 				<?php foreach ($blogArticles->objs as $row) { ?>
@@ -43,6 +46,7 @@
 
 			</div>
 			
+			<!-- Pagination controls -->
 			<div class="pagebuttons">
 				<?php if ($page != 0) { ?><a class="previous" href="<?=$config['rel_root_folder']?>blog/<?=$page?>"><i class="fas fa-chevron-left fa-fw"></i></a><?php }
 				if (($page+1)*$articles_per_pages < $blogArticles->number) { ?><a class="next" href="<?=$config['rel_root_folder']?>blog/<?=$page+2?>"><i class="fas fa-chevron-right fa-fw"></i></a><?php } ?>

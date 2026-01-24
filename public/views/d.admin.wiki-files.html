@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- Template: d.admin.wiki-files.html -->
+<!-- Page: admin wiki files -->
 <html lang="fr">
 
 	<?php include('blocks/d.head.html'); ?>
@@ -8,14 +8,17 @@
 
 		<?php include('blocks/d.nav.html'); ?>
 
+		<!-- Files table -->
 		<section id="wiki_files">
 			<h1><?=$head['title']?></h1>
 
+			<!-- Pagination summary -->
 			<p class="subtitle">Fichiers attachés <?=$first?> à <?=$last?> sur les <?=$filenb?> présents</p>
 
 			<br>
 			<br>
 
+			<!-- Upload form -->
 			<form action="<?=$config['rel_root_folder']?>admin/wiki-files/upload/" method="post" enctype="multipart/form-data" id="send_file">
 				<div>
 					<label for="file">Envoyer un fichier :</label>
@@ -24,7 +27,7 @@
 				<input type="submit" value="Envoyer">
 			</form>
 
-
+			<!-- File list -->
 			<table>
 				<tr class="first">
 					<th>
@@ -63,6 +66,7 @@
 				</tr>
 			<?php } ?>
 			</table> 
+			<!-- Pagination controls -->
 			<div class="pagebuttons">
 				<?php if ($page != 0) { ?><a class="previous" href="<?=$config['rel_root_folder']?>admin/wiki-files/<?=$page?>?orderby=<?=$orderby?>&amp;order=<?=$order?>"><i class="fas fa-chevron-left fa-fw"></i></a><?php }
 				if (($page+1)*$rows_per_pages < $filenb) { ?><a class="next" href="<?=$config['rel_root_folder']?>admin/wiki-files/<?=$page+2?>?orderby=<?=$orderby?>&amp;order=<?=$order?>"><i class="fas fa-chevron-right fa-fw"></i></a><?php } ?>
