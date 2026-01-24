@@ -22,9 +22,12 @@ if(isset($controller->splitted_url[1]) && $user->rankIsHigher("moderator")) {
 			break;
 		case 'logs':
 			if ($user->rankIsHigher("moderator")) {
-				$head['title'] = "Logs";
+			$head['title'] = "Logs";
 
-				$files_list = scandir($config['logs_folder']);
+			$output = array();
+			$files_list = scandir($config['logs_folder']);
+			$logs_folder = realpath($config['logs_folder']);
+			$logs_folder_root = $logs_folder !== false ? rtrim($logs_folder, DIRECTORY_SEPARATOR) : null;
 
 				if (isset($controller->splitted_url[2]) && is_numeric($controller->splitted_url[2]) && intval($controller->splitted_url[2]) < count($files_list)-2) {
 					$filenb = $controller->splitted_url[2];
@@ -33,8 +36,15 @@ if(isset($controller->splitted_url[1]) && $user->rankIsHigher("moderator")) {
 					$filenb = 0;
 				}
 
-				chdir($config['logs_folder']);
-				exec("tail -n 200 ".$files_list[$filenb+2]." | tac", $output);
+			$log_file = $files_list[$filenb+2] ?? null;
+			if ($logs_folder_root && $log_file) {
+				$log_file = basename($log_file);
+				$log_path = $logs_folder_root . DIRECTORY_SEPARATOR . $log_file;
+				$real_log_path = realpath($log_path);
+				if ($real_log_path && str_starts_with($real_log_path, $logs_folder_root . DIRECTORY_SEPARATOR)) {
+					exec("tail -n 200 ".escapeshellarg($real_log_path)." | tac", $output);
+				}
+			}
 
 				include ($config['views_folder']."d.admin.logs.html");
 			}
@@ -47,33 +57,38 @@ if(isset($controller->splitted_url[1]) && $user->rankIsHigher("moderator")) {
 				$head['css'] = "d.index.css;d.admin.css";
 				$head['title'] = "Fichiers attachés au wiki";
 				$rows_per_pages = 50;
-				$files_folder = $config['medias_folder']."wiki/";
+			$files_folder = $config['medias_folder']."wiki/";
+			$files_folder_real = realpath($files_folder);
+			$files_folder_root = $files_folder_real !== false ? rtrim($files_folder_real, DIRECTORY_SEPARATOR) : rtrim($files_folder, DIRECTORY_SEPARATOR);
 
 					// Delete a file
 				if ($user->rankIsHigher("administrator")) {
-					if(isset($controller->splitted_url[2]) && $controller->splitted_url[2]=='delete' && isset($controller->splitted_url[3])) {
-						$filename=$files_folder.$controller->splitted_url[3];
-						if (file_exists($filename)) {
-							unlink($filename);
-							error_log(date('r')." \t".$user->name." (".$user->id.") \tDELETE \tDelete wiki file '".$controller->splitted_url[3]."'\r\n",3,$config['logs_folder'].'wiki-files.log');
-						}
+				if(isset($controller->splitted_url[2]) && $controller->splitted_url[2]=='delete' && isset($controller->splitted_url[3])) {
+					$safe_name = basename($controller->splitted_url[3]);
+					$filename = $files_folder_root . DIRECTORY_SEPARATOR . $safe_name;
+					$real_filename = realpath($filename);
+					if ($real_filename && str_starts_with($real_filename, $files_folder_root . DIRECTORY_SEPARATOR)) {
+						unlink($real_filename);
+						error_log(date('r')." \t".$user->name." (".$user->id.") \tDELETE \tDelete wiki file '".$safe_name."'\r\n",3,$config['logs_folder'].'wiki-files.log');
 					}
+				}
 				}
 
 					// Add a file
 				if(isset($controller->splitted_url[2]) && $controller->splitted_url[2]=='upload' && isset($_FILES['file'])) {
-					$filename=$config['medias_folder']."wiki/".$_FILES['file']['name'];
-					if(move_uploaded_file($_FILES['file']['tmp_name'], $filename)) {
-						error_log(date('r')." \t".$user->name." (".$user->id.") \tUPLOAD Upload wiki file '".$_FILES['file']['name']."'\r\n",3,$config['logs_folder'].'wiki-files.log');
+					$safe_name = basename($_FILES['file']['name']);
+					$filename = $files_folder_root . DIRECTORY_SEPARATOR . $safe_name;
+					if($safe_name !== '' && move_uploaded_file($_FILES['file']['tmp_name'], $filename)) {
+						error_log(date('r')." \t".$user->name." (".$user->id.") \tUPLOAD Upload wiki file '".$safe_name."'\r\n",3,$config['logs_folder'].'wiki-files.log');
 					}
 
 				}
 
 					// Get the file list
-				$files_list = scandir($files_folder);
+			$files_list = scandir($files_folder_root);
 					// Populate table
 				foreach ($files_list as $file) {
-					$file_path = $files_folder.$file;
+					$file_path = $files_folder_root . DIRECTORY_SEPARATOR . $file;
 
 					if (is_file($file_path)) {
 						$file_info = [
@@ -157,11 +172,20 @@ if(isset($controller->splitted_url[1]) && $user->rankIsHigher("moderator")) {
 			if ($user->rankIsHigher("administrator")) {
 				$head['title'] = "Export SQL";
 
-				if(isset($controller->splitted_url[2]) && $controller->splitted_url[2]=='delete' && isset($controller->splitted_url[3])) {
-					unlink($config['abs_root_folder'].'tmp/'.$controller->splitted_url[3]);
-					$output = Array();
-					$backup_file = Array();
+			if(isset($controller->splitted_url[2]) && $controller->splitted_url[2]=='delete' && isset($controller->splitted_url[3])) {
+				$tmp_folder = realpath($config['abs_root_folder'].'tmp');
+				if ($tmp_folder !== false) {
+					$safe_name = basename($controller->splitted_url[3]);
+					$tmp_folder_root = rtrim($tmp_folder, DIRECTORY_SEPARATOR);
+					$delete_path = $tmp_folder_root . DIRECTORY_SEPARATOR . $safe_name;
+					$real_delete_path = realpath($delete_path);
+					if ($real_delete_path && str_starts_with($real_delete_path, $tmp_folder_root . DIRECTORY_SEPARATOR)) {
+						unlink($real_delete_path);
+					}
 				}
+				$output = Array();
+				$backup_file = Array();
+			}
 				else {
 					// Nom du fichier de sauvegarde
 					$timestamp = date('Ymd_His');
@@ -190,9 +214,18 @@ if(isset($controller->splitted_url[1]) && $user->rankIsHigher("moderator")) {
 				$output = Array();
 				$backup_file = Array();
 
-				if(isset($controller->splitted_url[2]) && $controller->splitted_url[2]=='delete' && isset($controller->splitted_url[3])) {
-					unlink($config['abs_root_folder'].'tmp/'.$controller->splitted_url[3]);
+			if(isset($controller->splitted_url[2]) && $controller->splitted_url[2]=='delete' && isset($controller->splitted_url[3])) {
+				$tmp_folder = realpath($config['abs_root_folder'].'tmp');
+				if ($tmp_folder !== false) {
+					$safe_name = basename($controller->splitted_url[3]);
+					$tmp_folder_root = rtrim($tmp_folder, DIRECTORY_SEPARATOR);
+					$delete_path = $tmp_folder_root . DIRECTORY_SEPARATOR . $safe_name;
+					$real_delete_path = realpath($delete_path);
+					if ($real_delete_path && str_starts_with($real_delete_path, $tmp_folder_root . DIRECTORY_SEPARATOR)) {
+						unlink($real_delete_path);
+					}
 				}
+			}
 				else {
 					// Nom du fichier de sauvegarde
 					$timestamp = date('Ymd_His');

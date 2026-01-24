@@ -11,8 +11,9 @@ if(isset($_POST['submit'])) {
 	$message .= "<hr>\r\n";
 	$message .= "<pre style='padding: 10px; background: #ccc;'>".strip_tags(post('message'))."</pre><br>\r\n";
 
-	$headers = 'From: '. post('email') . "\r\n" .
-	'Reply-To: '. post('email') . "\r\n" .
+	$sender = str_replace(["\r", "\n"], '', post('email'));
+	$headers = 'From: '. $sender . "\r\n" .
+	'Reply-To: '. $sender . "\r\n" .
 	'X-Mailer: PHP/' . phpversion() . "\r\n" .
 	'MIME-Version: 1.0' . "\r\n" .
 	'Content-type: text/html; charset=UTF-8' . "\r\n"; 

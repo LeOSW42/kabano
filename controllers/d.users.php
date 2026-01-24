@@ -16,7 +16,17 @@ if(isset($controller->splitted_url[1])) {
 					if($user->login($_POST['login'], $_POST['password'])) {
 						// SUCESSFULL LOGIN
 						$_SESSION['userid'] = $user->id;
-						header('Location: '.$_SERVER['HTTP_REFERER']);
+						$redirect = $config['rel_root_folder'];
+						if (!empty($_SERVER['HTTP_REFERER'])) {
+							$referer = $_SERVER['HTTP_REFERER'];
+							$parts = parse_url($referer);
+							$host = $_SERVER['HTTP_HOST'] ?? '';
+							if ($parts !== false && ((empty($parts['host']) && empty($parts['scheme'])) || (!empty($host) && isset($parts['host']) && $parts['host'] === $host))) {
+								$redirect = $referer;
+							}
+						}
+						header('Location: '.$redirect);
+						exit;
 					}
 					else {
 						header('Location: '.$config['rel_root_folder'].'user/login?error=1');
@@ -29,7 +39,17 @@ if(isset($controller->splitted_url[1])) {
 			break;
 		case 'logout':
 			session_destroy();
-			header('Location: '.$_SERVER['HTTP_REFERER']);
+			$redirect = $config['rel_root_folder'];
+			if (!empty($_SERVER['HTTP_REFERER'])) {
+				$referer = $_SERVER['HTTP_REFERER'];
+				$parts = parse_url($referer);
+				$host = $_SERVER['HTTP_HOST'] ?? '';
+				if ($parts !== false && ((empty($parts['host']) && empty($parts['scheme'])) || (!empty($host) && isset($parts['host']) && $parts['host'] === $host))) {
+					$redirect = $referer;
+				}
+			}
+			header('Location: '.$redirect);
+			exit;
 			break;
 		case 'signin':
 			$head['js'] = "d.captcha.js";
