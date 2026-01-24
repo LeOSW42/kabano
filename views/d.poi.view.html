@@ -7,10 +7,21 @@
 
 		<?php include('blocks/d.nav.html'); ?>
 
+		<?php
+			$isArchiveOrPrivate = $poi->is_archive == "t" || $poi->is_public == "f";
+			$canViewHistory = $user->rankIsHigher('premium');
+			$canModerate = $user->rankIsHigher('moderator');
+			$canWriteComment = $user->rankIsHigher("registered");
+			$canOpenCommentForm = $canWriteComment && !$isArchiveOrPrivate;
+			$hasHistory = isset($PoiHistory);
+			$isVisitor = $user->rank == "visitor";
+			$isCommentable = $poi->is_commentable == 't';
+		?>
+
 		<div id="mapid"></div>
 
 		<div id="sticky">
-			<section <?=$poi->is_archive=="t"||$poi->is_public=="f"?'class="archive"':''?>>
+			<section <?=$isArchiveOrPrivate ? 'class="archive"' : ''?>>
 				<i id="slide-icon" class="fas fa-chevron-up"></i>
 
                 <h1 class="flex_line">
@@ -50,21 +61,29 @@
 
                 </div>
 
-                <?php if($user->rankIsHigher('premium')) { ?>
+                <?php if ($canViewHistory) { ?>
                     <span class="subtitle">
-                    <?php if(isset($PoiHistory)) { ?>
+                    <?php if ($hasHistory) { ?>
                         <select id="PoiHistory">
-                            <?php $i = 0;
-                            foreach ($PoiHistory->objs as $row) { ?>
-                                <option <?=$row->version_id==$poi->version_id?'selected':''?> value="<?=$i?>"><?=$row->is_archive=="f"?'&bull; ':''?><?php echo datefmt_format($user->datetimeshort_format,date_create($row->update_date, new DateTimeZone("UTC"))) ?></option>
-                            <?php $i++;
-                            } ?>
+                            <?php $historyIndex = 0; ?>
+                            <?php foreach ($PoiHistory->objs as $row) { ?>
+                                <?php
+                                    $isSelected = $row->version_id == $poi->version_id ? 'selected' : '';
+                                    $isActive = $row->is_archive == "f" ? '&bull; ' : '';
+                                    $formattedDate = datefmt_format(
+                                        $user->datetimeshort_format,
+                                        date_create($row->update_date, new DateTimeZone("UTC"))
+                                    );
+                                ?>
+                                <option <?=$isSelected?> value="<?=$historyIndex?>"><?=$isActive?><?=$formattedDate?></option>
+                                <?php $historyIndex++; ?>
+                            <?php } ?>
                         </select>
-                    <?php } 
-                    if ($user->rankIsHigher('moderator') && isset($PoiHistory)) { ?>
-                         &mdash; 
                     <?php }
-                    if ($user->rankIsHigher("moderator")) { ?>
+                    if ($canModerate && $hasHistory) { ?>
+                          &mdash; 
+                    <?php }
+                    if ($canModerate) { ?>
                         <a href="<?=$config['rel_root_folder']?>poi/<?=$poi->permalink?>/edit"><i class="fas fa-pencil-alt"></i> Éditer le point</a> &mdash; 
                         <?php if ($poi->is_public == 't') { ?>
                             <a href="<?=$config['rel_root_folder']?>poi/<?=$poi->permalink?>/delete"><i class="fas fa-trash"></i> Effacer le point</a>
@@ -79,18 +98,18 @@
                 <br>
 
                 <?php
-                $fields = $poi_types[$poi->poi_type][5];
-                $values = $poi->parameters ?? [];
+                $poiFields = $poi_types[$poi->poi_type][5];
+                $poiValues = $poi->parameters ?? [];
 
                 // Séparer les booléens des autres champs
-                $bool_fields = [];
-                $other_fields = [];
+                $boolFields = [];
+                $otherFields = [];
 
-                foreach ($fields as $key => $label) {
+                foreach ($poiFields as $key => $label) {
                     if ($key[0] === 'b') {
-                        $bool_fields[$key] = $label;
+                        $boolFields[$key] = $label;
                     } else {
-                        $other_fields[$key] = $label;
+                        $otherFields[$key] = $label;
                     }
                 }
                 ?>
@@ -98,9 +117,9 @@
                 <div id="specific_form" class="view-mode">
 
                     <!-- AUTRES CHAMPS (texte, nombre, lien) -->
-                    <?php foreach ($other_fields as $key => $label): ?>
+                    <?php foreach ($otherFields as $key => $label): ?>
                         <?php
-                            $value = $values[$key] ?? null;
+                            $value = $poiValues[$key] ?? null;
                             $type = $key[0];
                         ?>
 
@@ -131,27 +150,30 @@
                     <?php endforeach; ?>
 
                     <!-- TABLEAU DES BOOLÉENS -->
-                    <?php if (!empty($bool_fields)): ?>
+                    <?php if (!empty($boolFields)): ?>
+                    <?php
+                        $boolIcons = [
+                            0 => "<span class='boolean-pill boolean-no'>❌</span>",
+                            1 => "<span class='boolean-pill boolean-maybe'>❓</span>",
+                            2 => "<span class='boolean-pill boolean-yes'>✔️</span>",
+                            -1 => "<span class='boolean-pill boolean-unknown'>➖</span>"
+                        ];
+                    ?>
                     <div class="bool-grid">
 
                         <!-- Ligne des labels -->
                         <div class="bool-row labels">
-                            <?php foreach ($bool_fields as $key => $label): ?>
+                            <?php foreach ($boolFields as $key => $label): ?>
                                 <div class="bool-label"><?= $label ?></div>
                             <?php endforeach; ?>
                         </div>
 
                         <!-- Ligne des valeurs -->
                         <div class="bool-row values">
-                            <?php foreach ($bool_fields as $key => $label): ?>
+                            <?php foreach ($boolFields as $key => $label): ?>
                                 <?php
-                                    $value = $values[$key] ?? 2;
-                                    $icon = [
-                                        0 => "<span class='boolean-pill boolean-no'>❌</span>",
-                                        1 => "<span class='boolean-pill boolean-maybe'>❓</span>",
-                                        2 => "<span class='boolean-pill boolean-yes'>✔️</span>",
-                                        -1 => "<span class='boolean-pill boolean-unknown'>➖</span>"
-                                    ][$value];
+                                    $value = $poiValues[$key] ?? 2;
+                                    $icon = $boolIcons[$value];
                                 ?>
                                 <div class="bool-cell">
                                     <?= $icon ?>
@@ -165,13 +187,13 @@
                 </div>
 
 
-				<?php if ($poi->is_commentable == 't') { ?>
+				<?php if ($isCommentable) { ?>
                     <div id="new_comment">
                         <form class="form" action="<?=$config['rel_root_folder']?>poi/<?=$poi->permalink?>/new_comment" method="post">
-                            <div id="new_comment_label" <?=$user->rank=="visitor"?"class='sent' ":""?>>
-                                <?php if ($poi->is_archive == "t" || $poi->is_public == "f") { ?>
+                            <div id="new_comment_label" <?=$isVisitor ? "class='sent' " : ""?>>
+                                <?php if ($isArchiveOrPrivate) { ?>
                                     <p>Impossible de commenter un point non publié</p>
-                                <?php } else if ($user->rankIsHigher("registered")) { ?>
+                                <?php } else if ($canWriteComment) { ?>
                                     <input name="submit" type="submit" value="Envoyer">
                                     <p>Ajouter un nouveau commentaire</p>
                                 <?php } else { ?>
@@ -187,6 +209,7 @@
 					<?php if (isset($poi_comments) && $poi_comments->number > 0) { ?>
 						<div id="comments">
 							<?php foreach ($poi_comments->objs as $comment) { ?>
+                                <?php $canManageComment = $canModerate || $user->id == $comment->author; ?>
 								<article <?php if($comment->is_archive == 't' || $comment->is_public == 'f') echo 'class="comment_archive" '; ?>>
                                     <div class="comment_title">
 
@@ -206,7 +229,7 @@
 
                                         le <?php echo datefmt_format($user->datetime_format, date_create($comment->update_date, new DateTimeZone("UTC"))) ?>
 
-                                        <?php if (($user->rankIsHigher("moderator") || $user->id == $comment->author) && $comment->is_public == 't') { ?>
+                                        <?php if ($canManageComment && $comment->is_public == 't') { ?>
                                             <span class="delete_link">
                                                 <a href="<?=$config['rel_root_folder']?>poi/<?=$poi->permalink?>/delete_comment/<?=$comment->id?>">
                                                     <i class="fas fa-trash"></i> Effacer le commentaire
@@ -214,7 +237,7 @@
                                             </span>
                                         <?php } ?>
 
-                                        <?php if (($user->rankIsHigher("moderator") || $user->id == $comment->author) && $comment->is_public == 'f') { ?>
+                                        <?php if ($canManageComment && $comment->is_public == 'f') { ?>
                                             <span class="delete_link">
                                                 <a href="<?=$config['rel_root_folder']?>poi/<?=$poi->permalink?>/restore_comment/<?=$comment->id?>">
                                                     <i class="fas fa-eye"></i> Restaurer le commentaire
@@ -249,23 +272,23 @@
             var root = "<?=$config['rel_root_folder']?>";
 		</script>
 
-<?php if($user->rankIsHigher("premium")) { ?>
+		<?php if ($canViewHistory) { ?>
         <script type="text/javascript">
-$( "#PoiHistory" ).change(function() {
-  window.location.href = "<?=$config['rel_root_folder']?>poi/<?=$poi->permalink?>/"+$( this ).val();
-});
+            $( "#PoiHistory" ).change(function() {
+                window.location.href = "<?=$config['rel_root_folder']?>poi/<?=$poi->permalink?>/"+$( this ).val();
+            });
         </script>
-<?php } ?>
+		<?php } ?>
 
-<?php if($user->rankIsHigher("registered") && $poi->is_archive == "f" && $poi->is_public == "t") { ?>
+		<?php if ($canOpenCommentForm) { ?>
         <script type="text/javascript">
-$( "#new_comment_label" ).click(function() {
-  $( "#new_comment_form" ).show(400);
-  $( "#new_comment_label input" ).show(0);
-  $( "#new_comment_label").addClass('sent');
-});
+            $( "#new_comment_label" ).click(function() {
+                $( "#new_comment_form" ).show(400);
+                $( "#new_comment_label input" ).show(0);
+                $( "#new_comment_label").addClass('sent');
+            });
         </script>
-<?php } ?>
+		<?php } ?>
 
 		<script type="text/javascript">
 			$( "#slide-icon" ).click(function() {

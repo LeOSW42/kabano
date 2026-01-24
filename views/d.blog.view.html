@@ -7,23 +7,42 @@
 
 		<?php include('blocks/d.nav.html'); ?>
 
-		<section id="blog_article" <?=$blogArticle->is_archive=="t"||$blogArticle->is_public=="f"?'class="archive"':''?>>
+		<?php
+			$isArchiveOrPrivate = $blogArticle->is_archive == "t" || $blogArticle->is_public == "f";
+			$canViewHistory = $user->rankIsHigher('premium');
+			$canModerate = $user->rankIsHigher('moderator');
+			$canWriteComment = $user->rankIsHigher("registered");
+			$canOpenCommentForm = $canWriteComment && !$isArchiveOrPrivate;
+			$hasHistory = isset($blogHistory);
+			$isVisitor = $user->rank == "visitor";
+			$isCommentable = $blogArticle->is_commentable == "t";
+		?>
+
+		<section id="blog_article" <?=$isArchiveOrPrivate ? 'class="archive"' : ''?>>
 			<h1><?=$blogArticle->name?></h1>
-				<?php if($user->rankIsHigher('premium')) { ?>
+				<?php if ($canViewHistory) { ?>
 					<span class="subtitle">
-					<?php if(isset($blogHistory)) { ?>
+					<?php if ($hasHistory) { ?>
 						<select id="bloghistory">
-							<?php $i = 0;
-							foreach ($blogHistory->objs as $row) { ?>
-								<option <?=$row->version_id==$blogArticle->version_id?'selected':''?> value="<?=$i?>"><?=$row->is_archive=="f"?'&bull; ':''?><?php echo datefmt_format($user->datetimeshort_format,date_create($row->update_date, new DateTimeZone("UTC"))) ?></option>
-							<?php $i++;
-							} ?>
+							<?php $historyIndex = 0; ?>
+							<?php foreach ($blogHistory->objs as $row) { ?>
+								<?php
+									$isSelected = $row->version_id == $blogArticle->version_id ? 'selected' : '';
+									$isActive = $row->is_archive == "f" ? '&bull; ' : '';
+									$formattedDate = datefmt_format(
+										$user->datetimeshort_format,
+										date_create($row->update_date, new DateTimeZone("UTC"))
+									);
+								?>
+								<option <?=$isSelected?> value="<?=$historyIndex?>"><?=$isActive?><?=$formattedDate?></option>
+								<?php $historyIndex++; ?>
+							<?php } ?>
 						</select>
-					<?php } 
-					if ($user->rankIsHigher('moderator') && isset($blogHistory)) { ?>
+					<?php }
+					if ($canModerate && $hasHistory) { ?>
 						 &mdash; 
 					<?php }
-					if ($user->rankIsHigher("moderator")) { ?>
+					if ($canModerate) { ?>
 						<a href="<?=$config['rel_root_folder']?>blog/<?=$blogArticle->permalink?>/edit"><i class="fas fa-pencil-alt"></i> Éditer l'article</a> &mdash; 
 						<?php if ($blogArticle->is_public == 't') { ?>
 							<a href="<?=$config['rel_root_folder']?>blog/<?=$blogArticle->permalink?>/delete"><i class="fas fa-trash"></i> Effacer l'article</a>
@@ -41,21 +60,20 @@
 			<p id="blogTimestamp">Article écrit par 
 			<?php if ($user->rankIsHigher("blocked")) { ?>
 				<a href="<?=$config['rel_root_folder']?>user/p/<?=$blogArticle->author?>"><?=$blogArticle->author_name?></a>
-			<?php } 
-			else { ?>
+			<?php } else { ?>
 				<?=$blogArticle->author_name?> 
 			<?php } ?>
 			le <?php echo datefmt_format($user->datetime_format,date_create($blogArticle->creation_date, new DateTimeZone("UTC"))) ?></p>
 
 			<!-- COMMENTS -->
 
-			<?php if ($blogArticle->is_commentable == "t") { ?>
+			<?php if ($isCommentable) { ?>
 				<div id="new_comment">
 					<form class="form" action="<?=$config['rel_root_folder']?>blog/<?=$blogArticle->permalink?>/new_comment" method="post">
-						<div id="new_comment_label" <?=$user->rank=="visitor"?"class='sent' ":""?>>
-							<?php if ($blogArticle->is_archive == "t" || $blogArticle->is_public == "f") { ?>
+						<div id="new_comment_label" <?=$isVisitor ? "class='sent' " : ""?>>
+							<?php if ($isArchiveOrPrivate) { ?>
 								<p>Impossible de commenter un article non publié</p>
-							<?php } else if ($user->rankIsHigher("registered")) { ?>
+							<?php } else if ($canWriteComment) { ?>
 								<input name="submit" type="submit" value="Envoyer">
 								<p>Ajouter un nouveau commentaire</p>
 							<?php } else { ?>
@@ -68,36 +86,35 @@
 					</form>
 				</div>
 
-				<?php if($blogArticle->is_commentable == 't') {
-					foreach ($blogArticles_comments->objs as $comment) { ?>
+				<?php foreach ($blogArticles_comments->objs as $comment) { ?>
+					<?php $canManageComment = $canModerate || $user->id == $comment->author; ?>
 
-						<article <?php if($comment->is_archive == 't' || $comment->is_public == 'f') echo 'class="comment_archive" '; ?>>
-							<div class="comment_title">
-								<?php if ($comment->author_obj->is_avatar_present=='t') { ?>
-									<img alt="Avatar" class="icon avatar" src="<?=$config['rel_root_folder']?>medias/avatars/<?=$comment->author_obj->id?>_s.jpg">
-								<?php } else { ?>
-									<i class="icon fas fa-user-secret"></i>
-								<?php } ?>
-								<?php if ($user->rankIsHigher("blocked")) { ?>
-								<a class="username" href="<?=$config['rel_root_folder']?>user/p/<?=$comment->author_obj->id?>"><?=$comment->author_obj->name?></a>
-								<?php } else { ?>
-									<?=$comment->author_obj->name?>
-								<?php } ?>
-								le <?php echo datefmt_format($user->datetime_format,date_create($comment->update_date, new DateTimeZone("UTC"))) ?>
-								<?php if (($user->rankIsHigher("moderator") || $user->id == $comment->author) && $comment->is_public == 't') { ?>
-									<span class="delete_link"><a href="<?=$config['rel_root_folder']?>blog/<?=$blogArticle->permalink?>/delete_comment/<?=$comment->id?>"><i class="fas fa-trash"></i> Effacer le commentaire</a></span>
-								<?php } ?>
-								<?php if (($user->rankIsHigher("moderator") || $user->id == $comment->author) && $comment->is_public == 'f') { ?>
-									<span class="delete_link"><a href="<?=$config['rel_root_folder']?>blog/<?=$blogArticle->permalink?>/restore_comment/<?=$comment->id?>"><i class="fas fa-eye"></i> Restaurer le commentaire</a></span>
-								<?php } ?>
-							</div>
-							<div class="comment_content">
-								<?=$comment->comment_html?>
-							</div>
-						</article>
+					<article <?php if($comment->is_archive == 't' || $comment->is_public == 'f') echo 'class="comment_archive" '; ?>>
+						<div class="comment_title">
+							<?php if ($comment->author_obj->is_avatar_present=='t') { ?>
+								<img alt="Avatar" class="icon avatar" src="<?=$config['rel_root_folder']?>medias/avatars/<?=$comment->author_obj->id?>_s.jpg">
+							<?php } else { ?>
+								<i class="icon fas fa-user-secret"></i>
+							<?php } ?>
+							<?php if ($user->rankIsHigher("blocked")) { ?>
+							<a class="username" href="<?=$config['rel_root_folder']?>user/p/<?=$comment->author_obj->id?>"><?=$comment->author_obj->name?></a>
+							<?php } else { ?>
+								<?=$comment->author_obj->name?>
+							<?php } ?>
+							le <?php echo datefmt_format($user->datetime_format,date_create($comment->update_date, new DateTimeZone("UTC"))) ?>
+							<?php if ($canManageComment && $comment->is_public == 't') { ?>
+								<span class="delete_link"><a href="<?=$config['rel_root_folder']?>blog/<?=$blogArticle->permalink?>/delete_comment/<?=$comment->id?>"><i class="fas fa-trash"></i> Effacer le commentaire</a></span>
+							<?php } ?>
+							<?php if ($canManageComment && $comment->is_public == 'f') { ?>
+								<span class="delete_link"><a href="<?=$config['rel_root_folder']?>blog/<?=$blogArticle->permalink?>/restore_comment/<?=$comment->id?>"><i class="fas fa-eye"></i> Restaurer le commentaire</a></span>
+							<?php } ?>
+						</div>
+						<div class="comment_content">
+							<?=$comment->comment_html?>
+						</div>
+					</article>
 
-					<?php }
-				}
+				<?php }
 			} ?>
 
 			<br>
@@ -105,20 +122,20 @@
 			<div style="clear: both;"> </div>
 		</section>
 
-<?php if($user->rankIsHigher("premium")) { ?>
+<?php if ($canViewHistory) { ?>
 		<script type="text/javascript">
-$( "#bloghistory" ).change(function() {
-  window.location.href = "<?=$config['rel_root_folder']?>blog/<?=$blogArticle->permalink?>/"+$( this ).val();
-});
+			$( "#bloghistory" ).change(function() {
+				window.location.href = "<?=$config['rel_root_folder']?>blog/<?=$blogArticle->permalink?>/"+$( this ).val();
+			});
 		</script>
 <?php } ?>
-<?php if($user->rankIsHigher("registered") && $blogArticle->is_archive == "f" && $blogArticle->is_public == "t") { ?>
+<?php if ($canOpenCommentForm) { ?>
 		<script type="text/javascript">
-$( "#new_comment_label" ).click(function() {
-  $( "#new_comment_form" ).show(400);
-  $( "#new_comment_label input" ).show(0);
-  $( "#new_comment_label").addClass('sent');
-});
+			$( "#new_comment_label" ).click(function() {
+				$( "#new_comment_form" ).show(400);
+				$( "#new_comment_label input" ).show(0);
+				$( "#new_comment_label").addClass('sent');
+			});
 		</script>
 <?php } ?>
 
