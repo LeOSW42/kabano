@@ -89,5 +89,3 @@ $poi_types = array(
     )
 
 );
-
-?>
