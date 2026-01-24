@@ -48,5 +48,3 @@ $config['SQL_db'] = "postgres";
 
 $config['admin_mail'] = "leo@lstronic.com";
 $config['bot_mail'] = "robot@kabano.com";
-
-?>

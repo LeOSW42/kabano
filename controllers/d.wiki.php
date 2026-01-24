@@ -1,4 +1,4 @@
-<?
+<?php
 
 require_once($config['models_folder']."d.wiki.php");
 
@@ -77,5 +77,3 @@ else if(isset($controller->splitted_url[1]) && $wikiPage->checkPermalink($contro
 else {
 	$notfound = 1;
 }
-
-?>

@@ -1,4 +1,4 @@
-<?
+<?php
 
 function post($index) {
 	return isset($_POST[$index]) ? $_POST[$index] : '';
@@ -72,6 +72,3 @@ $head['js'] = "d.captcha.js";
 $head['title'] = "Contact";
 
 include ($config['views_folder']."d.contact.html");
-
-
-?>

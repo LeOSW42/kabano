@@ -1,4 +1,4 @@
-<?
+<?php
 
 require_once($config['models_folder']."d.users.php");
 
@@ -223,5 +223,3 @@ if(isset($controller->splitted_url[1])) {
 else {
 	$notfound = 1;
 }
-
-?>
