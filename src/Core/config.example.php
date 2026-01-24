@@ -11,13 +11,18 @@ date_default_timezone_set("UTC"); // Default tz for date manipulation is UTC. Di
 ** Management of folder names
 *****/
 
-$config['core_folder'] = rtrim(__DIR__, DIRECTORY_SEPARATOR).DIRECTORY_SEPARATOR;
-$config['src_folder'] = rtrim(dirname($config['core_folder']), DIRECTORY_SEPARATOR).DIRECTORY_SEPARATOR;
-$config['abs_root_folder'] = rtrim(dirname($config['src_folder']), DIRECTORY_SEPARATOR).DIRECTORY_SEPARATOR;
+$config['core_folder'] = rtrim(realpath(__DIR__), DIRECTORY_SEPARATOR).DIRECTORY_SEPARATOR;
+$config['src_folder'] = rtrim(realpath(dirname($config['core_folder'])), DIRECTORY_SEPARATOR).DIRECTORY_SEPARATOR;
+$config['abs_root_folder'] = rtrim(realpath(dirname($config['src_folder'])), DIRECTORY_SEPARATOR).DIRECTORY_SEPARATOR;
 $config['public_folder'] = $config['abs_root_folder']."public/";
 
 // This is the relative folder to the root of the website from the DocumentRoot (can also be called subfolder)
-$config['rel_root_folder'] = str_replace(rtrim($_SERVER['DOCUMENT_ROOT'], DIRECTORY_SEPARATOR), "", rtrim($config['public_folder'], DIRECTORY_SEPARATOR));
+$document_root = rtrim(realpath($_SERVER['DOCUMENT_ROOT']), DIRECTORY_SEPARATOR);
+$public_root = rtrim(realpath($config['public_folder']), DIRECTORY_SEPARATOR);
+$config['rel_root_folder'] = "";
+if ($document_root && $public_root && strpos($public_root, $document_root) === 0) {
+	$config['rel_root_folder'] = substr($public_root, strlen($document_root));
+}
 $config['web_root_folder']="https://kabano.test/";
 if($config['rel_root_folder']=="") {
 	$config['rel_root_folder']="/";
