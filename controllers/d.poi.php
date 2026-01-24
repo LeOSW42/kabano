@@ -93,8 +93,13 @@ switch ($controller->splitted_url[1]) {
 
 	case "elevation_proxy":
 		if (isset($_GET['location'])) {
+			if (!preg_match('/^[0-9,\.\|\-]+$/', $_GET['location'])) {
+				$notfound = 1;
+				break;
+			}
+			$location = urlencode($_GET['location']);
 			header("Content-Type: application/json;charset=utf-8");
-			echo(file_get_contents("https://api.opentopodata.org/v1/mapzen?locations=".$_GET['location']));
+			echo(file_get_contents("https://api.opentopodata.org/v1/mapzen?locations=".$location));
 			break;
 		} else {
 			$notfound = 1;
