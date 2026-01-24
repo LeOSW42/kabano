@@ -32,8 +32,8 @@ if($config['rel_root_folder']=="") {
 
 // Here all the absolute paths to specific folders
 $config['views_folder'] = $config['public_folder']."views/";
-$config['controllers_folder'] = $config['src_folder']."controllers/";
-$config['models_folder'] = $config['src_folder']."models/";
+$config['controllers_folder'] = $config['src_folder']."Controllers/";
+$config['models_folder'] = $config['src_folder']."Models/";
 $config['medias_folder'] = $config['public_folder']."medias/";
 $config['includes_folder'] = $config['core_folder'];
 $config['third_folder'] = $config['src_folder']."Thirds/";
