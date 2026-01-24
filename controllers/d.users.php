@@ -223,5 +223,3 @@ if(isset($controller->splitted_url[1])) {
 else {
 	$notfound = 1;
 }
-
-?>

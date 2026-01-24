@@ -18,5 +18,3 @@ else {
 	require_once($config['includes_folder']."poi_types.struct.php");
 	include ($config['views_folder']."d.map.html");
 }
-
-?>
