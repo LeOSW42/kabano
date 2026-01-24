@@ -11,6 +11,7 @@ namespace Kabano;
 **********************************************************/
 
 require_once($config['models_folder']."d.locales.php");
+require_once($config['includes_folder']."database.php");
 
 // This array is related to the defined SQL enum, do not touch.
 $ranks = array(
@@ -51,8 +52,7 @@ class User
 	public function checkID($id) {
 		global $config;
 		
-		$con = pg_connect("host=".$config['SQL_host']." dbname=".$config['SQL_db']." user=".$config['SQL_user']." password=".$config['SQL_pass'])
-			or die ("Could not connect to server\n");
+		$con = sql_connect();
 
 		$query = "SELECT * FROM users WHERE id=$1";
 
@@ -79,8 +79,7 @@ class User
 	public function login($login, $pass) {
 		global $config;
 		
-		$con = pg_connect("host=".$config['SQL_host']." dbname=".$config['SQL_db']." user=".$config['SQL_user']." password=".$config['SQL_pass'])
-			or die ("Could not connect to server\n");
+		$con = sql_connect();
 
 		$query = "SELECT * FROM users WHERE name=$1 AND password=$2";
 
@@ -184,8 +183,7 @@ class User
 	public function availableName() {
 		global $config;
 		
-		$con = pg_connect("host=".$config['SQL_host']." dbname=".$config['SQL_db']." user=".$config['SQL_user']." password=".$config['SQL_pass'])
-			or die ("Could not connect to server\n");
+		$con = sql_connect();
 
 		$query = "SELECT * FROM users WHERE lower(name)=$1";
 
@@ -214,8 +212,7 @@ class User
 	public function availableMail() {
 		global $config;
 		
-		$con = pg_connect("host=".$config['SQL_host']." dbname=".$config['SQL_db']." user=".$config['SQL_user']." password=".$config['SQL_pass'])
-			or die ("Could not connect to server\n");
+		$con = sql_connect();
 
 		$query = "SELECT * FROM users WHERE lower(email)=$1";
 
@@ -252,8 +249,7 @@ class User
 		$this->locale = "fr_FR";
 		$this->timezone = "Europe/Paris";
 		
-		$con = pg_connect("host=".$config['SQL_host']." dbname=".$config['SQL_db']." user=".$config['SQL_user']." password=".$config['SQL_pass'])
-			or die ("Could not connect to server\n");
+		$con = sql_connect();
 
 		$query = "INSERT INTO users (name, version, email, password, website, is_avatar_present, is_archive, rank, locale, timezone, visit_date, register_date) VALUES
 			($1, '0', $2, $3, $4, FALSE, FALSE, 'registered', $5, $6, $7, $8)";
@@ -278,8 +274,7 @@ class User
 			$this->website = "http://".$this->website;
 		$this->version++;
 
-		$con = pg_connect("host=".$config['SQL_host']." dbname=".$config['SQL_db']." user=".$config['SQL_user']." password=".$config['SQL_pass'])
-			or die ("Could not connect to server\n");
+		$con = sql_connect();
 
 		if($this->password=='') {
 			$query = "UPDATE users SET version = $1, name = $2, is_avatar_present = $3, locale = $4, rank = $5, email = $6, website = $7, timezone = $8 WHERE id = $9";
@@ -313,8 +308,7 @@ class User
 		$newPass = randomPassword();
 		$this->password = sha1($newPass);
 
-		$con = pg_connect("host=".$config['SQL_host']." dbname=".$config['SQL_db']." user=".$config['SQL_user']." password=".$config['SQL_pass'])
-			or die ("Could not connect to server\n");
+		$con = sql_connect();
 
 		$query = "UPDATE users SET password = $1 WHERE email = $2";
 
@@ -355,8 +349,7 @@ class User
 
 		$this->visit_date = date('r');
 
-		$con = pg_connect("host=".$config['SQL_host']." dbname=".$config['SQL_db']." user=".$config['SQL_user']." password=".$config['SQL_pass'])
-			or die ("Could not connect to server\n");
+		$con = sql_connect();
 
 		$query = "UPDATE users SET visit_date = $1 WHERE id = $2";
 
@@ -433,8 +426,7 @@ class Users
 	public function number() {
 		global $config;
 		
-		$con = pg_connect("host=".$config['SQL_host']." dbname=".$config['SQL_db']." user=".$config['SQL_user']." password=".$config['SQL_pass'])
-			or die ("Could not connect to server\n");
+		$con = sql_connect();
 
 		$query = "SELECT id FROM users";
 
@@ -454,8 +446,7 @@ class Users
 	public function list_users($first, $count, $orderby = "id", $order = "ASC") {
 		global $config;
 		
-		$con = pg_connect("host=".$config['SQL_host']." dbname=".$config['SQL_db']." user=".$config['SQL_user']." password=".$config['SQL_pass'])
-			or die ("Could not connect to server\n");
+		$con = sql_connect();
 
 		$orders=array("id","name","lastlogin","registered","website","role");
 		$key=array_search($orderby,$orders);

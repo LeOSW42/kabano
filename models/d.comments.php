@@ -11,6 +11,7 @@ namespace Kabano;
 **********************************************************/
 
 require_once($config['third_folder']."Md/MarkdownExtra.inc.php");
+require_once($config['includes_folder']."database.php");
 
 class Comment
 {
@@ -34,8 +35,7 @@ class Comment
 	public function checkID($id) {
 		global $config;
 		
-		$con = pg_connect("host=".$config['SQL_host']." dbname=".$config['SQL_db']." user=".$config['SQL_user']." password=".$config['SQL_pass'])
-			or die ("Could not connect to server\n");
+		$con = sql_connect();
 
 		$query = "SELECT * FROM content_comments WHERE id=$1";
 
@@ -102,8 +102,7 @@ class Comment
 	public function insert() {
 		global $config;
 		
-		$con = pg_connect("host=".$config['SQL_host']." dbname=".$config['SQL_db']." user=".$config['SQL_user']." password=".$config['SQL_pass'])
-			or die ("Could not connect to server\n");
+		$con = sql_connect();
 
 		$query = "INSERT INTO content_comments (version, creation_date, update_date, author, is_public, is_archive, content, comment, locale) VALUES
 			('0', $1, $2, $3, TRUE, FALSE, $4, $5, $6) RETURNING id";
@@ -125,8 +124,7 @@ class Comment
 		global $config;
 		global $user;
 		
-		$con = pg_connect("host=".$config['SQL_host']." dbname=".$config['SQL_db']." user=".$config['SQL_user']." password=".$config['SQL_pass'])
-			or die ("Could not connect to server\n");
+		$con = sql_connect();
 
 		$query = "UPDATE content_comments SET is_public = FALSE WHERE id = $1";
 
@@ -150,8 +148,7 @@ class Comment
 		global $config;
 		global $user;
 		
-		$con = pg_connect("host=".$config['SQL_host']." dbname=".$config['SQL_db']." user=".$config['SQL_user']." password=".$config['SQL_pass'])
-			or die ("Could not connect to server\n");
+		$con = sql_connect();
 
 		$query = "UPDATE content_comments SET is_public = TRUE WHERE id = $1";
 
@@ -204,8 +201,7 @@ class Comments
 	public function listComments($id, $archive=0) {
 		global $config;
 
-		$con = pg_connect("host=".$config['SQL_host']." dbname=".$config['SQL_db']." user=".$config['SQL_user']." password=".$config['SQL_pass'])
-			or die ("Could not connect to server\n");
+		$con = sql_connect();
 
 		$query = "SELECT * FROM content_comments WHERE content = $1 ";
 		if ($archive == 0)
