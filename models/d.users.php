@@ -1,4 +1,4 @@
-<?
+<?php
 
 namespace Kabano;
 
@@ -481,5 +481,3 @@ class Users
 		}
 	}
 }
-
-?>

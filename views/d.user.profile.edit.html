@@ -1,25 +1,25 @@
 <!DOCTYPE html>
 <html lang="fr">
 
-	<? include('blocks/d.head.html'); ?>
+	<?php include('blocks/d.head.html'); ?>
 
 	<body>
 
-		<? include('blocks/d.nav.html'); ?>
+		<?php include('blocks/d.nav.html'); ?>
 
 		<section id="profile">
-			<? if ($userProfile->id != 0) { ?>
+			<?php if ($userProfile->id != 0) { ?>
 				<h1><?=$userProfile->name?></h1>
 				<article>
-					<? if(isset($nameError) AND $nameError==1) { ?>
+					<?php if(isset($nameError) AND $nameError==1) { ?>
 						<p style="color: #660000;">Veuillez choisir un autre nom d'utilisateur.</p>
-					<? } ?>
-					<? if(isset($emailError) AND $emailError==1) { ?>
+					<?php } ?>
+					<?php if(isset($emailError) AND $emailError==1) { ?>
 						<p style="color: #660000;">Veuillez choisir un autre email.</p>
-					<? } ?>
-					<? if(isset($updated) AND $updated==1) { ?>
+					<?php } ?>
+					<?php if(isset($updated) AND $updated==1) { ?>
 						<p style="color: #006600;">Le profil a été mis à jour.</p>
-					<? } ?>
+					<?php } ?>
 					<form action="<?=$config['rel_root_folder']?>user/p/<?=$userProfile->id?>/edit" method="post" class="edituser" enctype="multipart/form-data">
 						<aside class="<?=$userProfile->is_avatar_present=='t'?'':'no'?>avatar">
 							<div id="picturebuttonscontainer">
@@ -43,25 +43,25 @@
 								<li><label for="password">Mot de passe :</label><input name="password" id="password" type="password" placeholder="Nouveau mot de passe"></li>
 								<li><label for="locale">Langue :</label>
 									<select name="locale" id="locale">
-										<? foreach($locales->objs as $locale) { ?>
+										<?php foreach($locales->objs as $locale) { ?>
 											<option <?=$userProfile->get_locale()==$locale->display_name?'selected':''?> value="<?=$locale->name?>"><?=$locale->display_name?></option>
-										<? } ?>
+										<?php } ?>
 									</select></li>
 								<li><label for="timezone">Fuseau horaire :</label>
 									<select name="timezone" id="timezone">
-										<? $timezones = timezone_identifiers_list();
+										<?php $timezones = timezone_identifiers_list();
 											foreach($timezones as $timezone) { ?>
 											<option <?=$userProfile->timezone==$timezone?'selected':''?> value="<?=$timezone?>"><?=$timezone?></option>
-										<? } ?>
+										<?php } ?>
 									</select></li>
-								<? if($user->rankIsHigher("administrator")) { ?>
+								<?php if($user->rankIsHigher("administrator")) { ?>
 								<li><label for="rank">Rang : </label>
 									<select name="rank" id="rank">
-										<? foreach($ranks as $rank) { ?>
+										<?php foreach($ranks as $rank) { ?>
 											<option <?=$userProfile->rank==$rank[3]?'selected':''?> value="<?=$rank[3]?>"><?=$rank[1]?></option>
-										<? } ?>
+										<?php } ?>
 									</select></li>
-								<? } ?>
+								<?php } ?>
 								<li><label for="website">Site internet :</label><input name="website" id="website" type="url" value="<?=$userProfile->website?>" placeholder="https://mountain.org"></li>
 
 								<input name="submit" id="submit" type="submit" value="Envoyer">
@@ -70,12 +70,12 @@
 						<div style="clear:both;"></div>
 					</form>
 				</article>
-			<? } else { ?>
+			<?php } else { ?>
 				<p style="color:red;">Le profil demandé n'existe pas.</p>
-			<? } ?>
+			<?php } ?>
 		</section>
 
-		<? include('blocks/d.footer.html'); ?>
+		<?php include('blocks/d.footer.html'); ?>
 
 	</body>
 </html>

@@ -1,4 +1,4 @@
-<?
+<?php
 
 namespace Kabano;
 
@@ -420,5 +420,3 @@ class BlogArticles
 		}
 	}
 }
-
-?>

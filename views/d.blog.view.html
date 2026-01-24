@@ -1,66 +1,66 @@
 <!DOCTYPE html>
 <html lang="fr">
 
-	<? include('blocks/d.head.html'); ?>
+	<?php include('blocks/d.head.html'); ?>
 
 	<body>
 
-		<? include('blocks/d.nav.html'); ?>
+		<?php include('blocks/d.nav.html'); ?>
 
 		<section id="blog_article" <?=$blogArticle->is_archive=="t"||$blogArticle->is_public=="f"?'class="archive"':''?>>
 			<h1><?=$blogArticle->name?></h1>
-				<? if($user->rankIsHigher('premium')) { ?>
+				<?php if($user->rankIsHigher('premium')) { ?>
 					<span class="subtitle">
-					<? if(isset($blogHistory)) { ?>
+					<?php if(isset($blogHistory)) { ?>
 						<select id="bloghistory">
-							<? $i = 0;
+							<?php $i = 0;
 							foreach ($blogHistory->objs as $row) { ?>
-								<option <?=$row->version_id==$blogArticle->version_id?'selected':''?> value="<?=$i?>"><?=$row->is_archive=="f"?'&bull; ':''?><? echo datefmt_format($user->datetimeshort_format,date_create($row->update_date, new DateTimeZone("UTC"))) ?></option>
-							<? $i++;
+								<option <?=$row->version_id==$blogArticle->version_id?'selected':''?> value="<?=$i?>"><?=$row->is_archive=="f"?'&bull; ':''?><?php echo datefmt_format($user->datetimeshort_format,date_create($row->update_date, new DateTimeZone("UTC"))) ?></option>
+							<?php $i++;
 							} ?>
 						</select>
-					<? } 
+					<?php } 
 					if ($user->rankIsHigher('moderator') && isset($blogHistory)) { ?>
 						 &mdash; 
-					<? }
+					<?php }
 					if ($user->rankIsHigher("moderator")) { ?>
 						<a href="<?=$config['rel_root_folder']?>blog/<?=$blogArticle->permalink?>/edit"><i class="fas fa-pencil-alt"></i> Éditer l'article</a> &mdash; 
-						<? if ($blogArticle->is_public == 't') { ?>
+						<?php if ($blogArticle->is_public == 't') { ?>
 							<a href="<?=$config['rel_root_folder']?>blog/<?=$blogArticle->permalink?>/delete"><i class="fas fa-trash"></i> Effacer l'article</a>
-						<? } else { ?>
+						<?php } else { ?>
 							<a href="<?=$config['rel_root_folder']?>blog/<?=$blogArticle->permalink?>/restore"><i class="fas fa-eye"></i> Restaurer l'article</a>
-						<? } ?>
-					<? } ?>
+						<?php } ?>
+					<?php } ?>
 					</span>
-				<? } ?>
+				<?php } ?>
 
 			<div id="blogContent">
 				<?=$blogArticle->content_html?>
 			</div>
 
 			<p id="blogTimestamp">Article écrit par 
-			<? if ($user->rankIsHigher("blocked")) { ?>
+			<?php if ($user->rankIsHigher("blocked")) { ?>
 				<a href="<?=$config['rel_root_folder']?>user/p/<?=$blogArticle->author?>"><?=$blogArticle->author_name?></a>
-			<? } 
+			<?php } 
 			else { ?>
 				<?=$blogArticle->author_name?> 
-			<? } ?>
-			le <? echo datefmt_format($user->datetime_format,date_create($blogArticle->creation_date, new DateTimeZone("UTC"))) ?></p>
+			<?php } ?>
+			le <?php echo datefmt_format($user->datetime_format,date_create($blogArticle->creation_date, new DateTimeZone("UTC"))) ?></p>
 
 			<!-- COMMENTS -->
 
-			<? if ($blogArticle->is_commentable == "t") { ?>
+			<?php if ($blogArticle->is_commentable == "t") { ?>
 				<div id="new_comment">
 					<form class="form" action="<?=$config['rel_root_folder']?>blog/<?=$blogArticle->permalink?>/new_comment" method="post">
 						<div id="new_comment_label" <?=$user->rank=="visitor"?"class='sent' ":""?>>
-							<? if ($blogArticle->is_archive == "t" || $blogArticle->is_public == "f") { ?>
+							<?php if ($blogArticle->is_archive == "t" || $blogArticle->is_public == "f") { ?>
 								<p>Impossible de commenter un article non publié</p>
-							<? } else if ($user->rankIsHigher("registered")) { ?>
+							<?php } else if ($user->rankIsHigher("registered")) { ?>
 								<input name="submit" type="submit" value="Envoyer">
 								<p>Ajouter un nouveau commentaire</p>
-							<? } else { ?>
+							<?php } else { ?>
 								<p>Veuillez vous connecter pour ajouter un commentaire</p>
-							<? } ?>
+							<?php } ?>
 						</div>
 						<div id="new_comment_form">
 							<textarea id="comment" name="comment" rows="5" placeholder="Votre commentaire"></textarea>
@@ -68,35 +68,35 @@
 					</form>
 				</div>
 
-				<? if($blogArticle->is_commentable == 't') {
+				<?php if($blogArticle->is_commentable == 't') {
 					foreach ($blogArticles_comments->objs as $comment) { ?>
 
-						<article <? if($comment->is_archive == 't' || $comment->is_public == 'f') echo 'class="comment_archive" '; ?>>
+						<article <?php if($comment->is_archive == 't' || $comment->is_public == 'f') echo 'class="comment_archive" '; ?>>
 							<div class="comment_title">
-								<? if ($comment->author_obj->is_avatar_present=='t') { ?>
+								<?php if ($comment->author_obj->is_avatar_present=='t') { ?>
 									<img alt="Avatar" class="icon avatar" src="<?=$config['rel_root_folder']?>medias/avatars/<?=$comment->author_obj->id?>_s.jpg">
-								<? } else { ?>
+								<?php } else { ?>
 									<i class="icon fas fa-user-secret"></i>
-								<? } ?>
-								<? if ($user->rankIsHigher("blocked")) { ?>
+								<?php } ?>
+								<?php if ($user->rankIsHigher("blocked")) { ?>
 								<a class="username" href="<?=$config['rel_root_folder']?>user/p/<?=$comment->author_obj->id?>"><?=$comment->author_obj->name?></a>
-								<? } else { ?>
+								<?php } else { ?>
 									<?=$comment->author_obj->name?>
-								<? } ?>
-								le <? echo datefmt_format($user->datetime_format,date_create($comment->update_date, new DateTimeZone("UTC"))) ?>
-								<? if (($user->rankIsHigher("moderator") || $user->id == $comment->author) && $comment->is_public == 't') { ?>
+								<?php } ?>
+								le <?php echo datefmt_format($user->datetime_format,date_create($comment->update_date, new DateTimeZone("UTC"))) ?>
+								<?php if (($user->rankIsHigher("moderator") || $user->id == $comment->author) && $comment->is_public == 't') { ?>
 									<span class="delete_link"><a href="<?=$config['rel_root_folder']?>blog/<?=$blogArticle->permalink?>/delete_comment/<?=$comment->id?>"><i class="fas fa-trash"></i> Effacer le commentaire</a></span>
-								<? } ?>
-								<? if (($user->rankIsHigher("moderator") || $user->id == $comment->author) && $comment->is_public == 'f') { ?>
+								<?php } ?>
+								<?php if (($user->rankIsHigher("moderator") || $user->id == $comment->author) && $comment->is_public == 'f') { ?>
 									<span class="delete_link"><a href="<?=$config['rel_root_folder']?>blog/<?=$blogArticle->permalink?>/restore_comment/<?=$comment->id?>"><i class="fas fa-eye"></i> Restaurer le commentaire</a></span>
-								<? } ?>
+								<?php } ?>
 							</div>
 							<div class="comment_content">
 								<?=$comment->comment_html?>
 							</div>
 						</article>
 
-					<? }
+					<?php }
 				}
 			} ?>
 
@@ -105,14 +105,14 @@
 			<div style="clear: both;"> </div>
 		</section>
 
-<? if($user->rankIsHigher("premium")) { ?>
+<?php if($user->rankIsHigher("premium")) { ?>
 		<script type="text/javascript">
 $( "#bloghistory" ).change(function() {
   window.location.href = "<?=$config['rel_root_folder']?>blog/<?=$blogArticle->permalink?>/"+$( this ).val();
 });
 		</script>
-<? } ?>
-<? if($user->rankIsHigher("registered") && $blogArticle->is_archive == "f" && $blogArticle->is_public == "t") { ?>
+<?php } ?>
+<?php if($user->rankIsHigher("registered") && $blogArticle->is_archive == "f" && $blogArticle->is_public == "t") { ?>
 		<script type="text/javascript">
 $( "#new_comment_label" ).click(function() {
   $( "#new_comment_form" ).show(400);
@@ -120,9 +120,9 @@ $( "#new_comment_label" ).click(function() {
   $( "#new_comment_label").addClass('sent');
 });
 		</script>
-<? } ?>
+<?php } ?>
 
-		<? include('blocks/d.footer.html'); ?>
+		<?php include('blocks/d.footer.html'); ?>
 
 	</body>
 </html>

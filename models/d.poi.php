@@ -1,4 +1,4 @@
-<?
+<?php
 
 namespace Kabano;
 
@@ -519,5 +519,3 @@ class Pois
 		}
 	}
 }
-
-?>

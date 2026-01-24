@@ -1,4 +1,4 @@
-<?
+<?php
 
 require_once($config['models_folder']."d.blog.php");
 require_once($config['models_folder']."d.comments.php");
@@ -189,5 +189,3 @@ switch ($controller->splitted_url[1]) {
 		}
 		break;
 }
-
-?>

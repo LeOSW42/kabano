@@ -1,4 +1,4 @@
-<?
+<?php
 
 if(isset($controller->splitted_url[1]) && $user->rankIsHigher("moderator")) {
 	switch ($controller->splitted_url[1]) {
@@ -283,5 +283,3 @@ function formatBytes($bytes, $locale = 'en', $precision = 2) {
 
 	return $formatted . ' ' . $units[$power];
 }
-
-?>

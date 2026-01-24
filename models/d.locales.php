@@ -1,4 +1,4 @@
-<?
+<?php
 
 namespace Kabano;
 
@@ -104,5 +104,3 @@ class Locales
 		}
 	}
 }
-
-?>

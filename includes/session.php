@@ -1,4 +1,4 @@
-<?
+<?php
 
 require_once($config['models_folder']."d.users.php");
 
@@ -33,6 +33,3 @@ if (PHP_VERSION_ID < 80000) {
 }
 $user->datetime_format = new IntlDateFormatter($config['locale'], IntlDateFormatter::LONG, IntlDateFormatter::SHORT, $config['timezone']);
 $user->datetimeshort_format = new IntlDateFormatter($config['locale'], IntlDateFormatter::SHORT, IntlDateFormatter::SHORT, $config['timezone']);
-
-
-?>

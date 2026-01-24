@@ -1,4 +1,4 @@
-<?
+<?php
 
 namespace Kabano;
 
@@ -351,5 +351,3 @@ class WikiPages
 		}
 	}
 }
-
-?>

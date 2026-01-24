@@ -1,4 +1,4 @@
-<?
+<?php
 
 /*****
 ** This file contains the routing from any request to the correct view and controller
@@ -70,5 +70,3 @@ if($notfound) {
     $head['title'] = $wikiPage->name;
     include ($config['views_folder']."d.wiki.view.html");
 }
-
-?>
