@@ -38,5 +38,3 @@ function generate_image_thumbnail($source_image_path, $thumbnail_image_path, $wi
 	imagedestroy($thumbnail_gd_image);
 	return true;
 }
-
-?>

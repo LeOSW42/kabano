@@ -70,5 +70,3 @@ if($notfound) {
     $head['title'] = $wikiPage->name;
     include ($config['views_folder']."d.wiki.view.html");
 }
-
-?>
