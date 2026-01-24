@@ -1,55 +1,55 @@
 <!DOCTYPE html>
 <html lang="fr">
 
-	<? include('blocks/d.head.html'); ?>
+	<?php include('blocks/d.head.html'); ?>
 
 	<body>
 
-		<? include('blocks/d.nav.html'); ?>
+		<?php include('blocks/d.nav.html'); ?>
 
 		<section id="blog_list">
 			<h1>Blog</h1>
 			<p class="subtitle">
-				<? if ($user->rankIsHigher("moderator")) { ?>
+				<?php if ($user->rankIsHigher("moderator")) { ?>
 					<a href="<?=$config['rel_root_folder']?>blog/new"><i class="fas fa-plus"></i> Nouvel article</a> &mdash; 
-				<? } ?>
+				<?php } ?>
 				<a href="<?=$config['rel_root_folder']?>blog/rss"><i class="fas fa-rss" aria-hidden="true"></i> Flux RSS</a> &mdash; 
 				Articles <?=$first?> à <?=$last?> sur <?=$blogArticles->number?>
 			</p>
 
 			<div id="articles_list">
 
-				<? foreach ($blogArticles->objs as $row) { ?>
+				<?php foreach ($blogArticles->objs as $row) { ?>
 
-					<article<? if($row->is_public == 'f') echo ' class="article_archive" '; ?>>
+					<article<?php if($row->is_public == 'f') echo ' class="article_archive" '; ?>>
 						<h2 class="article_title"><?=$row->name?></h2>
 						<div class="article_content"><?=mb_substr($row->content_txt,0,200)?>...</div>
 						<p class="article_legend">
 							<a class="article_link" href="<?=$config['rel_root_folder']?>blog/<?=$row->permalink?>">Lire la suite...</a>
 							<span class="article_infos">
-								<? echo datefmt_format($user->date_format,date_create($row->update_date, new DateTimeZone("UTC"))) ?> par 
-								<? if ($user->rankIsHigher("registered")) { ?>
+								<?php echo datefmt_format($user->date_format,date_create($row->update_date, new DateTimeZone("UTC"))) ?> par 
+								<?php if ($user->rankIsHigher("registered")) { ?>
 									<a href="<?=$config['rel_root_folder']?>user/p/<?=$row->author?>"><?=$row->author_name?></a>
-								<? } 
+								<?php } 
 								else { ?>
 									<?=$row->author_name?>
-								<? } ?>
+								<?php } ?>
 							</span>
 						</p>
 					</article>
 
-				<? } ?>
+				<?php } ?>
 
 			</div>
 			
 			<div class="pagebuttons">
-				<? if ($page != 0) { ?><a class="previous" href="<?=$config['rel_root_folder']?>blog/<?=$page?>"><i class="fas fa-chevron-left fa-fw"></i></a><? }
-				if (($page+1)*$articles_per_pages < $blogArticles->number) { ?><a class="next" href="<?=$config['rel_root_folder']?>blog/<?=$page+2?>"><i class="fas fa-chevron-right fa-fw"></i></a><? } ?>
+				<?php if ($page != 0) { ?><a class="previous" href="<?=$config['rel_root_folder']?>blog/<?=$page?>"><i class="fas fa-chevron-left fa-fw"></i></a><?php }
+				if (($page+1)*$articles_per_pages < $blogArticles->number) { ?><a class="next" href="<?=$config['rel_root_folder']?>blog/<?=$page+2?>"><i class="fas fa-chevron-right fa-fw"></i></a><?php } ?>
 			</div>
 
 		</section>
 
-		<? include('blocks/d.footer.html'); ?>
+		<?php include('blocks/d.footer.html'); ?>
 
 	</body>
 </html>

@@ -1,4 +1,4 @@
-<?
+<?php
 
 $head['css'] = "d.index.css";
 

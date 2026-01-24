@@ -1,27 +1,27 @@
 <!DOCTYPE html>
 <html lang="fr">
 
-	<? include('blocks/d.head.html'); ?>
+	<?php include('blocks/d.head.html'); ?>
 
 	<body>
 
-		<? include('blocks/d.nav.html'); ?>
+		<?php include('blocks/d.nav.html'); ?>
 
 		<section>
 			<h1><?=$head['title']?></h1>
 			<br>
-			<pre><?
+			<pre><?php
 			print_r($output);
 			?></pre>
 			<br>
-			<? if (file_exists($report)) { ?>
+			<?php if (file_exists($report)) { ?>
 				<a href='<?=$config['rel_root_folder']?>tmp/report.html' target='_blank'><i class="fas fa-chart-line"></i> Voir le rapport</a>
-			<? } else { ?>
+			<?php } else { ?>
 				Echec de la commande
-			<? } ?>
+			<?php } ?>
 		</section>
 
-		<? include('blocks/d.footer.html'); ?>
+		<?php include('blocks/d.footer.html'); ?>
 
 	</body>
 </html>

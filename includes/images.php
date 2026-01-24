@@ -1,4 +1,4 @@
-<?
+<?php
 
 function generate_image_thumbnail($source_image_path, $thumbnail_image_path, $width, $height)
 {

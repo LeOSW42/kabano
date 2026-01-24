@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html lang="fr">
 
-	<? include('blocks/d.head.html'); ?>
+	<?php include('blocks/d.head.html'); ?>
 	
 	<body>
 
-		<? include('blocks/d.nav.html'); ?>
+		<?php include('blocks/d.nav.html'); ?>
 
 		<aside id="indexFullW">
 			<div id="AScontent">
@@ -15,7 +15,7 @@
 			</div>
 		</aside>
 
-<?
+<?php
 	require_once($config['models_folder']."d.wiki.php");
 	$wikiPage = new Kabano\WikiPage();
 	$wikiPage->checkPermalink('index');
@@ -25,18 +25,18 @@
 		<section id="index">
 			<h1><?=$wikiPage->name?></h1>
 
-			<? if($user->rankIsHigher('moderator')) { ?>
+			<?php if($user->rankIsHigher('moderator')) { ?>
 				<span class="subtitle">
 					<a href="<?=$config['rel_root_folder']?>wiki/index/edit"><i class="fas fa-pencil-alt"></i> Éditer la page</a>
 				</span>
-			<? } ?>
+			<?php } ?>
 
 			<br><br>
 
 			<?=$wikiPage->content_html?>
 		</section>
 
-		<? include('blocks/d.footer.html'); ?>
+		<?php include('blocks/d.footer.html'); ?>
 
 	</body>
 </html>

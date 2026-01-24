@@ -1,19 +1,19 @@
 <!DOCTYPE html>
 <html lang="fr">
 
-	<? include('blocks/d.head.html'); ?>
+	<?php include('blocks/d.head.html'); ?>
 
 	<body>
 
-		<? include('blocks/d.nav.html'); ?>
+		<?php include('blocks/d.nav.html'); ?>
 
 		<section>
 			<form class="form" action="<?=$config['rel_root_folder']?>wiki/<?=$wikiPage->permalink?>/edit" method="post">
 				<h1>
 					<select name="locale" id="locale">
-						<? foreach($locales->objs as $locale) { ?>
+						<?php foreach($locales->objs as $locale) { ?>
 							<option <?=$wikiPage->locale==$locale->name?'selected':''?> value="<?=$locale->name?>"><?=$locale->display_name?></option>
-						<? } ?>
+						<?php } ?>
 					</select>
 					<input type="text" value="<?=$wikiPage->name?>" name="name" id="name" placeholder="Titre">
 				</h1>
@@ -24,7 +24,7 @@
 			</form>
 		</section>
 
-		<? include('blocks/d.footer.html'); ?>
+		<?php include('blocks/d.footer.html'); ?>
 
 	</body>
 </html>
