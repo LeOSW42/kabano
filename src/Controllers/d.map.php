@@ -1,7 +1,12 @@
 <?php
 
+/**
+ * Contrôleur de la page carte (map).
+ */
+
 $head['css'] = "d.index.css";
 
+// Gestion des routes secondaires de la carte.
 if(isset($controller->splitted_url[1]) && $controller->splitted_url[1] != '') {
 	switch ($controller->splitted_url[1]) {
 		default:
@@ -10,6 +15,7 @@ if(isset($controller->splitted_url[1]) && $controller->splitted_url[1] != '') {
 	}
 }
 else {
+	// Chargement de la carte et des dépendances Leaflet.
 	$head['title'] = "Carte";
 	$head['third'] = "leaflet/leaflet.js;leaflet-fullscreen/Leaflet.fullscreen.min.js;leaflet-easybutton/easy-button.js";
 	$head['css'] .= ";d.map.css;../third/leaflet/leaflet.css;../third/leaflet-fullscreen/leaflet.fullscreen.css;../third/leaflet-easybutton/easy-button.css";

@@ -1,6 +1,8 @@
+// Gestion des animations du header en scroll.
 var small = 2;
 
 function reduce() {
+	// Réduit la hauteur du header.
 	$( "header" ).animate({
 		height: "45px"
 		}, 100, function() {
@@ -36,6 +38,7 @@ function reduce() {
 }
 
 function enlarge() {
+	// Restaure la taille du header.
 	$( "header" ).animate({
 		height: "65px"
 		}, 100, function() {
@@ -70,6 +73,7 @@ function enlarge() {
 	});
 }
 
+// Déclenche les animations selon le scroll.
 $(window).scroll(function() {
 	var position = $(window).scrollTop();
 	if (position>80 && small!=1 && $('body').width() > 800) {
@@ -82,6 +86,7 @@ $(window).scroll(function() {
 	}
 });
 
+// Affichage du texte du logo au survol.
 $(window).ready(function() {
 	$( "#logo" ).hover(
 	  function() {

@@ -1,5 +1,9 @@
 <?php
 
+/**
+ * Exemple de configuration globale pour l'application Kabano.
+ */
+
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
@@ -11,6 +15,7 @@ date_default_timezone_set("UTC"); // Default tz for date manipulation is UTC. Di
 ** Management of folder names
 *****/
 
+// Définition des chemins absolus de l'application.
 $config['core_folder'] = rtrim(realpath(__DIR__), DIRECTORY_SEPARATOR).DIRECTORY_SEPARATOR;
 $config['src_folder'] = rtrim(realpath(dirname($config['core_folder'])), DIRECTORY_SEPARATOR).DIRECTORY_SEPARATOR;
 $config['abs_root_folder'] = rtrim(realpath(dirname($config['src_folder'])), DIRECTORY_SEPARATOR).DIRECTORY_SEPARATOR;
@@ -47,6 +52,7 @@ $config['views_url'] = $config['rel_root_folder']."views/";
 ** SQL Database configuration
 *****/
 
+// Paramètres PostgreSQL utilisés par sql_connect().
 $config['SQL_host'] = "localhost";
 $config['SQL_user'] = "kabano";
 $config['SQL_pass'] = "PASSWORD";

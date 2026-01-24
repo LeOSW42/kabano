@@ -1,12 +1,13 @@
+// Carte principale et marqueurs de POI.
 var mymap;
 var markers = [];
 
 $( document ).ready(function() {
-	// Differents layers for the map
+	// Différentes couches pour la carte.
 	var	topo_maptiler = L.tileLayer('https://api.maptiler.com/maps/topographique/{z}/{x}/{y}.png?key=Sm8M7mJ53GtYdl773rpi', {tms: false, attribution: 'Carte © <a href="https://www.maptiler.com/copyright/" target="_blank">MapTiler</a>, Données © <a href="http://www.openstreetmap.org/copyright" target="_blank">Contributeurs OpenStreetMap</a>', tileSize: 512, zoomOffset: -1, minZoom: 1});
 	var	ign = L.tileLayer('https://data.geopf.fr/private/wmts?&REQUEST=GetTile&SERVICE=WMTS&VERSION=1.0.0&STYLE=normal&TILEMATRIXSET=PM&FORMAT=image/jpeg&LAYER=GEOGRAPHICALGRIDSYSTEMS.MAPS&TILEMATRIX={z}&TILEROW={y}&TILECOL={x}&apikey=ign_scan_ws', {attribution: 'Carte & Connées © <a href="http://ign.fr/" target="_blank">IGN-F/Géoportail</a>'});
 
-	// Base layers
+	// Couches de base.
 	var baseLayers = {
 		"OpenStreetMap": topo_maptiler,
 		"IGN France": ign
@@ -63,6 +64,7 @@ $( document ).ready(function() {
 		$("#map-credits").html(e.layer.getAttribution());
 	});
 
+	// Ajuste la taille des icônes selon le niveau de zoom.
 	mymap.on("zoomend", function () {
 	    var z = mymap.getZoom();
 

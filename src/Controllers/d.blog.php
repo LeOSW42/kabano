@@ -1,5 +1,9 @@
 <?php
 
+/**
+ * Contrôleur des pages blog : liste, lecture, édition.
+ */
+
 require_once($config['models_folder']."d.blog.php");
 require_once($config['models_folder']."d.comments.php");
 require_once($config['models_folder']."d.users.php");
@@ -24,6 +28,7 @@ if (!isset($controller->splitted_url[1]) OR $controller->splitted_url[1]=="" OR 
 	$articles_per_pages = 5;
 }
 
+// Routage des différentes actions du blog.
 switch ($controller->splitted_url[1]) {
 	case "rss":
 		$page = 0;

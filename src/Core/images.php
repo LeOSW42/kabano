@@ -1,7 +1,11 @@
 <?php
 
+/**
+ * Génère une miniature d'image en recadrant la source au format demandé.
+ */
 function generate_image_thumbnail($source_image_path, $thumbnail_image_path, $width, $height)
 {
+	// Récupère les informations de l'image source.
 	list($source_image_width, $source_image_height, $source_image_type) = getimagesize($source_image_path);
 	switch ($source_image_type) {
 		case IMAGETYPE_GIF:
@@ -18,6 +22,7 @@ function generate_image_thumbnail($source_image_path, $thumbnail_image_path, $wi
 		return false;
 	}
 
+	// Calcul des offsets pour conserver le ratio et recadrer.
 	$src_x = 0;
 	$src_y = 0;
 	$thumbnail_image_height = $height;
@@ -31,6 +36,7 @@ function generate_image_thumbnail($source_image_path, $thumbnail_image_path, $wi
 		$source_image_height = (int)($source_image_width * $height / $width);
 	}
 
+	// Génération du thumbnail et sauvegarde au format JPEG.
 	$thumbnail_gd_image = imagecreatetruecolor($thumbnail_image_width, $thumbnail_image_height);
 	imagecopyresampled($thumbnail_gd_image, $source_gd_image, 0, 0, $src_x, $src_y, $thumbnail_image_width, $thumbnail_image_height, $source_image_width, $source_image_height);
 	imagejpeg($thumbnail_gd_image, $thumbnail_image_path, 90);

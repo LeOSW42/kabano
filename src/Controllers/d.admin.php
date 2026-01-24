@@ -1,5 +1,9 @@
 <?php
 
+/**
+ * Contrôleur des pages d'administration (logs, sauvegardes, stats).
+ */
+
 if(isset($controller->splitted_url[1]) && $user->rankIsHigher("moderator")) {
 	switch ($controller->splitted_url[1]) {
 		case '': case 'admin':
@@ -7,6 +11,7 @@ if(isset($controller->splitted_url[1]) && $user->rankIsHigher("moderator")) {
 			include ($config['views_folder']."d.admin.html");
 			break;
 		case 'git-pull':
+			// Mise à jour du dépôt depuis l'interface d'administration.
 			if ($user->rankIsHigher("administrator")) {
 				$head['title'] = "Mise à jour";
 
@@ -29,6 +34,7 @@ if(isset($controller->splitted_url[1]) && $user->rankIsHigher("moderator")) {
 			$logs_folder = realpath($config['logs_folder']);
 			$logs_folder_root = $logs_folder !== false ? rtrim($logs_folder, DIRECTORY_SEPARATOR) : null;
 
+				// Sélection du fichier de log à afficher.
 				if (isset($controller->splitted_url[2]) && is_numeric($controller->splitted_url[2]) && intval($controller->splitted_url[2]) < count($files_list)-2) {
 					$filenb = $controller->splitted_url[2];
 				}
@@ -141,6 +147,7 @@ if(isset($controller->splitted_url[1]) && $user->rankIsHigher("moderator")) {
 			if ($user->rankIsHigher("moderator")) {
 				$head['title'] = "Statistiques";
 
+				// Génération du rapport statistiques (GoAccess).
 				$report = $config['abs_root_folder'].'tmp/report.html';
 
 				$files = glob('/var/log/nginx/kabano.org-access.log*.gz');
@@ -174,6 +181,7 @@ if(isset($controller->splitted_url[1]) && $user->rankIsHigher("moderator")) {
 			if ($user->rankIsHigher("administrator")) {
 				$head['title'] = "Export SQL";
 
+			// Suppression d'une sauvegarde existante.
 			if(isset($controller->splitted_url[2]) && $controller->splitted_url[2]=='delete' && isset($controller->splitted_url[3])) {
 				$tmp_folder = realpath($config['abs_root_folder'].'tmp');
 				if ($tmp_folder !== false) {
@@ -191,6 +199,7 @@ if(isset($controller->splitted_url[1]) && $user->rankIsHigher("moderator")) {
 				$backup_file = Array();
 			}
 				else {
+					// Génération d'une sauvegarde SQL.
 					// Nom du fichier de sauvegarde
 					$timestamp = date('Ymd_His');
 					$backup_filename[0] = $timestamp.'_backup.sql';
@@ -218,6 +227,7 @@ if(isset($controller->splitted_url[1]) && $user->rankIsHigher("moderator")) {
 				$output = Array();
 				$backup_file = Array();
 
+			// Suppression d'une archive existante.
 			if(isset($controller->splitted_url[2]) && $controller->splitted_url[2]=='delete' && isset($controller->splitted_url[3])) {
 				$tmp_folder = realpath($config['abs_root_folder'].'tmp');
 				if ($tmp_folder !== false) {
@@ -233,6 +243,7 @@ if(isset($controller->splitted_url[1]) && $user->rankIsHigher("moderator")) {
 				}
 			}
 				else {
+					// Création des archives de fichiers.
 					// Nom du fichier de sauvegarde
 					$timestamp = date('Ymd_His');
 					$backup_source[0] = $config['abs_root_folder'].'medias/avatars';
@@ -288,6 +299,7 @@ else {
 
 // Fonctions de mise en forme
 
+// Icône FontAwesome selon le type MIME.
 function getFontAwesomeIcon($mimeType) {
 	$icons = [
 		'application/pdf' => 'fa-file-pdf',
@@ -304,6 +316,7 @@ function getFontAwesomeIcon($mimeType) {
     return $icons[$mimeType] ?? 'fa-file'; // Default
 }
 
+// Formatte une taille en octets selon la locale.
 function formatBytes($bytes, $locale = 'en', $precision = 2) {
 	$unitMap = [
 		'en' => ['B', 'KB', 'MB', 'GB', 'TB', 'PB'],

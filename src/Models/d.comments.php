@@ -13,6 +13,7 @@ namespace Kabano;
 require_once($config['third_folder']."Md/MarkdownExtra.inc.php");
 require_once($config['includes_folder']."database.php");
 
+// Objet représentant un commentaire sur un contenu.
 class Comment
 {
 	public $id = NULL;
@@ -35,6 +36,7 @@ class Comment
 	public function checkID($id) {
 		global $config;
 		
+		// Chargement du commentaire par ID.
 		$con = sql_connect();
 
 		$query = "SELECT * FROM content_comments WHERE id=$1";
@@ -64,6 +66,7 @@ class Comment
 			return;
 		}
 
+		// Mapping des champs SQL vers les propriétés.
 		if (array_key_exists('id', $row)) {
 			$this->id = $row['id'];
 		}
@@ -102,6 +105,7 @@ class Comment
 	public function insert() {
 		global $config;
 		
+		// Insertion d'un nouveau commentaire.
 		$con = sql_connect();
 
 		$query = "INSERT INTO content_comments (version, creation_date, update_date, author, is_public, is_archive, content, comment, locale) VALUES
@@ -124,6 +128,7 @@ class Comment
 		global $config;
 		global $user;
 		
+		// Archivage logique du commentaire.
 		$con = sql_connect();
 
 		$query = "UPDATE content_comments SET is_public = FALSE WHERE id = $1";
@@ -148,6 +153,7 @@ class Comment
 		global $config;
 		global $user;
 		
+		// Restauration d'un commentaire archivé.
 		$con = sql_connect();
 
 		$query = "UPDATE content_comments SET is_public = TRUE WHERE id = $1";
@@ -169,6 +175,7 @@ class Comment
 	** Converts the Markdown comment to HTML
 	*****/
 	public function md2html() {
+		// Conversion Markdown -> HTML.
 		$this->comment_html = \Michelf\MarkdownExtra::defaultTransform($this->comment);
 	}
 
@@ -176,6 +183,7 @@ class Comment
 	** Converts the Markdown comment to text
 	*****/
 	public function md2txt() {
+		// Conversion Markdown -> texte brut.
 		$this->md2html();
 		$this->comment_txt = strip_tags($this->comment_html);
 	}
@@ -190,11 +198,13 @@ class Comment
 ***********************************************************
 **********************************************************/
 
+// Liste de commentaires liée à un contenu.
 class Comments
 {
 	public $objs = array();
 	public $number = NULL;
 
+	// Retourne la liste des commentaires pour un contenu.
 	/*****
 	** Return the list of different articles
 	*****/

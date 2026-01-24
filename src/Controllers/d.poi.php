@@ -1,5 +1,9 @@
 <?php
 
+/**
+ * Contrôleur des points d'intérêt (POI) : création, affichage, API.
+ */
+
 require_once($config['models_folder']."d.poi.php");
 require_once($config['models_folder']."d.comments.php");
 require_once($config['models_folder']."d.users.php");
@@ -9,6 +13,7 @@ $head['css'] = "d.index.css;d.poi.css";
 
 $poi = new Kabano\Poi();
 
+// Routage des actions POI.
 switch ($controller->splitted_url[1]) {
 	case "new":
 		if ($user->rankIsHigher("registered")) {
@@ -23,6 +28,7 @@ switch ($controller->splitted_url[1]) {
 				$poi->source = "kab";
 				$poi->is_commentable = 't';
 
+				// Paramètres selon le type de POI.
 				$definition = $poi_types[$poi->poi_type][5];
 				$params = [];
 
@@ -92,6 +98,7 @@ switch ($controller->splitted_url[1]) {
 		break;
 
 	case "elevation_proxy":
+		// Proxy vers l'API d'élévation.
 		if (isset($_GET['location'])) {
 			if (!preg_match('/^[0-9,\.\|\-]+$/', $_GET['location'])) {
 				$notfound = 1;
@@ -107,6 +114,7 @@ switch ($controller->splitted_url[1]) {
 		break;
 
 	case "api_list":
+	    // API JSON pour la liste des POIs (carte).
 	    header("Content-Type: application/json; charset=utf-8");
 
 	    $pois = new Kabano\Pois();

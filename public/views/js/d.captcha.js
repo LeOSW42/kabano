@@ -1,5 +1,7 @@
+// Compte à rebours du captcha.
 var time = 9;
 
+// Active le bouton lorsque le délai est écoulé.
 $(window).ready(function() {
 	var interval = setInterval(function() { 
 		if (time > 0) { 
@@ -19,4 +21,3 @@ $(window).ready(function() {
 		}
 	}, 1000);
 });
-

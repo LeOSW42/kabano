@@ -1,3 +1,4 @@
+// Carte des POIs et marqueur principal.
 var mymap;
 var poi_layer;
 
@@ -5,7 +6,7 @@ $(document).ready(function() {
     // Mode : edit (formulaire) ou view (affichage)
     var isEdit = (typeof poi_mode === "undefined" || poi_mode === "edit");
 
-    // Differents layers for the map
+    // Différentes couches pour la carte.
     var topo_maptiler = L.tileLayer(
         'https://api.maptiler.com/maps/topographique/{z}/{x}/{y}.png?key=Sm8M7mJ53GtYdl773rpi',
         {
@@ -22,7 +23,7 @@ $(document).ready(function() {
             attribution: 'Carte & Connées © <a href="http://ign.fr/" target="_blank">IGN-F/Géoportail</a>'
         }
     );
-    // Base layers
+    // Couches de base.
     var baseLayers = {
         "OpenStreetMap": topo_maptiler,
         "IGN France": ign
@@ -80,6 +81,7 @@ $(document).ready(function() {
     }
 
     if (isEdit) {
+        // Mise à jour des coordonnées à chaque déplacement.
         poi_layer.bindTooltip("Glissez moi au bon endroit.", {permanent: true, direction: 'auto'}).openTooltip();
     }
 
@@ -96,6 +98,7 @@ $(document).ready(function() {
             $("#elevation_icon").show();
         });
 
+        // Si l'utilisateur modifie les champs lat/lon manuellement.
         $("#lat,#lon").change(function() { // If the user changes the lat/lon input values manualy
             if(isNaN($("#lat").val()) || isNaN($("#lon").val()) || $("#lat").val().length==0 || $("#lon").val()==null)
                 $("#elevation_icon").hide();
@@ -116,6 +119,7 @@ $(document).ready(function() {
             poi_layer.setIcon(editPoiIcon);
         });
 
+        // Chargement de l'altitude via le proxy.
         $("#elevation_icon").click(function(e) {
             $(this).find($(".fas")).removeClass('fa-search-location').addClass('fa-spinner').addClass('fa-spin');
             $.get(root+"poi/elevation_proxy", {location:$("#lat").val()+","+$("#lon").val()}, function(result){

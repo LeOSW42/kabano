@@ -14,6 +14,7 @@ require_once($config['third_folder']."Md/MarkdownExtra.inc.php");
 require_once($config['includes_folder']."poi_types.struct.php");
 require_once($config['includes_folder']."database.php");
 
+// Objet représentant un point d'intérêt.
 class Poi
 {
 	public $content_id = NULL;
@@ -46,6 +47,7 @@ class Poi
 			return [];
 		}
 
+		// Les paramètres sont stockés en JSON.
 		$decoded = json_decode($value, true);
 		if (!is_array($decoded)) {
 			return [];
@@ -60,6 +62,7 @@ class Poi
 	public function checkPermalink($permalink, $withArchive=0, $elementNb=0) {
 	    global $config;
 
+		// Récupère la dernière version du POI.
 		$con = sql_connect();
 
 	    $query = "SELECT
@@ -134,6 +137,7 @@ class Poi
 			return;
 		}
 
+		// Décode les paramètres JSON et mappe les champs.
 		$decodedParameters = null;
 		if (array_key_exists('parameters', $row)) {
 			$decodedParameters = $this->decodeJsonArray($row['parameters']);
@@ -214,6 +218,7 @@ class Poi
 		global $config;
 		global $user;
 		
+		// Création d'un nouveau POI.
 		$con = sql_connect();
 
 		pg_query($con, "BEGIN");
@@ -282,6 +287,7 @@ class Poi
 		global $config;
 		global $user;
 
+		// Vérifie que les identifiants sont chargés.
 		if ($this->content_id == 0 || $this->locale_id == 0 || $this->version_id == 0)
 			die("Cannot update entry without giving ID");
 
@@ -342,6 +348,7 @@ class Poi
 		global $config;
 		global $user;
 
+		// Archivage logique du POI.
 		$con = sql_connect();
 
 		$query = "UPDATE contents SET is_public = FALSE WHERE id = $1";
@@ -365,6 +372,7 @@ class Poi
 		global $config;
 		global $user;
 
+		// Restauration d'un POI archivé.
 		$con = sql_connect();
 
 		$query = "UPDATE contents SET is_public = TRUE WHERE id = $1";
@@ -382,14 +390,17 @@ class Poi
 	}
 }
 
+// Liste de points d'intérêt (POI).
 class Pois
 {
 	public $objs = [];
 	public $number = 0;
 
+	// Liste des POIs publiés (ou archivés si demandé).
 	public function listPois($archive=0) {
 		global $config;
 
+		// Chargement des POIs avec leurs versions actives.
 		$con = sql_connect();
 
 		$query = "SELECT
@@ -453,6 +464,7 @@ class Pois
 	public function getHistory($permalink) {
 		global $config;
 
+		// Historique des versions d'un POI.
 		$con = sql_connect();
 
 		$query = "SELECT
