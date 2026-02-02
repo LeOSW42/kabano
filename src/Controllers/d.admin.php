@@ -183,7 +183,7 @@ if(isset($controller->splitted_url[1]) && $user->rankIsHigher("moderator")) {
 
 			// Suppression d'une sauvegarde existante.
 			if(isset($controller->splitted_url[2]) && $controller->splitted_url[2]=='delete' && isset($controller->splitted_url[3])) {
-				$tmp_folder = realpath($config['abs_root_folder'].'tmp');
+				$tmp_folder = realpath($config['public_folder'].'tmp');
 				if ($tmp_folder !== false) {
 					$safe_name = basename($controller->splitted_url[3]);
 					$tmp_folder_root = rtrim($tmp_folder, DIRECTORY_SEPARATOR);
@@ -203,7 +203,7 @@ if(isset($controller->splitted_url[1]) && $user->rankIsHigher("moderator")) {
 					// Nom du fichier de sauvegarde
 					$timestamp = date('Ymd_His');
 					$backup_filename[0] = $timestamp.'_backup.sql';
-					$backup_file[0] = $config['abs_root_folder'].'tmp/'.$backup_filename[0];
+					$backup_file[0] = $config['public_folder'].'tmp/'.$backup_filename[0];
 
 					// Construction de la commande pg_dump
 					$cmd = 'PGPASSWORD="'.$config['SQL_pass'].'" pg_dump -h '.$config['SQL_host'].' -U '.$config['SQL_user'].' -F c -b -v -f "'.$backup_file[0].'" '.$config['SQL_db'].' 2>&1';
@@ -213,7 +213,7 @@ if(isset($controller->splitted_url[1]) && $user->rankIsHigher("moderator")) {
 					exec($cmd, $output, $return_var);
 				}
 
-				$backup_files = glob($config['abs_root_folder'].'tmp/*.sql');
+				$backup_files = glob($config['public_folder'].'tmp/*.sql');
 
 				include ($config['views_folder']."d.admin.backup.html");
 			}
@@ -229,7 +229,7 @@ if(isset($controller->splitted_url[1]) && $user->rankIsHigher("moderator")) {
 
 			// Suppression d'une archive existante.
 			if(isset($controller->splitted_url[2]) && $controller->splitted_url[2]=='delete' && isset($controller->splitted_url[3])) {
-				$tmp_folder = realpath($config['abs_root_folder'].'tmp');
+				$tmp_folder = realpath($config['public_folder'].'tmp');
 				if ($tmp_folder !== false) {
 					$safe_name = basename($controller->splitted_url[3]);
 					$tmp_folder_root = rtrim($tmp_folder, DIRECTORY_SEPARATOR);
@@ -252,7 +252,7 @@ if(isset($controller->splitted_url[1]) && $user->rankIsHigher("moderator")) {
 					$backup_filename[1] = $timestamp.'_wiki_files.zip';
 
 					for($i=0;$i<2;$i++) {
-						$backup_file[$i] = $config['abs_root_folder'].'tmp/'.$backup_filename[$i];
+						$backup_file[$i] = $config['public_folder'].'tmp/'.$backup_filename[$i];
 
 						$backup[$i] = new ZipArchive();
 						if ($backup[$i]->open($backup_file[$i], ZipArchive::CREATE | ZipArchive::OVERWRITE) === TRUE) {
@@ -276,7 +276,7 @@ if(isset($controller->splitted_url[1]) && $user->rankIsHigher("moderator")) {
 					}
 				}
 
-				$backup_files = glob($config['abs_root_folder'].'tmp/*.zip');
+				$backup_files = glob($config['public_folder'].'tmp/*.zip');
 
 				include ($config['views_folder']."d.admin.backup.html");
 			}
