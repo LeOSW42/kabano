@@ -148,7 +148,7 @@ if(isset($controller->splitted_url[1]) && $user->rankIsHigher("moderator")) {
 				$head['title'] = "Statistiques";
 
 				// Génération du rapport statistiques (GoAccess).
-				$report = $config['abs_root_folder'].'tmp/report.html';
+				$report = $config['public_folder'].'tmp/report.html';
 
 				$files = glob('/var/log/nginx/kabano.org-access.log*.gz');
 
