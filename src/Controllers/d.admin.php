@@ -246,8 +246,8 @@ if(isset($controller->splitted_url[1]) && $user->rankIsHigher("moderator")) {
 					// Création des archives de fichiers.
 					// Nom du fichier de sauvegarde
 					$timestamp = date('Ymd_His');
-					$backup_source[0] = $config['abs_root_folder'].'medias/avatars';
-					$backup_source[1] = $config['abs_root_folder'].'medias/wiki';
+					$backup_source[0] = $config['public_folder'].'medias/avatars';
+					$backup_source[1] = $config['public_folder'].'medias/wiki';
 					$backup_filename[0] = $timestamp.'_avatar_files.zip';
 					$backup_filename[1] = $timestamp.'_wiki_files.zip';
 
