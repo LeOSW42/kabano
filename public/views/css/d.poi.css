@@ -320,6 +320,19 @@ form.form input[type="checkbox"]:checked + span:before {
 	width: 100% !important;
 	left: 0 !important;
 }
+@media only screen and (max-width: 850px) {
+	.leaflet-control-container {
+		left: 0 !important;
+		width: calc(100% - 40px) !important;
+		margin: 0 20px;
+	}
+	.leaflet-fullscreen-on .leaflet-control-container {
+		position: absolute !important;
+		width: 100% !important;
+		left: 0 !important;
+		margin: 0;
+	}
+}
 
 .leaflet-bottom.leaflet-left {
 	bottom: 35% !important;
