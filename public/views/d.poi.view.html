@@ -164,31 +164,17 @@
 							-1 => "<span class='boolean-pill boolean-unknown'>➖</span>"
 						];
 					?>
-					<div class="bool-grid">
 
-						<!-- Boolean labels -->
-						<div class="bool-row labels">
-							<?php foreach ($boolFields as $key => $label): ?>
-								<div class="bool-label"><?= $label ?></div>
-							<?php endforeach; ?>
+						<div class="bool-grid">
+						    <?php foreach ($boolFields as $key => $label): ?>
+						        <?php $icon = $boolIcons[$poiValues[$key] ?? 2]; ?>
+						        <div class="bool-cell">
+						            <div class="bool-label"><?= $label ?></div>
+						            <div class="bool-icon"><?= $icon ?></div>
+						        </div>
+						    <?php endforeach; ?>
 						</div>
-
-						<!-- Boolean values -->
-						<div class="bool-row values">
-							<?php foreach ($boolFields as $key => $label): ?>
-								<?php
-									$value = $poiValues[$key] ?? 2;
-									$icon = $boolIcons[$value];
-								?>
-								<div class="bool-cell">
-									<?= $icon ?>
-								</div>
-							<?php endforeach; ?>
-						</div>
-
-					</div>
 					<?php endif; ?>
-
 				</div>
 
 

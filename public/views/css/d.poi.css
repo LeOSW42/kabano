@@ -26,7 +26,7 @@ html, body {
 }
 #slide-icon {
 	position: absolute;
-	left: 400px;
+	left: calc(50% - 26px);
 	top: -35px;
 	color: #000;
 	font-size: 60px;
@@ -510,7 +510,7 @@ form.form input[type="checkbox"]:checked + span:before {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    font-size: 19px; /* demandé */
+    font-size: 19px;
     font-weight: 600;
 }
 
@@ -518,7 +518,9 @@ form.form input[type="checkbox"]:checked + span:before {
 .poi-id-coords {
     display: flex;
     align-items: center;
+    flex-wrap: wrap;
     gap: 8px;
+    row-gap: 2px;
 }
 
 .poi-id-coords a {
@@ -528,7 +530,6 @@ form.form input[type="checkbox"]:checked + span:before {
 .poi-id-coords a:hover {
     text-decoration: underline;
 }
-
 .poi-id-elev {
     color: #333;
 }
@@ -633,44 +634,46 @@ form.form input[type="checkbox"]:checked + span:before {
  *****************************************/
 
 .bool-grid {
+    display: flex;
     margin: 20px 0 0 0;
     padding: 20px 15px;
     background: rgba(200, 220, 255, 0.25);
 	border-top: 1px solid #bbb;
 }
 
-.bool-row {
-    display: grid;
-    grid-auto-flow: column;
-    grid-auto-columns: 1fr;
+.bool-grid .bool-cell {
+    margin-right: 10px;
     text-align: center;
-    margin-bottom: 10px;
 }
 
-.bool-row.labels {
-    font-size: 16px;
-}
-
-.bool-label {
-    padding: 5px;
-}
-
-.bool-row.values {
-    margin-top: 5px;
+.bool-grid .bool-cell:last-child {
+    margin-right: 0;
 }
 
 .boolean-pill {
     display: inline-block;
     padding: 8px 12px;
+    margin-top: 5px;
     border-radius: 20px;
     font-weight: 700;
     font-size: 18px;
     background: white;
 }
 
-@media (max-width: 900px) {
-    .bool-row {
-        grid-auto-flow: row;
-        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+/**
+ * Utiliser flexbox pour s'adapter à la largeur de la page
+ */
+@media only screen and (max-width: 800px) {
+    .bool-grid {
+        flex-direction: column;
+    }
+    .bool-grid .bool-cell {
+        margin-right: 0;
+        margin-bottom: 10px;
+        width: 100%;
+    	text-align: left;
+    }
+    .bool-label, .bool-icon {
+    	display: inline-block;
     }
 }
