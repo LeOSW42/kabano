@@ -282,7 +282,7 @@ switch ($controller->splitted_url[1]) {
 						        $wmHeight = imagesy($wm);
 
 						        $x = $newWidth - $wmWidth - 20;
-						        $y = $newHeight - $wmHeight - 20;
+						        $y = 20;
 
 						        // Fusion
 						        imagecopy($dst, $wm, $x, $y, 0, 0, $wmWidth, $wmHeight);
@@ -338,8 +338,8 @@ switch ($controller->splitted_url[1]) {
 				$poi->author_name = $tempUser->name;
 				unset($tempUser);
 
-				$head['third'] = "leaflet/leaflet.js;leaflet-fullscreen/Leaflet.fullscreen.min.js;leaflet-easybutton/easy-button.js";
-				$head['css'] .= ";../third/leaflet/leaflet.css;../third/leaflet-fullscreen/leaflet.fullscreen.css;../third/leaflet-easybutton/easy-button.css";
+				$head['third'] = "leaflet/leaflet.js;leaflet-fullscreen/Leaflet.fullscreen.min.js;leaflet-easybutton/easy-button.js;simplelightbox/simple-lightbox.min.js";
+				$head['css'] .= ";../third/leaflet/leaflet.css;../third/leaflet-fullscreen/leaflet.fullscreen.css;../third/leaflet-easybutton/easy-button.css;../third/simplelightbox/simple-lightbox.min.css";
 				$head['js'] = "d.poi_map.js";
 
 				$head['title'] = $poi->name;

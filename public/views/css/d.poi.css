@@ -48,8 +48,15 @@ section.archive > * {
 	opacity: 0.5;
 }
 
-/* Comments of a poi */
+#comments_photos_gallery {
+	padding: 30px 0 0 0;
+}
+#comments_photos_gallery a, #comments_photos_gallery img {
+	height: 60px;
+	border-radius: 5px;
+}
 
+/* Comments of a poi */
 
 #new_comment {
 	clear: both;
