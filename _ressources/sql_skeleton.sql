@@ -2,8 +2,8 @@
 -- PostgreSQL database dump
 --
 
--- Dumped from database version 18.1
--- Dumped by pg_dump version 18.1
+-- Dumped from database version 18.3
+-- Dumped by pg_dump version 18.3
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -85,6 +85,19 @@ CREATE TYPE public.user_rank_enum AS ENUM (
 
 
 ALTER TYPE public.user_rank_enum OWNER TO kabano;
+
+--
+-- Name: content_comment_photos; Type: TABLE; Schema: public; Owner: kabano
+--
+
+CREATE TABLE public.content_comment_photos (
+    id integer NOT NULL,
+    comment_id integer NOT NULL,
+    url text NOT NULL,
+    creation_date timestamp without time zone DEFAULT now()
+);
+
+ALTER TABLE public.content_comment_photos OWNER TO kabano;
 
 --
 -- Name: content_comments_sequence; Type: SEQUENCE; Schema: public; Owner: kabano
@@ -407,6 +420,19 @@ CREATE TABLE public.users (
 
 ALTER TABLE public.users OWNER TO kabano;
 
+--
+-- Name: content_comment_photos id; Type: DEFAULT; Schema: public; Owner: kabano
+--
+
+ALTER TABLE ONLY public.content_comment_photos ALTER COLUMN id SET DEFAULT nextval('public.content_comment_photos_id_seq'::regclass);
+
+
+--
+-- Name: content_comment_photos content_comment_photos_pkey; Type: CONSTRAINT; Schema: public; Owner: kabano
+--
+
+ALTER TABLE ONLY public.content_comment_photos
+    ADD CONSTRAINT content_comment_photos_pkey PRIMARY KEY (id);
 
 --
 -- Data for Name: locales; Type: TABLE DATA; Schema: public; Owner: kabano
@@ -623,6 +649,14 @@ CREATE INDEX users_is_archive_index ON public.users USING btree (is_archive);
 --
 
 CREATE INDEX users_register_date_index ON public.users USING btree (register_date);
+
+
+--
+-- Name: content_comment_photos content_comment_photos_comment_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: kabano
+--
+
+ALTER TABLE ONLY public.content_comment_photos
+    ADD CONSTRAINT content_comment_photos_comment_id_fkey FOREIGN KEY (comment_id) REFERENCES public.content_comments(id) ON DELETE CASCADE;
 
 
 --

@@ -182,7 +182,7 @@
 					<?php if (isset($poi_comments) && $poi_comments->number > 0) { ?>
 						<div id="comments_photos_gallery" class="gallery">
 							<?php foreach ($poi_comments->objs as $comment) { ?>
-								<?php if (!empty($comment->photo)) { ?>
+								<?php if (!empty($comment->photo) && $comment->is_archive != 't' && $comment->is_public != 'f') { ?>
 						            <a href="<?=$config['rel_root_folder'].'medias/comment_photos/'.$comment->photo?>">
 						            	<img src="<?=$config['rel_root_folder'].'medias/comment_photos/'.$comment->photo?>" title="<?= (mb_strlen($comment->comment) > 50 ? mb_substr($comment->comment, 0, 50) . '...' : $comment->comment) ?>">
 						            </a>
@@ -211,13 +211,21 @@
 							<div id="new_comment_form">
 								<textarea id="comment" name="comment" rows="5" placeholder="Votre commentaire"></textarea>
 
-								<label for="photo" class="upload-btn">
+								<label for="photo" id="upload-btn">
 								    <i class="fas fa-file-image"></i> Ajouter une photo
 								</label>
 								<input type="file" id="photo" name="photo" accept="image/*">
 							</div>
 						</form>
 					</div>
+
+					<script>
+					document.getElementById('photo').addEventListener('change', function() {
+					    document.getElementById('upload-btn').innerHTML = this.files.length
+					        ? "<i class='fas fa-check-square'></i> Photo sélectionnée"
+					        : "<i class='fas fa-file-image'></i> Ajouter une photo";
+					});
+					</script>
 
 					<?php if (isset($poi_comments) && $poi_comments->number > 0) { ?>
 						<!-- Comment list -->

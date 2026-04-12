@@ -99,7 +99,7 @@ section.archive > * {
 #new_comment_form #photo {
     display: none;
 }
-#new_comment_form .upload-btn {
+#new_comment_form #upload-btn {
     display: block;
     width: 100%;
     border-bottom: 2px solid blue;
