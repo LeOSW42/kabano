@@ -28,34 +28,31 @@ class Comment
 	public $locale = NULL;
 	public $comment_html = NULL;
 	public $author_obj = NULL;
+	public $photo = NULL;
 
-
-	/*****
-	** Connect to correct account using ID and stores its ID
-	*****/
 	public function checkID($id) {
-		global $config;
-		
+	    global $config;
+
 		// Chargement du commentaire par ID.
-		$con = sql_connect();
+	    $con = sql_connect();
 
-		$query = "SELECT * FROM content_comments WHERE id=$1";
+	    $query = "SELECT c.*, p.url AS photo_url FROM content_comments c
+	        LEFT JOIN content_comment_photos p ON p.comment_id = c.id WHERE c.id = $1";
 
-		pg_prepare($con, "prepare1", $query) 
-			or die ("Cannot prepare statement\n");
-		$result = pg_execute($con, "prepare1", array($id))
-			or die ("Cannot execute statement\n");
+	    pg_prepare($con, "prepare_comment_join", $query)
+	        or die("Cannot prepare statement\n");
 
-		pg_close($con);
+	    $result = pg_execute($con, "prepare_comment_join", array($id))
+	        or die("Cannot execute statement\n");
 
-		if(pg_num_rows($result) == 1) {
-			$row = pg_fetch_assoc($result);
-			$this->populate($row);
-			return 1;
-		}
-		else {
-			return 0;
-		}
+        pg_close($con);
+
+	    if (pg_num_rows($result) == 1) {
+	        $row = pg_fetch_assoc($result);
+	        $this->populate($row);
+	        return 1;
+	    }
+	    return 0;
 	}
 
 	/*****
@@ -97,6 +94,9 @@ class Comment
 		if (array_key_exists('locale', $row)) {
 			$this->locale = $row['locale'];
 		}
+		if (array_key_exists('photo_url', $row)) {
+			$this->photo = $row['photo_url'];
+		}
 	}
 
 	/*****
@@ -117,6 +117,15 @@ class Comment
 			or die ("Cannot execute statement\n");
 
 		$this->id = pg_fetch_assoc($result)['id'];
+
+		if(isset($this->photo) && $this->photo != NULL) {
+			$query = "INSERT INTO content_comment_photos (comment_id, url) VALUES
+			($1, $2)";
+
+			pg_prepare($con, "prepare2", $query) 
+				or die ("Cannot prepare statement\n");
+			pg_execute($con, "prepare2", array($this->id, $this->photo));
+		}
 
 		pg_close($con);
 	}
@@ -208,29 +217,33 @@ class Comments
 	/*****
 	** Return the list of different articles
 	*****/
-	public function listComments($id, $archive=0) {
-		global $config;
+	public function listComments($id, $archive = 0) {
+	    global $config;
 
-		$con = sql_connect();
+	    $con = sql_connect();
 
-		$query = "SELECT * FROM content_comments WHERE content = $1 ";
-		if ($archive == 0)
-			$query .= "AND is_archive IS FALSE AND is_public IS TRUE ";
-		$query .= "ORDER BY update_date DESC";
+	    $query = "SELECT c.*, p.url AS photo_url FROM content_comments c
+	              LEFT JOIN content_comment_photos p ON p.comment_id = c.id WHERE c.content = $1 ";
 
-		pg_prepare($con, "prepare1", $query) 
-			or die ("Cannot prepare statement\n");
-		$result = pg_execute($con, "prepare1", array($id))
-				or die ("Cannot execute statement\n");
-		
-		pg_close($con);
+	    if ($archive == 0)
+	        $query .= "AND c.is_archive IS FALSE AND c.is_public IS TRUE ";
 
-		$this->number = pg_num_rows($result);
+	    $query .= "ORDER BY c.update_date DESC";
 
-		for($i = 0; $i < pg_num_rows($result); $i++) {
-			$row = pg_fetch_assoc($result, $i);
-			$this->objs[$i] = new Comment;
-			$this->objs[$i]->populate($row);
-		}
+	    pg_prepare($con, "prepare_comment_list", $query)
+	        or die("Cannot prepare statement\n");
+
+	    $result = pg_execute($con, "prepare_comment_list", array($id))
+	        or die("Cannot execute statement\n");
+
+	    pg_close($con);
+
+	    $this->number = pg_num_rows($result);
+
+	    for ($i = 0; $i < $this->number; $i++) {
+	        $row = pg_fetch_assoc($result, $i);
+	        $this->objs[$i] = new Comment;
+	        $this->objs[$i]->populate($row);
+	    }
 	}
 }

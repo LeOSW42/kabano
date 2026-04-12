@@ -233,6 +233,18 @@ switch ($controller->splitted_url[1]) {
 						$Comment->author = $user->id;
 						$Comment->content = $poi->content_id;
 						$Comment->comment = $_POST['comment'];
+
+						if (!empty($_FILES['photo']['tmp_name'])) {
+						    $tmp = $_FILES['photo']['tmp_name'];
+						    $filename = uniqid('comment_').'.jpg'; // ou extension dynamique
+						    $destination = $config['medias_folder'].'comment_photos/'.$filename;
+
+	   						move_uploaded_file($tmp, $destination);
+
+						    // URL publique
+						    $Comment->photo = $filename;
+						}
+
 						$Comment->insert();
 					}
 				}

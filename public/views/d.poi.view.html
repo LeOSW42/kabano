@@ -181,7 +181,7 @@
 				<?php if ($isCommentable) { ?>
 					<!-- Comments -->
 					<div id="new_comment">
-						<form class="form" action="<?=$config['rel_root_folder']?>poi/<?=$poi->permalink?>/new_comment" method="post">
+						<form class="form" action="<?=$config['rel_root_folder']?>poi/<?=$poi->permalink?>/new_comment" method="post" enctype="multipart/form-data">
 							<div id="new_comment_label" <?=$isVisitor ? "class='sent' " : ""?>>
 								<?php if ($isArchiveOrPrivate) { ?>
 									<p>Impossible de commenter un point non publié</p>
@@ -194,6 +194,9 @@
 							</div>
 							<div id="new_comment_form">
 								<textarea id="comment" name="comment" rows="5" placeholder="Votre commentaire"></textarea>
+
+					            <label for="photo">Ajouter une photo</label>
+					            <input type="file" id="photo" name="photo" accept="image/*">
 							</div>
 						</form>
 					</div>
@@ -242,6 +245,12 @@
 
 									<div class="comment_content">
 										<?=$comment->comment_html?>
+
+									    <?php if (!empty($comment->photo)) { ?>
+									        <div class="comment-photo">
+									            <img src="<?=$config['rel_root_folder'].'medias/comment_photos/'.$comment->photo?>" alt="Photo du commentaire">
+									        </div>
+									    <?php } ?>
 									</div>
 								</article>
 
