@@ -229,31 +229,33 @@ if(isset($controller->splitted_url[1]) && $user->rankIsHigher("moderator")) {
 				$output = Array();
 				$backup_file = Array();
 
-			// Suppression d'une archive existante.
-			if(isset($controller->splitted_url[2]) && $controller->splitted_url[2]=='delete' && isset($controller->splitted_url[3])) {
-				$tmp_folder = realpath($config['public_folder'].'tmp');
-				if ($tmp_folder !== false) {
-					$safe_name = basename($controller->splitted_url[3]);
-					$tmp_folder_root = rtrim($tmp_folder, DIRECTORY_SEPARATOR);
-					$delete_path = $tmp_folder_root . DIRECTORY_SEPARATOR . $safe_name;
-					$real_delete_path = realpath($delete_path);
-					if ($real_delete_path && str_starts_with($real_delete_path, $tmp_folder_root . DIRECTORY_SEPARATOR)) {
-						if (file_exists($real_delete_path)) {
-							unlink($real_delete_path);
+				// Suppression d'une archive existante.
+				if(isset($controller->splitted_url[2]) && $controller->splitted_url[2]=='delete' && isset($controller->splitted_url[3])) {
+					$tmp_folder = realpath($config['public_folder'].'tmp');
+					if ($tmp_folder !== false) {
+						$safe_name = basename($controller->splitted_url[3]);
+						$tmp_folder_root = rtrim($tmp_folder, DIRECTORY_SEPARATOR);
+						$delete_path = $tmp_folder_root . DIRECTORY_SEPARATOR . $safe_name;
+						$real_delete_path = realpath($delete_path);
+						if ($real_delete_path && str_starts_with($real_delete_path, $tmp_folder_root . DIRECTORY_SEPARATOR)) {
+							if (file_exists($real_delete_path)) {
+								unlink($real_delete_path);
+							}
 						}
 					}
 				}
-			}
 				else {
 					// Création des archives de fichiers.
 					// Nom du fichier de sauvegarde
 					$timestamp = date('Ymd_His');
 					$backup_source[0] = $config['public_folder'].'medias/avatars';
 					$backup_source[1] = $config['public_folder'].'medias/wiki';
+					$backup_source[2] = $config['public_folder'].'medias/comment_photos';
 					$backup_filename[0] = $timestamp.'_avatar_files.zip';
 					$backup_filename[1] = $timestamp.'_wiki_files.zip';
+					$backup_filename[2] = $timestamp.'_comment_photos.zip';
 
-					for($i=0;$i<2;$i++) {
+					for($i=0;$i<3;$i++) {
 						$backup_file[$i] = $config['public_folder'].'tmp/'.$backup_filename[$i];
 
 						$backup[$i] = new ZipArchive();
