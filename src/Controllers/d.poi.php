@@ -235,13 +235,64 @@ switch ($controller->splitted_url[1]) {
 						$Comment->comment = $_POST['comment'];
 
 						if (!empty($_FILES['photo']['tmp_name'])) {
+
 						    $tmp = $_FILES['photo']['tmp_name'];
-						    $filename = uniqid('comment_').'.jpg'; // ou extension dynamique
-						    $destination = $config['medias_folder'].'comment_photos/'.$filename;
+						    $info = getimagesize($tmp);
+						    if ($info === false) {
+						        die("Fichier non valide");
+						    }
 
-	   						move_uploaded_file($tmp, $destination);
+						    $mime = $info['mime'];
+						    switch ($mime) {
+						        case 'image/jpeg':
+						            $src = imagecreatefromjpeg($tmp);
+						            break;
+						        case 'image/png':
+						            $src = imagecreatefrompng($tmp);
+						            break;
+						        case 'image/webp':
+						            $src = imagecreatefromwebp($tmp);
+						            break;
+						        default:
+						            die("Format non supporté");
+						    }
 
-						    // URL publique
+						    $width  = imagesx($src);
+						    $height = imagesy($src);
+
+						    // Taille max
+						    $max = 1500;
+
+						    $ratio = min($max / $width, $max / $height, 1);
+						    $newWidth  = (int)($width * $ratio);
+						    $newHeight = (int)($height * $ratio);
+						    $dst = imagecreatetruecolor($newWidth, $newHeight);
+						    imagecopyresampled($dst, $src, 0, 0, 0, 0, $newWidth, $newHeight, $width, $height);
+
+						    // --- Watermark ---
+						    $watermarkPath = $config['medias_folder'] . '/watermark.png';
+
+						    if (file_exists($watermarkPath)) {
+						        $wm = imagecreatefrompng($watermarkPath);
+
+						        imagealphablending($wm, true);
+						        imagesavealpha($wm, true);
+
+						        $wmWidth  = imagesx($wm);
+						        $wmHeight = imagesy($wm);
+
+						        $x = $newWidth - $wmWidth - 20;
+						        $y = $newHeight - $wmHeight - 20;
+
+						        // Fusion
+						        imagecopy($dst, $wm, $x, $y, 0, 0, $wmWidth, $wmHeight);
+						    }
+
+						    $filename = uniqid('comment_') . '.jpg';
+						    $destination = $config['medias_folder'] . 'comment_photos/' . $filename;
+
+						    imagejpeg($dst, $destination, 70);
+
 						    $Comment->photo = $filename;
 						}
 
