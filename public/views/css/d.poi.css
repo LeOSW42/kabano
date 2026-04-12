@@ -57,7 +57,8 @@ section.archive > * {
 	width: 90%;
 	background: #efefef;
 	border: 1px solid #ccc;
-	border-bottom: 3px solid #ccc;
+	border-bottom-left-radius: 3px;
+	border-bottom-right-radius: 3px;
 }
 #new_comment_label {
 	background: #ccc;
@@ -86,6 +87,21 @@ section.archive > * {
 	border: 0;
 	font-size: 14px;
 	width: calc(100% - 20px);
+}
+
+#new_comment_form #photo {
+    display: none;
+}
+#new_comment_form .upload-btn {
+    display: block;
+    width: 100%;
+    border-bottom: 2px solid blue;
+	border-bottom-left-radius: 3px;
+	border-bottom-right-radius: 3px;
+	text-align: center;
+	background: #ccc;
+	padding: 7px 0;
+	color: black;
 }
 
 #new_comment_label.sent {
@@ -134,6 +150,15 @@ section .comment_content {
 }
 section article.comment_archive {
 	opacity: 0.5;
+}
+
+.comment-photo {
+	max-width: 100%;
+}
+
+.comment-photo img {
+	max-width: 100%;
+	border: 1px solid #bbb;
 }
 
 /*********************************/
@@ -657,6 +682,7 @@ form.form input[type="checkbox"]:checked + span:before {
 .bool-grid .bool-cell {
     margin-right: 10px;
     text-align: center;
+    flex: 1;
 }
 
 .bool-grid .bool-cell:last-child {
