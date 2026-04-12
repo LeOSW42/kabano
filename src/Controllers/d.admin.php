@@ -1,5 +1,7 @@
 <?php
 
+require_once($config['includes_folder']."database.php");
+
 /**
  * Contrôleur des pages d'administration (logs, sauvegardes, stats).
  */
@@ -279,6 +281,48 @@ if(isset($controller->splitted_url[1]) && $user->rankIsHigher("moderator")) {
 				$backup_files = glob($config['public_folder'].'tmp/*.zip');
 
 				include ($config['views_folder']."d.admin.backup.html");
+			}
+			else {
+				$notfound = 1;
+			}
+			break;
+		case 'orphan-photos':
+			if ($user->rankIsHigher("administrator")) {
+				$head['title'] = "Suppressions des photos orphelines";
+
+				$folder = $config['medias_folder'] . 'comment_photos/';
+			    $con = Kabano\sql_connect();
+
+				// Suppression fichier orphelin
+				if (isset($_GET['delete_file'])) {
+				    $file = basename($_GET['delete_file']);
+				    $path = $folder . $file;
+
+				    if (file_exists($path)) {
+				        unlink($path);
+				    }
+				}
+				// Suppression entrée SQL orpheline
+				if (isset($_GET['delete_db'])) {
+				    $file = $_GET['delete_db'];
+
+				    pg_prepare($con, "delete_orphan", "DELETE FROM content_comment_photos WHERE url = $1");
+				    pg_execute($con, "delete_orphan", [$file]);
+				}
+
+				$files = array_diff(scandir($folder), ['.', '..']);
+
+			    $sql = "SELECT id, url FROM content_comment_photos";
+				$result = pg_query($con, $sql);
+				$dbEntries = pg_fetch_all($result) ?: [];
+				$dbFiles = array_column($dbEntries, 'url');
+
+				$orphans_files = array_diff($files, $dbFiles);
+				$orphans_db = array_diff($dbFiles, $files);
+		
+		        pg_close($con);
+
+				include ($config['views_folder']."d.admin.orphans.html");
 			}
 			else {
 				$notfound = 1;

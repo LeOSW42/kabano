@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<!-- Page: admin git pull -->
+<html lang="fr">
+
+	<?php include('blocks/d.head.html'); ?>
+
+	<body>
+
+		<?php include('blocks/d.nav.html'); ?>
+
+		<style>
+			section ul {
+			    margin: 20px 0;
+			    padding-left: 22px; /* comme le style natif */
+			}
+
+			section li {
+			    margin: 6px 0;
+			    line-height: 1.4;
+			}
+		</style>
+
+		<section>
+			<h1><?=$head['title']?></h1>
+			<br>
+			
+			<h2>Fichiers orphelins (présents sur disque mais pas en base)</h2>
+			<?php if (empty($orphans_files)): ?>
+			    <p>Aucun fichier orphelin</p>
+			<?php else: ?>
+			    <ul>
+			        <?php foreach ($orphans_files as $file): ?>
+			            <li>
+			                <a href="<?=$config['rel_root_folder'].'medias/comment_photos/'.$file?>" target="_blank"><?= htmlspecialchars($file) ?></a>
+			                <a href="?delete_file=<?= urlencode($file) ?>" onclick="return confirm('Supprimer ce fichier ?')"><i class="fas fa-trash"></i>Supprimer</a>
+			            </li>
+			        <?php endforeach; ?>
+			    </ul>
+			<?php endif; ?>
+
+			<h2>Entrées SQL orphelines (en base mais fichier manquant)</h2>
+			<?php if (empty($orphans_db)): ?>
+			    <p>Aucune entrée SQL orpheline</p>
+			<?php else: ?>
+			    <ul>
+			        <?php foreach ($orphans_db as $file): ?>
+			            <li>
+			                <?= htmlspecialchars($file) ?>
+			                <a href="?delete_db=<?= urlencode($file) ?>" onclick="return confirm('Supprimer cette entrée SQL ?')"><i class="fas fa-trash-alt"></i>Supprimer</a>
+			            </li>
+			        <?php endforeach; ?>
+			    </ul>
+			<?php endif; ?>
+
+		</section>
+
+		<?php include('blocks/d.footer.html'); ?>
+
+	</body>
+</html>
