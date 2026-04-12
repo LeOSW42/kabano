@@ -90,6 +90,16 @@ ALTER TYPE public.user_rank_enum OWNER TO kabano;
 -- Name: content_comment_photos; Type: TABLE; Schema: public; Owner: kabano
 --
 
+CREATE SEQUENCE public.content_comment_photos_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE public.content_comment_photos_id_seq OWNER TO kabano;
+
 CREATE TABLE public.content_comment_photos (
     id integer NOT NULL,
     comment_id integer NOT NULL,
