@@ -178,7 +178,7 @@
 				</div>
 
 
-				<?php if ($isCommentable) { ?>
+				<?php if ($isCommentable && $poi->source_id=='kab') { ?>
 					<?php if (isset($poi_comments) && $poi_comments->number > 0) { ?>
 						<div id="comments_photos_gallery" class="gallery">
 							<?php foreach ($poi_comments->objs as $comment) { ?>
@@ -286,6 +286,8 @@
 						<p>Aucun commentaire pour le moment.</p>
 					<?php } ?>
 				<?php } ?>
+
+				<?php if($poi->source_id!='kab') {?><br><div style="text-align: center; font-style: italic;">Données fournies par <a href="https://refuges.info/point/<?=$poi->remote_source_id?>" target="_blank"><i class="fas fa-external-link-alt"></i> <?=$poi->source?></a> sous licence CC BY-SA</div><?php } ?>
 
 			</section>
 

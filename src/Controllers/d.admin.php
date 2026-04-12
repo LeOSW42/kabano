@@ -330,6 +330,22 @@ if(isset($controller->splitted_url[1]) && $user->rankIsHigher("moderator")) {
 				$notfound = 1;
 			}
 			break;
+		case 'wri-import':
+		    if ($user->rankIsHigher("moderator")) {
+
+		        require_once($config['abs_root_folder']."src/Import/wri.php");
+
+		        $head['title'] = "Import Refuges.info";
+
+		        $importer = new \Kabano\Import\WriImporter();
+		        $result = $importer->importAll(false);
+
+		        include ($config['views_folder']."d.admin.wri-import.html");
+		    }
+		    else {
+		        $notfound = 1;
+		    }
+		    break;
 		default:
 			$notfound = 1;
 		break;

@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<!-- Page: admin logs -->
+<html lang="fr">
+
+    <?php include('blocks/d.head.html'); ?>
+
+    <body>
+
+        <?php include('blocks/d.nav.html'); ?>
+
+        <section>
+            <h1><?=$head['title']?></h1>
+
+            <p>
+                L’import depuis <strong>Refuges.info</strong> vient d’être exécuté.
+            </p>
+
+            <h2>Résumé</h2>
+
+            <ul>
+                <li><strong>Nouveaux POIs créés :</strong> <?= $result['created'] ?></li>
+                <li><strong>POIs mis à jour :</strong> <?= $result['updated'] ?></li>
+                <li><strong>Total analysés :</strong> <?= $result['total'] ?></li>
+            </ul>
+        </section>
+
+        <?php include('blocks/d.footer.html'); ?>
+
+    </body>
+</html>
