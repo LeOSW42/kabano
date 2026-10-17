@@ -397,7 +397,7 @@ class Pois
 	public $number = 0;
 
 	// Liste des POIs publiés (ou archivés si demandé).
-	public function listPois($archive=0) {
+	public function listPoisBBOX($n,$s,$e,$w,$archive=0) {
 		global $config;
 
 		// Chargement des POIs avec leurs versions actives.
@@ -442,15 +442,23 @@ class Pois
 	            ON sources.id = specs.source_id
 
 	        WHERE contents.type = 'poi'
-	          AND content_versions.is_archive = FALSE";
+	        	AND content_versions.is_archive = FALSE
+			    AND specs.geom && ST_MakeEnvelope(
+			        $1,
+			        $2,
+			        $3,
+			        $4,
+			        4326
+			    )
+			    ";
 
 		if ($archive != 1)
 			$query .= " AND contents.is_public=TRUE ";
 
 		$query .= " ORDER BY content_versions.update_date DESC";
 
-		pg_prepare($con, "pois_list", $query);
-		$result = pg_execute($con, "pois_list", []);
+		pg_prepare($con, "pois_bbox", $query);
+		$result = pg_execute($con, "pois_bbox", [$w, $s, $e, $n]);
 
 		pg_close($con);
 

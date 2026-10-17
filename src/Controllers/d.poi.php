@@ -113,12 +113,22 @@ switch ($controller->splitted_url[1]) {
 		}
 		break;
 
-	case "api_list":
+	case "api_bbox":
 	    // API JSON pour la liste des POIs (carte).
 	    header("Content-Type: application/json; charset=utf-8");
 
+	    $north = (float)$_GET['north'];
+	    $south = (float)$_GET['south'];
+	    $east  = (float)$_GET['east'];
+	    $west  = (float)$_GET['west'];
+
 	    $pois = new Kabano\Pois();
-		$pois->listPois($user->rankIsHigher("premium") ? 1 : 0);
+		$pois->listPoisBBOX(
+	        $north,
+	        $south,
+	        $east,
+	        $west,
+	        $user->rankIsHigher("premium") ? 1 : 0);
 
 	    $out = [];
 
