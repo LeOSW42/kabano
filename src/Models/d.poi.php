@@ -215,6 +215,7 @@ class Poi
 	*****/
 	public function insert() {
 		global $user;
+		global $config;
 		
 		// Création d'un nouveau POI.
 		$con = sql_connect();
@@ -283,6 +284,7 @@ class Poi
 	*****/
 	public function update() {
 		global $user;
+		global $config;
 
 		// Vérifie que les identifiants sont chargés.
 		if ($this->content_id == 0 || $this->locale_id == 0 || $this->version_id == 0)
@@ -343,6 +345,7 @@ class Poi
 	*****/
 	public function delete() {
 		global $user;
+		global $config;
 
 		// Archivage logique du POI.
 		$con = sql_connect();
@@ -366,6 +369,7 @@ class Poi
 	*****/
 	public function restore() {
 		global $user;
+		global $config;
 
 		// Restauration d'un POI archivé.
 		$con = sql_connect();
