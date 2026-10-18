@@ -47,36 +47,84 @@ $(document).ready(function() {
 
 	poiLayer = L.layerGroup().addTo(mymap);
 
+	// ---------------------------------------------------------
+	// Styles des POIs pour les vector tiles
+	// ---------------------------------------------------------
+
+	function svgDataUriFor(color, size, shape) {
+		var width = size;
+		var height = size;
+		var svg = "";
+
+		if (shape === "triangle") {
+			svg =
+				"<svg xmlns='http://www.w3.org/2000/svg' width='" + width + "' height='" + height + "' viewBox='0 0 " + width + " " + height + "'>" +
+				"<polygon points='" + (width / 2) + ",2 " + (width - 2) + "," + (height - 2) + " 2," + (height - 2) + "' fill='" + color + "'/>" +
+				"</svg>";
+		} else {
+			svg =
+				"<svg xmlns='http://www.w3.org/2000/svg' width='" + width + "' height='" + height + "' viewBox='0 0 " + width + " " + height + "'>" +
+				"<rect x='2' y='2' width='" + (width - 4) + "' height='" + (height - 4) + "' fill='" + color + "'/>" +
+				"</svg>";
+		}
+
+		return "data:image/svg+xml;utf8," + encodeURIComponent(svg);
+	}
+
+	var poiStyleMap = {
+		"wilderness_hut": { color: "#d73a3a", size: 12, shape: "square" },
+		"basic_hut":     { color: "#d73a3a", size: 8,  shape: "square" },
+		"alpine_hut":    { color: "#d73a3a", size: 16, shape: "square" },
+		"halt":          { color: "#4caf50", size: 16, shape: "square" },
+		"bivouac":       { color: "#d73a3a", size: 12, shape: "triangle" },
+		"campsite":      { color: "#4caf50", size: 12, shape: "triangle" }
+	};
+
+	function buildPoiVectorIcon(properties) {
+		var type = (properties && (properties.type || properties.poi_type || properties.poiType)) || "default";
+		var style = poiStyleMap[type] || { color: "#d73a3a", size: 10, shape: "square" };
+		var iconUrl = svgDataUriFor(style.color, style.size, style.shape);
+
+		return L.icon({
+			iconUrl: iconUrl,
+			iconSize: [style.size, style.size],
+			iconAnchor: [Math.floor(style.size / 2), style.size],
+			popupAnchor: [0, -style.size]
+		});
+	}
+
 	// Couche vectorielle utilisée pour les faibles zooms
 	vectorLayer = L.vectorGrid.protobuf(
 		root + "poi/tile/{z}/{x}/{y}.pbf",
 		{
 			interactive: true,
-
 			maxZoom: 9,
-
+			rendererFactory: L.svg.tile,
 			vectorTileLayerStyles: {
-			    pois: {}
-			}
+				pois: function(properties, zoom) {
+					var icon = buildPoiVectorIcon(properties);
 
+					return {
+						icon: icon,
+						interactive: true
+					};
+				}
+			}
 		}
 	);
 
 	// Clic sur un POI vectoriel
 	vectorLayer.on("click", function(e) {
-
 		if (
 			e.layer &&
 			e.layer.properties &&
 			e.layer.properties.permalink
 		) {
-
 			window.location =
 				root +
 				"poi/" +
 				e.layer.properties.permalink;
 		}
-
 	});
 
 	// ---------------------------------------------------------
@@ -156,14 +204,12 @@ $(document).ready(function() {
 	// ---------------------------------------------------------
 
 	for (const type in window.poi_icons) {
-
 		icons[type] = L.icon({
 			iconUrl: window.poi_icons[type],
 			iconSize: [32, 32],
 			iconAnchor: [16, 32],
 			popupAnchor: [0, -32]
 		});
-
 	}
 
 	// ---------------------------------------------------------
@@ -171,7 +217,6 @@ $(document).ready(function() {
 	// ---------------------------------------------------------
 
 	function loadVisiblePois() {
-
 		if (mymap.getZoom() < 10)
 			return;
 
@@ -186,11 +231,9 @@ $(document).ready(function() {
 				west: b.getWest()
 			},
 			function(pois) {
-
 				poiLayer.clearLayers();
 
 				pois.forEach(function(poi) {
-
 					var icon =
 						icons[poi.type] ||
 						icons["default"];
@@ -215,41 +258,33 @@ $(document).ready(function() {
 					marker.on(
 						"click",
 						function() {
-
 							window.location =
 								root +
 								"poi/" +
 								poi.permalink;
-
 						}
 					);
 
 					poiLayer.addLayer(marker);
-
 				});
-
 			}
 		);
 	}
 
 	// ---------------------------------------------------------
-	// Bascule entre le calque tle et geojson
+	// Bascule entre le calque vectoriel et geojson
 	// ---------------------------------------------------------
 
 	function switchLayers() {
-
 		var z = mymap.getZoom();
 
 		if (z < 10) {
-
 			poiLayer.clearLayers();
 
 			if (!mymap.hasLayer(vectorLayer)) {
 				mymap.addLayer(vectorLayer);
 			}
-
 		} else {
-
 			if (mymap.hasLayer(vectorLayer)) {
 				mymap.removeLayer(vectorLayer);
 			}
@@ -264,11 +299,9 @@ $(document).ready(function() {
 
 	mymap.on("zoomend", switchLayers);
 	mymap.on("moveend", function() {
-
 		if (mymap.getZoom() >= 10) {
 			loadVisiblePois();
 		}
-
 	});
 
 	switchLayers();
