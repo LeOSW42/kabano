@@ -211,3 +211,9 @@ footer {
 .leaflet-fullscreen-on .easy-button-container {
 	display: none;
 }
+
+/* Map PBF tiles overflow of icons */
+
+.leaflet-container .leaflet-tile{
+	overflow: visible !important;
+}

@@ -51,33 +51,36 @@ $(document).ready(function() {
 	// Styles des POIs pour les vector tiles
 	// ---------------------------------------------------------
 
-	function svgDataUriFor(color, size, shape) {
-		var width = size;
-		var height = size;
-		var svg = "";
+	// Fonction qui génère le SVG du point pour les calques en pbf
+	function svgDataUriFor(color, size, shape, strokeOpacity = 0.2) {
+	  const w = size, h = size, strokeWidth = 1, r = Math.max(1, Math.round(size * 0.15));
+	  const inset = 2 + strokeWidth / 2, innerW = w - inset * 2, innerH = h - inset * 2;
+	  let shapeSvg;
 
-		if (shape === "triangle") {
-			svg =
-				"<svg xmlns='http://www.w3.org/2000/svg' width='" + width + "' height='" + height + "' viewBox='0 0 " + width + " " + height + "'>" +
-				"<polygon points='" + (width / 2) + ",2 " + (width - 2) + "," + (height - 2) + " 2," + (height - 2) + "' fill='" + color + "'/>" +
-				"</svg>";
-		} else {
-			svg =
-				"<svg xmlns='http://www.w3.org/2000/svg' width='" + width + "' height='" + height + "' viewBox='0 0 " + width + " " + height + "'>" +
-				"<rect x='2' y='2' width='" + (width - 4) + "' height='" + (height - 4) + "' fill='" + color + "'/>" +
-				"</svg>";
-		}
+	  if (shape === 'triangle') {
+	    const p1 = `${w/2},${inset}`, p2 = `${w-inset},${h-inset}`, p3 = `${inset},${h-inset}`, points = `${p1} ${p2} ${p3}`;
+	    shapeSvg = `<g>
+	      <polygon points='${points}' fill='${color}' stroke='none'/>
+	      <polygon points='${points}' fill='none' stroke='#fff' stroke-opacity='${strokeOpacity}' stroke-width='${strokeWidth}' stroke-linejoin='round'/>
+	    </g>`;
+	  } else {
+	    shapeSvg = `<g>
+	      <rect x='${inset}' y='${inset}' rx='${r}' ry='${r}' width='${innerW}' height='${innerH}' fill='${color}' stroke='none'/>
+	      <rect x='${inset}' y='${inset}' rx='${r}' ry='${r}' width='${innerW}' height='${innerH}' fill='none' stroke='#fff' stroke-opacity='${strokeOpacity}' stroke-width='${strokeWidth}' stroke-linejoin='round'/>
+	    </g>`;
+	  }
 
-		return "data:image/svg+xml;utf8," + encodeURIComponent(svg);
+	  const svg = `<svg xmlns='http://www.w3.org/2000/svg' width='${w}' height='${h}' viewBox='0 0 ${w} ${h}'>${shapeSvg}</svg>`;
+	  return `data:image/svg+xml;utf8,${encodeURIComponent(svg)}`;
 	}
 
 	var poiStyleMap = {
-		"wilderness_hut": { color: "#d73a3a", size: 12, shape: "square" },
-		"basic_hut":     { color: "#d73a3a", size: 8,  shape: "square" },
-		"alpine_hut":    { color: "#d73a3a", size: 16, shape: "square" },
-		"halt":          { color: "#4caf50", size: 16, shape: "square" },
-		"bivouac":       { color: "#d73a3a", size: 12, shape: "triangle" },
-		"campsite":      { color: "#4caf50", size: 12, shape: "triangle" }
+		"wilderness_hut": { color: "#d73a3a", size: 16, shape: "square" },
+		"basic_hut":     { color: "#d73a3a", size: 14,  shape: "square" },
+		"alpine_hut":    { color: "#d73a3a", size: 18, shape: "square" },
+		"halt":          { color: "#4caf50", size: 18, shape: "square" },
+		"bivouac":       { color: "#d73a3a", size: 16, shape: "triangle" },
+		"campsite":      { color: "#4caf50", size: 16, shape: "triangle" }
 	};
 
 	function buildPoiVectorIcon(properties) {
