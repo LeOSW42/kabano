@@ -203,75 +203,67 @@ $(document).ready(function() {
 	});
 
 	// ---------------------------------------------------------
-	// Icônes
-	// ---------------------------------------------------------
-
-	for (const type in window.poi_icons) {
-		icons[type] = L.icon({
-			iconUrl: window.poi_icons[type],
-			iconSize: [32, 32],
-			iconAnchor: [16, 32],
-			popupAnchor: [0, -32]
-		});
-	}
-
-	// ---------------------------------------------------------
 	// Chargement des POI visibles
 	// ---------------------------------------------------------
 
 	function loadVisiblePois() {
-		if (mymap.getZoom() < 10)
-			return;
+	    if (mymap.getZoom() < 10)
+	        return;
 
-		var b = mymap.getBounds();
+	    var b = mymap.getBounds();
+	    var currentZoom = mymap.getZoom();
 
-		$.getJSON(
-			root + "poi/api_bbox",
-			{
-				north: b.getNorth(),
-				south: b.getSouth(),
-				east: b.getEast(),
-				west: b.getWest()
-			},
-			function(pois) {
-				poiLayer.clearLayers();
+	    // helper local : construit un L.Icon en fonction du type et du zoom
+	    function getMarkerIconFor(type, zoom) {
+	        var size = (zoom > 11) ? 32 : 24;
 
-				pois.forEach(function(poi) {
-					var icon =
-						icons[poi.type] ||
-						icons["default"];
+            return L.icon({
+                iconUrl: window.poi_icons[type],
+                iconSize: [size, size],
+                iconAnchor: [Math.floor(size / 2), size],
+                popupAnchor: [0, -size]
+            });
+	    }
 
-					var marker = L.marker(
-						[poi.lat, poi.lon],
-						{
-							icon: icon
-						}
-					);
+	    $.getJSON(
+	        root + "poi/api_bbox",
+	        {
+	            north: b.getNorth(),
+	            south: b.getSouth(),
+	            east: b.getEast(),
+	            west: b.getWest()
+	        },
+	        function(pois) {
+	            poiLayer.clearLayers();
 
-					marker.bindTooltip(
-						poi.name,
-						{
-							direction: "top",
-							offset: [0, -10],
-							opacity: 0.9,
-							className: "poi-tooltip"
-						}
-					);
+	            pois.forEach(function(poi) {
+	                var markerIcon = getMarkerIconFor(poi.type, currentZoom);
 
-					marker.on(
-						"click",
-						function() {
-							window.location =
-								root +
-								"poi/" +
-								poi.permalink;
-						}
-					);
+	                var marker = L.marker(
+	                    [poi.lat, poi.lon],
+	                    {
+	                        icon: markerIcon
+	                    }
+	                );
 
-					poiLayer.addLayer(marker);
-				});
-			}
-		);
+	                marker.bindTooltip(
+	                    poi.name,
+	                    {
+	                        direction: "top",
+	                        offset: [0, -10],
+	                        opacity: 0.9,
+	                        className: "poi-tooltip"
+	                    }
+	                );
+
+	                marker.on("click", function() {
+	                    window.location = root + "poi/" + poi.permalink;
+	                });
+
+	                poiLayer.addLayer(marker);
+	            });
+	        }
+	    );
 	}
 
 	// ---------------------------------------------------------
