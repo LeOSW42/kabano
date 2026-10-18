@@ -146,6 +146,18 @@ switch ($controller->splitted_url[1]) {
 	    echo json_encode($out, JSON_UNESCAPED_UNICODE);
 		break;
 
+	case "tile":
+	    $z = intval($controller->splitted_url[2]);
+	    $x = intval($controller->splitted_url[3]);
+	    $y = intval(str_replace(".pbf","",$controller->splitted_url[4]));
+
+	    $pois = new Kabano\Pois();
+
+	    header("Content-Type: application/x-protobuf");
+
+	    echo $pois->getVectorTile($z,$x,$y);
+	    break;
+
 	default:
 		// Affichage / édition / suppression d’un POI
 		if ($poi->checkPermalink($controller->splitted_url[1], $user->rankIsHigher("premium"))) {

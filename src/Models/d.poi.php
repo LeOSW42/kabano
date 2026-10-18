@@ -60,73 +60,72 @@ class Poi
 	** Checks if a page at this URL exists and return the ID
 	*****/
 	public function checkPermalink($permalink, $withArchive=0, $elementNb=0) {
-	    global $config;
 
 		// Récupère la dernière version du POI.
 		$con = sql_connect();
 
-	    $query = "SELECT
-            content_versions.id AS version_id,
-            content_versions.version,
-            content_versions.update_date,
-            content_versions.is_archive,
-            content_versions.name,
-            content_versions.content AS parameters,
+		$query = "SELECT
+			content_versions.id AS version_id,
+			content_versions.version,
+			content_versions.update_date,
+			content_versions.is_archive,
+			content_versions.name,
+			content_versions.content AS parameters,
 
-            contents.id AS content_id,
-            contents.permalink,
-            contents.creation_date,
-            contents.is_public,
-            contents.is_commentable,
-            contents.type,
-            contents.poi_type,
+			contents.id AS content_id,
+			contents.permalink,
+			contents.creation_date,
+			contents.is_public,
+			contents.is_commentable,
+			contents.type,
+			contents.poi_type,
 
-            content_locales.id AS locale_id,
-            content_locales.locale,
-            content_locales.author,
+			content_locales.id AS locale_id,
+			content_locales.locale,
+			content_locales.author,
 
-            specs.source_id,
-            specs.remote_source_id,
-            ST_X(specs.geom) AS lon,
-            ST_Y(specs.geom) AS lat,
-            ST_Z(specs.geom) AS ele,
+			specs.source_id,
+			specs.remote_source_id,
+			ST_X(specs.geom) AS lon,
+			ST_Y(specs.geom) AS lat,
+			ST_Z(specs.geom) AS ele,
 
-            sources.display_name AS source
+			sources.display_name AS source
 
-	        FROM contents
-	        INNER JOIN content_locales
-	            ON contents.id = content_locales.content_id
-	        INNER JOIN content_versions
-	            ON content_locales.id = content_versions.locale_id
-	        LEFT JOIN content_version_poi_specifications specs
-	            ON specs.content_version_id = content_versions.id
-	        LEFT JOIN sources
-	            ON sources.id = specs.source_id
+			FROM contents
+			INNER JOIN content_locales
+				ON contents.id = content_locales.content_id
+			INNER JOIN content_versions
+				ON content_locales.id = content_versions.locale_id
+			LEFT JOIN content_version_poi_specifications specs
+				ON specs.content_version_id = content_versions.id
+			LEFT JOIN sources
+				ON sources.id = specs.source_id
 
-	        WHERE contents.permalink = $1
-	          AND contents.type = 'poi'";
+			WHERE contents.permalink = $1
+			  AND contents.type = 'poi'";
 
-	    if ($withArchive == 0) {
-	        $query .= " AND content_versions.is_archive = FALSE AND contents.is_public = TRUE";
-	    }
+		if ($withArchive == 0) {
+			$query .= " AND content_versions.is_archive = FALSE AND contents.is_public = TRUE";
+		}
 
-	    $query .= " ORDER BY content_versions.update_date DESC LIMIT 1 OFFSET $2";
+		$query .= " ORDER BY content_versions.update_date DESC LIMIT 1 OFFSET $2";
 
-	    pg_prepare($con, "poi_check_permalink", $query)
-	        or die ("Cannot prepare statement\n");
+		pg_prepare($con, "poi_check_permalink", $query)
+			or die ("Cannot prepare statement\n");
 
-	    $result = pg_execute($con, "poi_check_permalink", [$permalink, $elementNb])
-	        or die ("Cannot execute statement\n");
+		$result = pg_execute($con, "poi_check_permalink", [$permalink, $elementNb])
+			or die ("Cannot execute statement\n");
 
-	    pg_close($con);
+		pg_close($con);
 
-	    if (pg_num_rows($result) == 1) {
-	        $row = pg_fetch_assoc($result);
-	        $this->populate($row);
-	        return 1;
-	    }
+		if (pg_num_rows($result) == 1) {
+			$row = pg_fetch_assoc($result);
+			$this->populate($row);
+			return 1;
+		}
 
-	    return 0;
+		return 0;
 	}
 
 	/*****
@@ -215,7 +214,6 @@ class Poi
 	** Create a new poi
 	*****/
 	public function insert() {
-		global $config;
 		global $user;
 		
 		// Création d'un nouveau POI.
@@ -284,7 +282,6 @@ class Poi
 	** Edit a POI by archiving the current version and inserting a new one
 	*****/
 	public function update() {
-		global $config;
 		global $user;
 
 		// Vérifie que les identifiants sont chargés.
@@ -345,7 +342,6 @@ class Poi
 	** Archive a POI
 	*****/
 	public function delete() {
-		global $config;
 		global $user;
 
 		// Archivage logique du POI.
@@ -369,7 +365,6 @@ class Poi
 	** Restore a POI
 	*****/
 	public function restore() {
-		global $config;
 		global $user;
 
 		// Restauration d'un POI archivé.
@@ -398,59 +393,58 @@ class Pois
 
 	// Liste des POIs publiés (ou archivés si demandé).
 	public function listPoisBBOX($n,$s,$e,$w,$archive=0) {
-		global $config;
 
 		// Chargement des POIs avec leurs versions actives.
 		$con = sql_connect();
 
 		$query = "SELECT
-            content_versions.id AS version_id,
-            content_versions.version,
-            content_versions.update_date,
-            content_versions.is_archive,
-            content_versions.name,
-            content_versions.content AS parameters,
+			content_versions.id AS version_id,
+			content_versions.version,
+			content_versions.update_date,
+			content_versions.is_archive,
+			content_versions.name,
+			content_versions.content AS parameters,
 
-            contents.id AS content_id,
-            contents.permalink,
-            contents.creation_date,
-            contents.is_public,
-            contents.is_commentable,
-            contents.type,
-            contents.poi_type,
+			contents.id AS content_id,
+			contents.permalink,
+			contents.creation_date,
+			contents.is_public,
+			contents.is_commentable,
+			contents.type,
+			contents.poi_type,
 
-            content_locales.id AS locale_id,
-            content_locales.locale,
-            content_locales.author,
+			content_locales.id AS locale_id,
+			content_locales.locale,
+			content_locales.author,
 
-            specs.source_id,
-            specs.remote_source_id,
-            ST_X(specs.geom) AS lon,
-            ST_Y(specs.geom) AS lat,
-            ST_Z(specs.geom) AS ele,
+			specs.source_id,
+			specs.remote_source_id,
+			ST_X(specs.geom) AS lon,
+			ST_Y(specs.geom) AS lat,
+			ST_Z(specs.geom) AS ele,
 
-            sources.display_name AS source
+			sources.display_name AS source
 
-	        FROM contents
-	        INNER JOIN content_locales
-	            ON contents.id = content_locales.content_id
-	        INNER JOIN content_versions
-	            ON content_locales.id = content_versions.locale_id
-	        LEFT JOIN content_version_poi_specifications specs
-	            ON specs.content_version_id = content_versions.id
-	        LEFT JOIN sources
-	            ON sources.id = specs.source_id
+			FROM contents
+			INNER JOIN content_locales
+				ON contents.id = content_locales.content_id
+			INNER JOIN content_versions
+				ON content_locales.id = content_versions.locale_id
+			LEFT JOIN content_version_poi_specifications specs
+				ON specs.content_version_id = content_versions.id
+			LEFT JOIN sources
+				ON sources.id = specs.source_id
 
-	        WHERE contents.type = 'poi'
-	        	AND content_versions.is_archive = FALSE
-			    AND specs.geom && ST_MakeEnvelope(
-			        $1,
-			        $2,
-			        $3,
-			        $4,
-			        4326
-			    )
-			    ";
+			WHERE contents.type = 'poi'
+				AND content_versions.is_archive = FALSE
+				AND specs.geom && ST_MakeEnvelope(
+					$1,
+					$2,
+					$3,
+					$4,
+					4326
+				)
+				";
 
 		if ($archive != 1)
 			$query .= " AND contents.is_public=TRUE ";
@@ -469,52 +463,104 @@ class Pois
 		}
 	}
 
+	public function getVectorTile($z, $x, $y)
+	{
+		$con = sql_connect();
+		pg_query($con, "SET jit=off");
+
+		$sql = "WITH tile AS ( SELECT
+					ST_TileEnvelope($1, $2, $3) AS tile_geom
+				),
+
+			mvtgeom AS ( SELECT CAST(contents.id AS integer) AS id,
+					contents.poi_type::text AS poi_type,
+					contents.permalink::text AS permalink,
+					ST_AsMVTGeom( ST_Transform(
+									specs.geom,
+									3857
+								),
+						tile.tile_geom, 4096, 64, true ) AS geom
+				FROM content_version_poi_specifications specs
+				INNER JOIN content_versions
+					ON specs.content_version_id = content_versions.id
+				INNER JOIN content_locales 
+					ON content_versions.locale_id = content_locales.id
+				INNER JOIN contents
+					ON content_locales.content_id = contents.id
+				CROSS JOIN tile
+					
+				WHERE contents.type = 'poi'
+					AND specs.geom IS NOT NULL
+					AND ST_Transform(specs.geom, 3857) && tile.tile_geom
+				)
+			SELECT ST_AsMVT( mvtgeom, 'pois', 4096, 'geom' )
+			FROM mvtgeom
+			WHERE geom IS NOT NULL";
+
+		$result = pg_query_params(
+			$con,
+			$sql,
+			[$z, $x, $y]
+		);
+
+		if (!$result) {
+			throw new \Exception(
+				pg_last_error($con)
+			);
+		}
+
+		$row = pg_fetch_row($result);
+
+		pg_close($con);
+
+		return pg_unescape_bytea($row[0]);
+	}
+
 	public function getHistory($permalink) {
-		global $config;
 
 		// Historique des versions d'un POI.
 		$con = sql_connect();
 
 		$query = "SELECT
-            content_versions.id AS version_id,
-            content_versions.version,
-            content_versions.update_date,
-            content_versions.is_archive,
-            content_versions.name,
-            content_versions.content AS parameters,
+			content_versions.id AS version_id,
+			content_versions.version,
+			content_versions.update_date,
+			content_versions.is_archive,
+			content_versions.name,
+			content_versions.content AS parameters,
 
-            contents.id AS content_id,
-            contents.permalink,
-            contents.creation_date,
-            contents.is_public,
-            contents.is_commentable,
-            contents.type,
-            contents.poi_type,
+			contents.id AS content_id,
+			contents.permalink,
+			contents.creation_date,
+			contents.is_public,
+			contents.is_commentable,
+			contents.type,
+			contents.poi_type,
 
-            content_locales.id AS locale_id,
-            content_locales.locale,
-            content_locales.author,
+			content_locales.id AS locale_id,
+			content_locales.locale,
+			content_locales.author,
 
-            specs.source_id,
-            specs.remote_source_id,
-            ST_X(specs.geom) AS lon,
-            ST_Y(specs.geom) AS lat,
-            ST_Z(specs.geom) AS ele,
+			specs.source_id,
+			specs.remote_source_id,
+			ST_X(specs.geom) AS lon,
+			ST_Y(specs.geom) AS lat,
+			ST_Z(specs.geom) AS ele,
 
-            sources.display_name AS source
+			sources.display_name AS source
 
-	        FROM contents
-	        INNER JOIN content_locales
-	            ON contents.id = content_locales.content_id
-	        INNER JOIN content_versions
-	            ON content_locales.id = content_versions.locale_id
-	        LEFT JOIN content_version_poi_specifications specs
-	            ON specs.content_version_id = content_versions.id
-	        LEFT JOIN sources
-	            ON sources.id = specs.source_id
+			FROM contents
+			INNER JOIN content_locales
+				ON contents.id = content_locales.content_id
+			INNER JOIN content_versions
+				ON content_locales.id = content_versions.locale_id
+			LEFT JOIN content_version_poi_specifications specs
+				ON specs.content_version_id = content_versions.id
+			LEFT JOIN sources
+				ON sources.id = specs.source_id
 
-	        WHERE contents.permalink = $1
-	          AND contents.type = 'poi'
+			WHERE contents.permalink = $1
+			  AND contents.type = 'poi'
 
 			ORDER BY content_versions.update_date DESC
 		";

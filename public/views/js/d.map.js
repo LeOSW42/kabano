@@ -1,212 +1,275 @@
 // Carte principale
 var mymap;
 var poiLayer;
+var vectorLayer;
 var icons = {};
 
 $(document).ready(function() {
 
-    // ---------------------------------------------------------
-    // Fonds de carte
-    // ---------------------------------------------------------
+	// ---------------------------------------------------------
+	// Fonds de carte
+	// ---------------------------------------------------------
 
-    var topo_maptiler = L.tileLayer(
-        'https://api.maptiler.com/maps/topographique/{z}/{x}/{y}.png?key=Sm8M7mJ53GtYdl773rpi',
-        {
-            tms: false,
-            tileSize: 512,
-            zoomOffset: -1,
-            minZoom: 1,
-            attribution:
-                'Carte © MapTiler, Données © OpenStreetMap'
-        }
-    );
+	var topo_maptiler = L.tileLayer(
+		'https://api.maptiler.com/maps/topographique/{z}/{x}/{y}.png?key=Sm8M7mJ53GtYdl773rpi',
+		{
+			tms: false,
+			tileSize: 512,
+			zoomOffset: -1,
+			minZoom: 1,
+			attribution:
+				'Carte © MapTiler, Données © OpenStreetMap'
+		}
+	);
 
-    var ign = L.tileLayer(
-        'https://data.geopf.fr/private/wmts?REQUEST=GetTile&SERVICE=WMTS&VERSION=1.0.0&STYLE=normal&TILEMATRIXSET=PM&FORMAT=image/jpeg&LAYER=GEOGRAPHICALGRIDSYSTEMS.MAPS&TILEMATRIX={z}&TILEROW={y}&TILECOL={x}&apikey=ign_scan_ws',
-        {
-            attribution: 'Carte © IGN-F/Géoportail'
-        }
-    );
+	var ign = L.tileLayer(
+		'https://data.geopf.fr/private/wmts?REQUEST=GetTile&SERVICE=WMTS&VERSION=1.0.0&STYLE=normal&TILEMATRIXSET=PM&FORMAT=image/jpeg&LAYER=GEOGRAPHICALGRIDSYSTEMS.MAPS&TILEMATRIX={z}&TILEROW={y}&TILECOL={x}&apikey=ign_scan_ws',
+		{
+			attribution: 'Carte © IGN-F/Géoportail'
+		}
+	);
 
-    var baseLayers = {
-        "OpenStreetMap": topo_maptiler,
-        "IGN France": ign
-    };
+	var baseLayers = {
+		"OpenStreetMap": topo_maptiler,
+		"IGN France": ign
+	};
 
-    // ---------------------------------------------------------
-    // Carte
-    // ---------------------------------------------------------
+	// ---------------------------------------------------------
+	// Carte
+	// ---------------------------------------------------------
 
-    mymap = L.map('mapid', {
-        zoomControl: false,
-        layers: [topo_maptiler]
-    }).setView([47, 3], 6);
+	mymap = L.map('mapid', {
+		zoomControl: false,
+		layers: [topo_maptiler]
+	}).setView([47, 3], 6);
 
-    $("#map-credits").html(topo_maptiler.getAttribution());
+	$("#map-credits").html(topo_maptiler.getAttribution());
 
-    poiLayer = L.layerGroup().addTo(mymap);
+	poiLayer = L.layerGroup().addTo(mymap);
 
-    // ---------------------------------------------------------
-    // Contrôles
-    // ---------------------------------------------------------
+	// Couche vectorielle utilisée pour les faibles zooms
+	vectorLayer = L.vectorGrid.protobuf(
+		root + "poi/tile/{z}/{x}/{y}.pbf",
+		{
+			interactive: true,
 
-    L.control.scale({
-        position: "bottomleft",
-        imperial: false
-    }).addTo(mymap);
+			maxZoom: 9,
 
-    var credits = L.easyButton(
-        'fa-info',
-        function() {
-            $("footer").hide();
-            $("#footer-credits").show();
-            $("#footer-legend").hide();
-        },
-        'Credits'
-    );
+			vectorTileLayerStyles: {
+			    pois: {}
+			}
 
-    var legend = L.easyButton(
-        'fa-question',
-        function() {
-            $("footer").hide();
-            $("#footer-credits").hide();
-            $("#footer-legend").show();
-        },
-        'Legend'
-    );
+		}
+	);
 
-    L.easyBar(
-        [credits, legend],
-        {
-            position: "bottomleft"
-        }
-    ).addTo(mymap);
+	// Clic sur un POI vectoriel
+	vectorLayer.on("click", function(e) {
 
-    L.control.fullscreen({
-        position: "bottomleft"
-    }).addTo(mymap);
+		if (
+			e.layer &&
+			e.layer.properties &&
+			e.layer.properties.permalink
+		) {
 
-    L.control.zoom({
-        zoomOutText: '<i class="fa fa-minus"></i>',
-        zoomInText: '<i class="fa fa-plus"></i>',
-        position: "bottomleft"
-    }).addTo(mymap);
+			window.location =
+				root +
+				"poi/" +
+				e.layer.properties.permalink;
+		}
 
-    L.control.layers(
-        baseLayers,
-        null,
-        {
-            position: "bottomright"
-        }
-    ).addTo(mymap);
+	});
 
-    mymap.removeControl(mymap.attributionControl);
+	// ---------------------------------------------------------
+	// Contrôles
+	// ---------------------------------------------------------
 
-    // ---------------------------------------------------------
-    // Footer
-    // ---------------------------------------------------------
+	L.control.scale({
+		position: "bottomleft",
+		imperial: false
+	}).addTo(mymap);
 
-    $(".close-link").click(function() {
-        $("footer").show();
-        $("#footer-credits").hide();
-        $("#footer-legend").hide();
-    });
+	var credits = L.easyButton(
+		'fa-info',
+		function() {
+			$("footer").hide();
+			$("#footer-credits").show();
+			$("#footer-legend").hide();
+		},
+		'Credits'
+	);
 
-    mymap.on('baselayerchange', function(e) {
-        $("#map-credits").html(
-            e.layer.getAttribution()
-        );
-    });
+	var legend = L.easyButton(
+		'fa-question',
+		function() {
+			$("footer").hide();
+			$("#footer-credits").hide();
+			$("#footer-legend").show();
+		},
+		'Legend'
+	);
 
-    // ---------------------------------------------------------
-    // Icônes
-    // ---------------------------------------------------------
+	L.easyBar(
+		[credits, legend],
+		{
+			position: "bottomleft"
+		}
+	).addTo(mymap);
 
-    for (const type in window.poi_icons) {
+	L.control.fullscreen({
+		position: "bottomleft"
+	}).addTo(mymap);
 
-        icons[type] = L.icon({
-            iconUrl: window.poi_icons[type],
-            iconSize: [32, 32],
-            iconAnchor: [16, 32],
-            popupAnchor: [0, -32]
-        });
+	L.control.zoom({
+		zoomOutText: '<i class="fa fa-minus"></i>',
+		zoomInText: '<i class="fa fa-plus"></i>',
+		position: "bottomleft"
+	}).addTo(mymap);
 
-    }
+	L.control.layers(
+		baseLayers,
+		null,
+		{
+			position: "bottomright"
+		}
+	).addTo(mymap);
 
-    // ---------------------------------------------------------
-    // Chargement des POI visibles
-    // ---------------------------------------------------------
+	mymap.removeControl(mymap.attributionControl);
 
-    function loadVisiblePois() {
-        if (mymap.getZoom() < 10) {
+	// ---------------------------------------------------------
+	// Footer
+	// ---------------------------------------------------------
 
-            poiLayer.clearLayers();
+	$(".close-link").click(function() {
+		$("footer").show();
+		$("#footer-credits").hide();
+		$("#footer-legend").hide();
+	});
 
-            return;
-        }
+	mymap.on('baselayerchange', function(e) {
+		$("#map-credits").html(
+			e.layer.getAttribution()
+		);
+	});
 
-        var b = mymap.getBounds();
+	// ---------------------------------------------------------
+	// Icônes
+	// ---------------------------------------------------------
 
-        $.getJSON(
-            root + "poi/api_bbox",
-            {
-                north: b.getNorth(),
-                south: b.getSouth(),
-                east: b.getEast(),
-                west: b.getWest()
-            },
-            function(pois) {
+	for (const type in window.poi_icons) {
 
-                poiLayer.clearLayers();
+		icons[type] = L.icon({
+			iconUrl: window.poi_icons[type],
+			iconSize: [32, 32],
+			iconAnchor: [16, 32],
+			popupAnchor: [0, -32]
+		});
 
-                pois.forEach(function(poi) {
+	}
 
-                    var icon =
-                        icons[poi.type] ||
-                        icons["default"];
+	// ---------------------------------------------------------
+	// Chargement des POI visibles
+	// ---------------------------------------------------------
 
-                    var marker = L.marker(
-                        [poi.lat, poi.lon],
-                        {
-                            icon: icon
-                        }
-                    );
+	function loadVisiblePois() {
 
-                    marker.bindTooltip(
-                        poi.name,
-                        {
-                            direction: "top",
-                            offset: [0, -10],
-                            opacity: 0.9,
-                            className:
-                                "poi-tooltip"
-                        }
-                    );
+		if (mymap.getZoom() < 10)
+			return;
 
-                    marker.on(
-                        "click",
-                        function() {
-                            window.location =
-                                root +
-                                "poi/" +
-                                poi.permalink;
-                        }
-                    );
+		var b = mymap.getBounds();
 
-                    poiLayer.addLayer(marker);
+		$.getJSON(
+			root + "poi/api_bbox",
+			{
+				north: b.getNorth(),
+				south: b.getSouth(),
+				east: b.getEast(),
+				west: b.getWest()
+			},
+			function(pois) {
 
-                });
-            }
-        );
-    }
+				poiLayer.clearLayers();
 
-    // ---------------------------------------------------------
-    // Rechargement automatique
-    // ---------------------------------------------------------
+				pois.forEach(function(poi) {
 
-    mymap.on("moveend", loadVisiblePois);
-    mymap.on("zoomend", loadVisiblePois);
+					var icon =
+						icons[poi.type] ||
+						icons["default"];
 
-    // Premier chargement
-    loadVisiblePois();
+					var marker = L.marker(
+						[poi.lat, poi.lon],
+						{
+							icon: icon
+						}
+					);
+
+					marker.bindTooltip(
+						poi.name,
+						{
+							direction: "top",
+							offset: [0, -10],
+							opacity: 0.9,
+							className: "poi-tooltip"
+						}
+					);
+
+					marker.on(
+						"click",
+						function() {
+
+							window.location =
+								root +
+								"poi/" +
+								poi.permalink;
+
+						}
+					);
+
+					poiLayer.addLayer(marker);
+
+				});
+
+			}
+		);
+	}
+
+	// ---------------------------------------------------------
+	// Bascule entre le calque tle et geojson
+	// ---------------------------------------------------------
+
+	function switchLayers() {
+
+		var z = mymap.getZoom();
+
+		if (z < 10) {
+
+			poiLayer.clearLayers();
+
+			if (!mymap.hasLayer(vectorLayer)) {
+				mymap.addLayer(vectorLayer);
+			}
+
+		} else {
+
+			if (mymap.hasLayer(vectorLayer)) {
+				mymap.removeLayer(vectorLayer);
+			}
+
+			loadVisiblePois();
+		}
+	}
+
+	// ---------------------------------------------------------
+	// Rechargement automatique
+	// ---------------------------------------------------------
+
+	mymap.on("zoomend", switchLayers);
+	mymap.on("moveend", function() {
+
+		if (mymap.getZoom() >= 10) {
+			loadVisiblePois();
+		}
+
+	});
+
+	switchLayers();
 });

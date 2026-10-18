@@ -17,7 +17,7 @@ if(isset($controller->splitted_url[1]) && $controller->splitted_url[1] != '') {
 else {
 	// Chargement de la carte et des dépendances Leaflet.
 	$head['title'] = "Carte";
-	$head['third'] = "leaflet/leaflet.js;leaflet-fullscreen/Leaflet.fullscreen.min.js;leaflet-easybutton/easy-button.js";
+	$head['third'] = "leaflet/leaflet.js;leaflet-fullscreen/Leaflet.fullscreen.min.js;leaflet-easybutton/easy-button.js;leaflet-vectorgrid/Leaflet.VectorGrid.bundled.min.js";
 	$head['css'] .= ";d.map.css;../third/leaflet/leaflet.css;../third/leaflet-fullscreen/leaflet.fullscreen.css;../third/leaflet-easybutton/easy-button.css";
 	$head['js'] = "d.map.js";
 
