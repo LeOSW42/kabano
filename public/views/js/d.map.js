@@ -43,6 +43,13 @@ $(document).ready(function() {
 		layers: [topo_maptiler]
 	}).setView([47, 3], 6);
 
+	// Pane dédiée pour les vector tiles, au-dessus du fond
+	if (!mymap.getPane('vectorPane')) {
+		mymap.createPane('vectorPane');
+		mymap.getPane('vectorPane').style.zIndex = 650;
+		mymap.getPane('vectorPane').style.pointerEvents = 'auto';
+	}
+
 	$("#map-credits").html(topo_maptiler.getAttribution());
 
 	poiLayer = L.layerGroup().addTo(mymap);
@@ -58,16 +65,16 @@ $(document).ready(function() {
 	  let shapeSvg;
 
 	  if (shape === 'triangle') {
-	    const p1 = `${w/2},${inset}`, p2 = `${w-inset},${h-inset}`, p3 = `${inset},${h-inset}`, points = `${p1} ${p2} ${p3}`;
-	    shapeSvg = `<g>
-	      <polygon points='${points}' fill='${color}' stroke='none'/>
-	      <polygon points='${points}' fill='none' stroke='#fff' stroke-opacity='${strokeOpacity}' stroke-width='${strokeWidth}' stroke-linejoin='round'/>
-	    </g>`;
+		const p1 = `${w/2},${inset}`, p2 = `${w-inset},${h-inset}`, p3 = `${inset},${h-inset}`, points = `${p1} ${p2} ${p3}`;
+		shapeSvg = `<g>
+		  <polygon points='${points}' fill='${color}' stroke='none'/>
+		  <polygon points='${points}' fill='none' stroke='#fff' stroke-opacity='${strokeOpacity}' stroke-width='${strokeWidth}' stroke-linejoin='round'/>
+		</g>`;
 	  } else {
-	    shapeSvg = `<g>
-	      <rect x='${inset}' y='${inset}' rx='${r}' ry='${r}' width='${innerW}' height='${innerH}' fill='${color}' stroke='none'/>
-	      <rect x='${inset}' y='${inset}' rx='${r}' ry='${r}' width='${innerW}' height='${innerH}' fill='none' stroke='#fff' stroke-opacity='${strokeOpacity}' stroke-width='${strokeWidth}' stroke-linejoin='round'/>
-	    </g>`;
+		shapeSvg = `<g>
+		  <rect x='${inset}' y='${inset}' rx='${r}' ry='${r}' width='${innerW}' height='${innerH}' fill='${color}' stroke='none'/>
+		  <rect x='${inset}' y='${inset}' rx='${r}' ry='${r}' width='${innerW}' height='${innerH}' fill='none' stroke='#fff' stroke-opacity='${strokeOpacity}' stroke-width='${strokeWidth}' stroke-linejoin='round'/>
+		</g>`;
 	  }
 
 	  const svg = `<svg xmlns='http://www.w3.org/2000/svg' width='${w}' height='${h}' viewBox='0 0 ${w} ${h}'>${shapeSvg}</svg>`;
@@ -75,11 +82,11 @@ $(document).ready(function() {
 	}
 
 	function getPoiStyle(type) {
-	    if (window.poi_style_map && window.poi_style_map[type]) {
-	        return window.poi_style_map[type];
-	    }
-	    // Final hardcoded fallback (keeps previous defaults)
-	    return { color: "#ef2929", size: 14, shape: "square" };
+		if (window.poi_style_map && window.poi_style_map[type]) {
+			return window.poi_style_map[type];
+		}
+		// Final hardcoded fallback (keeps previous defaults)
+		return { color: "#ef2929", size: 14, shape: "square" };
 	}
 
 	function buildPoiVectorIcon(properties) {
@@ -101,6 +108,7 @@ $(document).ready(function() {
 		{
 			maxZoom: 9,
 			rendererFactory: L.svg.tile,
+			pane: 'vectorPane',
 			vectorTileLayerStyles: {
 				pois: function(properties, zoom) {
 					var icon = buildPoiVectorIcon(properties);
@@ -183,6 +191,15 @@ $(document).ready(function() {
 		$("#map-credits").html(
 			e.layer.getAttribution()
 		);
+
+		if (mymap.hasLayer(vectorLayer)) {
+			if (vectorLayer.bringToFront) {
+				vectorLayer.bringToFront();
+			} else {
+				mymap.removeLayer(vectorLayer);
+				mymap.addLayer(vectorLayer);
+		  	}
+		}
 	});
 
 	// ---------------------------------------------------------
@@ -190,63 +207,63 @@ $(document).ready(function() {
 	// ---------------------------------------------------------
 
 	function loadVisiblePois() {
-	    if (mymap.getZoom() < 10)
-	        return;
+		if (mymap.getZoom() < 10)
+			return;
 
-	    var b = mymap.getBounds();
-	    var currentZoom = mymap.getZoom();
+		var b = mymap.getBounds();
+		var currentZoom = mymap.getZoom();
 
-	    // helper local : construit un L.Icon en fonction du type et du zoom
-	    function getMarkerIconFor(type, zoom) {
-	        var size = (zoom > 11) ? 32 : 24;
+		// helper local : construit un L.Icon en fonction du type et du zoom
+		function getMarkerIconFor(type, zoom) {
+			var size = (zoom > 11) ? 32 : 24;
 
-            return L.icon({
-                iconUrl: window.poi_icons[type],
-                iconSize: [size, size],
-                iconAnchor: [Math.floor(size / 2), size],
-                popupAnchor: [0, -size]
-            });
-	    }
+			return L.icon({
+				iconUrl: window.poi_icons[type],
+				iconSize: [size, size],
+				iconAnchor: [Math.floor(size / 2), size],
+				popupAnchor: [0, -size]
+			});
+		}
 
-	    $.getJSON(
-	        root + "poi/api_bbox",
-	        {
-	            north: b.getNorth(),
-	            south: b.getSouth(),
-	            east: b.getEast(),
-	            west: b.getWest()
-	        },
-	        function(pois) {
-	            poiLayer.clearLayers();
+		$.getJSON(
+			root + "poi/api_bbox",
+			{
+				north: b.getNorth(),
+				south: b.getSouth(),
+				east: b.getEast(),
+				west: b.getWest()
+			},
+			function(pois) {
+				poiLayer.clearLayers();
 
-	            pois.forEach(function(poi) {
-	                var markerIcon = getMarkerIconFor(poi.type, currentZoom);
+				pois.forEach(function(poi) {
+					var markerIcon = getMarkerIconFor(poi.type, currentZoom);
 
-	                var marker = L.marker(
-	                    [poi.lat, poi.lon],
-	                    {
-	                        icon: markerIcon
-	                    }
-	                );
+					var marker = L.marker(
+						[poi.lat, poi.lon],
+						{
+							icon: markerIcon
+						}
+					);
 
-	                marker.bindTooltip(
-	                    poi.name,
-	                    {
-	                        direction: "top",
-	                        offset: [0, -10],
-	                        opacity: 0.9,
-	                        className: "poi-tooltip"
-	                    }
-	                );
+					marker.bindTooltip(
+						poi.name,
+						{
+							direction: "top",
+							offset: [0, -10],
+							opacity: 0.9,
+							className: "poi-tooltip"
+						}
+					);
 
-	                marker.on("click", function() {
-	                    window.location = root + "poi/" + poi.permalink;
-	                });
+					marker.on("click", function() {
+						window.location = root + "poi/" + poi.permalink;
+					});
 
-	                poiLayer.addLayer(marker);
-	            });
-	        }
-	    );
+					poiLayer.addLayer(marker);
+				});
+			}
+		);
 	}
 
 	// ---------------------------------------------------------
