@@ -85,7 +85,7 @@ $(document).ready(function() {
 
 	function buildPoiVectorIcon(properties) {
 		var type = (properties && (properties.type || properties.poi_type || properties.poiType)) || "default";
-		var style = poiStyleMap[type] || { color: "#d73a3a", size: 10, shape: "square" };
+		var style = poiStyleMap[type] || { color: "#d73a3a", size: 14, shape: "square" };
 		var iconUrl = svgDataUriFor(style.color, style.size, style.shape);
 
 		return L.icon({
@@ -100,7 +100,6 @@ $(document).ready(function() {
 	vectorLayer = L.vectorGrid.protobuf(
 		root + "poi/tile/{z}/{x}/{y}.pbf",
 		{
-			interactive: true,
 			maxZoom: 9,
 			rendererFactory: L.svg.tile,
 			vectorTileLayerStyles: {
@@ -109,26 +108,11 @@ $(document).ready(function() {
 
 					return {
 						icon: icon,
-						interactive: true
 					};
 				}
 			}
 		}
 	);
-
-	// Clic sur un POI vectoriel
-	vectorLayer.on("click", function(e) {
-		if (
-			e.layer &&
-			e.layer.properties &&
-			e.layer.properties.permalink
-		) {
-			window.location =
-				root +
-				"poi/" +
-				e.layer.properties.permalink;
-		}
-	});
 
 	// ---------------------------------------------------------
 	// Contrôles
