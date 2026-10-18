@@ -38,6 +38,17 @@
 		        <?php } ?>
 		        "default": "<?=$config['views_url']?>img/default.svg"
 		    };
+		    
+		    window.poi_style_map = {
+		        <?php foreach($poi_types as $k => $t) {
+		            $color = isset($t[2]) ? $t[2] : '#ef2929';
+		            // Read size/shape from structure if provided, else fallback to sensible defaults
+		            $size = isset($t[6]) ? (int)$t[6] : 16;
+		            $shape = isset($t[7]) ? $t[7] : 'square';
+		        ?>
+		            "<?=$k?>": { color: "<?=$color?>", size: <?=$size?>, shape: "<?=$shape?>" },
+		        <?php } ?>
+		    };
 		</script>
 
 	</body>

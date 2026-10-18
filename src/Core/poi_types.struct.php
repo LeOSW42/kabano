@@ -15,6 +15,7 @@ $poi_types = array(
             'b_water'       => "💧 Eau à proximité ?",
             'b_wood'        => "🌲 Bois à proximité ?"
         )
+        , 14, "square"
     ),
 
     "wilderness_hut" => array("Cabane non gardée", "Cabane", "#ef2929", "wilderness_hut",
@@ -33,6 +34,7 @@ $poi_types = array(
             'b_fireplace'   => "🔥 Cheminée ou poêle à bois ?",
             'b_toilet'      => "🚽 Latrines ou toilettes ?"
         )
+        , 16, "square"
     ),
 
     "alpine_hut" => array("Refuge gardé", "Refuge", "#ef2929", "alpine_hut",
@@ -52,6 +54,7 @@ $poi_types = array(
             'b_toilet'      => "🚽 Latrines ou toilettes ?",
             'l_water'       => "URL du site web :"
         )
+        , 18, "square"
     ),
 
     "halt" => array("Gîte d'étape", "Gîte", "#4e9a06", "halt",
@@ -65,6 +68,7 @@ $poi_types = array(
             'b_water'       => "💧 Possibilité de se ravitailler en eau ?",
             'l_water'       => "URL du site web :"
         )
+        , 16, "square"
     ),
 
     "bivouac" => array("Zone de bivouac", "Bivouac", "#ef2929", "bivouac",
@@ -77,6 +81,7 @@ $poi_types = array(
             'b_wood'        => "🌲 Bois à proximité ?",
             'b_fireplace'   => "🔥 Emplacement pour faire un feu ?"
         )
+        , 18, "triangle"
     ),
 
     "campsite" => array("Camping", "Camping", "#4e9a06", "campsite",
@@ -89,6 +94,7 @@ $poi_types = array(
             'b_water'       => "💧 Possibilité de se ravitailler en eau ?",
             'l_water'       => "URL du site web :"
         )
+        , 18, "triangle"
     )
 
 );

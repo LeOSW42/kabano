@@ -52,7 +52,7 @@ $(document).ready(function() {
 	// ---------------------------------------------------------
 
 	// Fonction qui génère le SVG du point pour les calques en pbf
-	function svgDataUriFor(color, size, shape, strokeOpacity = 0.2) {
+	function svgDataUriFor(color, size, shape, strokeOpacity = 0.4) {
 	  const w = size, h = size, strokeWidth = 1, r = Math.max(1, Math.round(size * 0.15));
 	  const inset = 2 + strokeWidth / 2, innerW = w - inset * 2, innerH = h - inset * 2;
 	  let shapeSvg;
@@ -74,18 +74,17 @@ $(document).ready(function() {
 	  return `data:image/svg+xml;utf8,${encodeURIComponent(svg)}`;
 	}
 
-	var poiStyleMap = {
-		"wilderness_hut": { color: "#d73a3a", size: 16, shape: "square" },
-		"basic_hut":     { color: "#d73a3a", size: 14,  shape: "square" },
-		"alpine_hut":    { color: "#d73a3a", size: 18, shape: "square" },
-		"halt":          { color: "#4caf50", size: 18, shape: "square" },
-		"bivouac":       { color: "#d73a3a", size: 16, shape: "triangle" },
-		"campsite":      { color: "#4caf50", size: 16, shape: "triangle" }
-	};
+	function getPoiStyle(type) {
+	    if (window.poi_style_map && window.poi_style_map[type]) {
+	        return window.poi_style_map[type];
+	    }
+	    // Final hardcoded fallback (keeps previous defaults)
+	    return { color: "#ef2929", size: 14, shape: "square" };
+	}
 
 	function buildPoiVectorIcon(properties) {
 		var type = (properties && (properties.type || properties.poi_type || properties.poiType)) || "default";
-		var style = poiStyleMap[type] || { color: "#d73a3a", size: 14, shape: "square" };
+		var style = getPoiStyle(type);
 		var iconUrl = svgDataUriFor(style.color, style.size, style.shape);
 
 		return L.icon({
