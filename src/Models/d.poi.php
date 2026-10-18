@@ -468,31 +468,43 @@ class Pois
 		$con = sql_connect();
 		pg_query($con, "SET jit=off");
 
+		$grid = pow(2, 9 - $z) * 2000;
+
 		$sql = "WITH tile AS ( SELECT
 					ST_TileEnvelope($1, $2, $3) AS tile_geom
 				),
 
-			mvtgeom AS ( SELECT CAST(contents.id AS integer) AS id,
-					contents.poi_type::text AS poi_type,
-					contents.permalink::text AS permalink,
-					ST_AsMVTGeom( ST_Transform(
-									specs.geom,
-									3857
-								),
-						tile.tile_geom, 4096, 64, true ) AS geom
-				FROM content_version_poi_specifications specs
-				INNER JOIN content_versions
-					ON specs.content_version_id = content_versions.id
-				INNER JOIN content_locales 
-					ON content_versions.locale_id = content_locales.id
-				INNER JOIN contents
-					ON content_locales.content_id = contents.id
-				CROSS JOIN tile
-					
-				WHERE contents.type = 'poi'
-					AND specs.geom IS NOT NULL
-					AND ST_Transform(specs.geom, 3857) && tile.tile_geom
-				)
+			mvtgeom AS (
+			    SELECT DISTINCT ON (
+			            FLOOR(ST_X(ST_Transform(specs.geom, 3857)) / $4),
+			            FLOOR(ST_Y(ST_Transform(specs.geom, 3857)) / $4)
+			        )
+			        CAST(contents.id AS integer) AS id,
+			        contents.poi_type::text AS poi_type,
+			        contents.permalink::text AS permalink,
+			        ST_AsMVTGeom(
+			            ST_Transform(specs.geom, 3857),
+			            tile.tile_geom,
+			            4096,
+			            64,
+			            true
+			        ) AS geom
+			    FROM content_version_poi_specifications specs
+			    INNER JOIN content_versions
+			        ON specs.content_version_id = content_versions.id
+			    INNER JOIN content_locales
+			        ON content_versions.locale_id = content_locales.id
+			    INNER JOIN contents
+			        ON content_locales.content_id = contents.id
+			    CROSS JOIN tile
+			    WHERE contents.type = 'poi'
+			        AND specs.geom IS NOT NULL
+			        AND ST_Transform(specs.geom, 3857) && tile.tile_geom
+			    ORDER BY
+			        FLOOR(ST_X(ST_Transform(specs.geom, 3857)) / $4),
+			        FLOOR(ST_Y(ST_Transform(specs.geom, 3857)) / $4),
+			        contents.id
+			)
 			SELECT ST_AsMVT( mvtgeom, 'pois', 4096, 'geom' )
 			FROM mvtgeom
 			WHERE geom IS NOT NULL";
@@ -500,7 +512,7 @@ class Pois
 		$result = pg_query_params(
 			$con,
 			$sql,
-			[$z, $x, $y]
+			[$z, $x, $y, $grid]
 		);
 
 		if (!$result) {
