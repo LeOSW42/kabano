@@ -158,7 +158,7 @@ switch ($controller->splitted_url[1]) {
 		// Cache hit
 		if (is_file($cacheFile)) {
 			header('Content-Type: application/x-protobuf');
-			header('Cache-Control: public, max-age=31536000, immutable');
+			header('Cache-Control: public, max-age=86400');
 			header('X-Cache: HIT');
 			readfile($cacheFile);
 			exit;
@@ -197,7 +197,7 @@ switch ($controller->splitted_url[1]) {
 		rename($tmp, $cacheFile);
 
 		header('Content-Type: application/x-protobuf');
-		header('Cache-Control: public, max-age=31536000, immutable');
+		header('Cache-Control: public, max-age=86400');
 		header('X-Cache: MISS');
 		echo $tile;
 		break;
