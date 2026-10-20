@@ -89,16 +89,23 @@ $(document).ready(function() {
 		return { color: "#ef2929", size: 14, shape: "square" };
 	}
 
-	function buildPoiVectorIcon(properties) {
+	function buildPoiVectorIcon(properties, zoom) {
 		var type = (properties && (properties.type || properties.poi_type || properties.poiType)) || "default";
 		var style = getPoiStyle(type);
-		var iconUrl = svgDataUriFor(style.color, style.size, style.shape);
+		var scale = 1;
+		if (zoom === 8) {
+			scale = 1.1;
+		} else if (zoom >= 9) {
+			scale = 1.2;
+		}
+		var size = Math.max(1, Math.round(style.size * scale));
+		var iconUrl = svgDataUriFor(style.color, size, style.shape);
 
 		return L.icon({
 			iconUrl: iconUrl,
-			iconSize: [style.size, style.size],
-			iconAnchor: [Math.floor(style.size / 2), style.size],
-			popupAnchor: [0, -style.size]
+			iconSize: [size, size],
+			iconAnchor: [Math.floor(size / 2), size],
+			popupAnchor: [0, -size]
 		});
 	}
 
@@ -111,7 +118,7 @@ $(document).ready(function() {
 			pane: 'vectorPane',
 			vectorTileLayerStyles: {
 				pois: function(properties, zoom) {
-					var icon = buildPoiVectorIcon(properties);
+					var icon = buildPoiVectorIcon(properties, zoom);
 
 					return {
 						icon: icon,
