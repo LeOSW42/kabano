@@ -155,14 +155,10 @@ $(document).ready(function() {
     var startLat = (typeof poi_lat !== "undefined" && poi_lat) ? poi_lat : 47;
     var startLon = (typeof poi_lon !== "undefined" && poi_lon) ? poi_lon : 3;
 
-    // Icône : si poi_type défini, on l’utilise, sinon icône Leaflet par défaut
-    var poiicon = null;
+    // Icône centrale : même règle que les POIs
+    var poiType = (typeof poi_type !== "undefined" && poi_type) ? poi_type : "default";
     if (typeof poi_type !== "undefined" && poi_type) {
-        poiicon = L.icon({
-            iconSize: [24, 24],
-            iconAnchor: [12, 12],
-            iconUrl: root + "views/img/" + poi_type + ".svg"
-        });
+        var poiicon = getMarkerIconFor(poiType, mymap.getZoom());
     }
 
     if (poiicon) {
@@ -170,6 +166,13 @@ $(document).ready(function() {
     } else {
         poi_layer = L.marker([startLat, startLon], { draggable: isEdit }).addTo(mymap);
     }
+
+    // Si le zoom change, on recalcule la taille comme pour les POIs
+    mymap.on('zoomend', function() {
+        if (poi_layer) {
+            poi_layer.setIcon(getMarkerIconFor(poiType, mymap.getZoom()));
+        }
+    });
 
     if (isEdit) {
         poi_layer.bindTooltip("Glissez moi au bon endroit.", { permanent: true, direction: 'auto' }).openTooltip();
@@ -204,15 +207,10 @@ $(document).ready(function() {
             }
         });
 
-        var editPoiIcon = L.icon({
-            iconSize: [24, 24],
-            iconAnchor: [12, 12]
-        });
-
         $("#type_selector label").click(function(e) {
             poi_layer.unbindTooltip();
-            editPoiIcon.options.iconUrl = e.currentTarget.firstChild.currentSrc;
-            poi_layer.setIcon(editPoiIcon);
+            poiType = e.currentTarget.getAttribute("for");
+            poi_layer.setIcon(getMarkerIconFor(poiType, mymap.getZoom()));
         });
 
         $("#elevation_icon").click(function(e) {
