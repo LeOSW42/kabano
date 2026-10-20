@@ -128,6 +128,35 @@ $(document).ready(function() {
 		}
 	);
 
+	var mapZoomHintTimer = null;
+
+	function showMapZoomHint() {
+		if ($('#map-zoom-hint').length === 0) {
+			$('#mapid').append('<div id="map-zoom-hint">Zoomer pour pouvoir cliquer sur la carte</div>');
+		}
+
+		$('#map-zoom-hint')
+			.stop(true, true)
+			.fadeIn(100)
+			.delay(1500)
+			.fadeOut(100);
+	}
+
+	mymap.on('click', function(e) {
+		if (mymap.getZoom() < 10) {
+			if (mapZoomHintTimer) {
+				clearTimeout(mapZoomHintTimer);
+				mapZoomHintTimer = null;
+				return;
+			}
+
+			mapZoomHintTimer = setTimeout(function() {
+				showMapZoomHint();
+				mapZoomHintTimer = null;
+			}, 300);
+		}
+	});
+
 	// ---------------------------------------------------------
 	// Contrôles
 	// ---------------------------------------------------------
