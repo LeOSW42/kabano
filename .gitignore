@@ -1,6 +1,7 @@
 /src/Core/config.php
 /public/medias/*
 /public/_maps
+/public/cache/*
 /public/_ressources/dump.sql
 *.sublime-project
 *.sublime-workspace

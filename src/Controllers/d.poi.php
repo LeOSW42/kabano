@@ -149,13 +149,47 @@ switch ($controller->splitted_url[1]) {
 	case "tile":
 	    $z = intval($controller->splitted_url[2]);
 	    $x = intval($controller->splitted_url[3]);
-	    $y = intval(str_replace(".pbf","",$controller->splitted_url[4]));
+	    $y = intval(str_replace(".pbf", "", $controller->splitted_url[4]));
 
+	    $cacheRoot = $config['public_folder'].'/cache/tiles';
+	    $cacheDir  = $cacheRoot . '/' . $z . '/' . $x;
+	    $cacheFile = $cacheDir . '/' . $y . '.pbf';
+
+	    // Cache hit
+	    if (is_file($cacheFile)) {
+	        header('Content-Type: application/x-protobuf');
+	        header('Cache-Control: public, max-age=31536000, immutable');
+	        header('X-Cache: HIT');
+	        readfile($cacheFile);
+	        exit;
+	    }
+
+	    // Cache miss : on génère une fois
 	    $pois = new Kabano\Pois();
 
-	    header("Content-Type: application/x-protobuf");
+	    try {
+	        $tile = $pois->getVectorTile($z, $x, $y);
+	    } catch (Exception $e) {
+	        http_response_code(500);
+	        echo 'Tile generation failed: ' . $e->getMessage();
+	        exit;
+	    }
 
-	    echo $pois->getVectorTile($z,$x,$y);
+	    if (!is_dir($cacheDir)) {
+	        mkdir($cacheDir, 0777, true);
+	    }
+
+	    $tmp = $cacheFile . '.tmp';
+	    file_put_contents($tmp, $tile);
+
+	    if (file_exists($tmp)) {
+	        rename($tmp, $cacheFile);
+	    }
+
+	    header('Content-Type: application/x-protobuf');
+	    header('Cache-Control: public, max-age=31536000, immutable');
+	    header('X-Cache: MISS');
+	    echo $tile;
 	    break;
 
 	default:
