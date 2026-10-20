@@ -94,9 +94,9 @@ $(document).ready(function() {
 		var style = getPoiStyle(type);
 		var scale = 1;
 		if (zoom === 8) {
-			scale = 1.1;
-		} else if (zoom >= 9) {
 			scale = 1.2;
+		} else if (zoom >= 9) {
+			scale = 1.4;
 		}
 		var size = Math.max(1, Math.round(style.size * scale));
 		var iconUrl = svgDataUriFor(style.color, size, style.shape);
