@@ -34,34 +34,34 @@ switch ($controller->splitted_url[1]) {
 
 				foreach ($definition as $key => $label) {
 
-				    if (isset($_POST[$key])) {
-				        $value = $_POST[$key];
+					if (isset($_POST[$key])) {
+						$value = $_POST[$key];
 
 						if (str_starts_with($key, 'b_')) {
-						    if ($value === "0" || $value === "1" || $value === "2") {
-						        $params[$key] = intval($value);
-						    } else {
-						        $params[$key] = -1; // non renseigné
-						    }
+							if ($value === "0" || $value === "1" || $value === "2") {
+								$params[$key] = intval($value);
+							} else {
+								$params[$key] = -1; // non renseigné
+							}
 						}
-				        elseif (str_starts_with($key, 'n_')) {
-				            $params[$key] = is_numeric($value) ? (0 + $value) : null;
-				        }
-				        elseif (str_starts_with($key, 't_') || str_starts_with($key, 'l_')) {
-				            $params[$key] = trim($value);
-				        }
-				        else {
-				            $params[$key] = $value;
-				        }
+						elseif (str_starts_with($key, 'n_')) {
+							$params[$key] = is_numeric($value) ? (0 + $value) : null;
+						}
+						elseif (str_starts_with($key, 't_') || str_starts_with($key, 'l_')) {
+							$params[$key] = trim($value);
+						}
+						else {
+							$params[$key] = $value;
+						}
 
-				    } else {
-				        // Champ absent → booléen = -1 (non renseigné)
-				        if (str_starts_with($key, 'b_')) {
-				            $params[$key] = -1;
-				        } else {
-				            $params[$key] = null;
-				        }
-				    }
+					} else {
+						// Champ absent → booléen = -1 (non renseigné)
+						if (str_starts_with($key, 'b_')) {
+							$params[$key] = -1;
+						} else {
+							$params[$key] = null;
+						}
+					}
 				}
 
 				$poi->parameters = json_encode($params, JSON_UNESCAPED_UNICODE);
@@ -114,83 +114,93 @@ switch ($controller->splitted_url[1]) {
 		break;
 
 	case "api_bbox":
-	    // API JSON pour la liste des POIs (carte).
-	    header("Content-Type: application/json; charset=utf-8");
+		// API JSON pour la liste des POIs (carte).
+		header("Content-Type: application/json; charset=utf-8");
 
-	    $north = (float)$_GET['north'];
-	    $south = (float)$_GET['south'];
-	    $east  = (float)$_GET['east'];
-	    $west  = (float)$_GET['west'];
+		$north = (float)$_GET['north'];
+		$south = (float)$_GET['south'];
+		$east  = (float)$_GET['east'];
+		$west  = (float)$_GET['west'];
 
-	    $pois = new Kabano\Pois();
+		$pois = new Kabano\Pois();
 		$pois->listPoisBBOX(
-	        $north,
-	        $south,
-	        $east,
-	        $west,
-	        $user->rankIsHigher("premium") ? 1 : 0);
+			$north,
+			$south,
+			$east,
+			$west,
+			$user->rankIsHigher("premium") ? 1 : 0);
 
-	    $out = [];
+		$out = [];
 
-	    foreach ($pois->objs as $poi) {
-	        $out[] = [
-	            "id"        => $poi->content_id,
-	            "name"      => $poi->name,
-	            "lat"       => floatval($poi->lat),
-	            "lon"       => floatval($poi->lon),
-	            "type"      => $poi->poi_type,
-	            "permalink" => $poi->permalink
-	        ];
-	    }
+		foreach ($pois->objs as $poi) {
+			$out[] = [
+				"id"		=> $poi->content_id,
+				"name"	  => $poi->name,
+				"lat"	   => floatval($poi->lat),
+				"lon"	   => floatval($poi->lon),
+				"type"	  => $poi->poi_type,
+				"permalink" => $poi->permalink
+			];
+		}
 
-	    echo json_encode($out, JSON_UNESCAPED_UNICODE);
+		echo json_encode($out, JSON_UNESCAPED_UNICODE);
 		break;
 
 	case "tile":
-	    $z = intval($controller->splitted_url[2]);
-	    $x = intval($controller->splitted_url[3]);
-	    $y = intval(str_replace(".pbf", "", $controller->splitted_url[4]));
+		$z = intval($controller->splitted_url[2]);
+		$x = intval($controller->splitted_url[3]);
+		$y = intval(str_replace(".pbf", "", $controller->splitted_url[4]));
 
-	    $cacheRoot = $config['public_folder'].'/cache/tiles';
-	    $cacheDir  = $cacheRoot . '/' . $z . '/' . $x;
-	    $cacheFile = $cacheDir . '/' . $y . '.pbf';
+		$cacheRoot = $config['public_folder'] . '/cache/tiles';
+		$cacheDir  = $cacheRoot . '/' . $z . '/' . $x;
+		$cacheFile = $cacheDir . '/' . $y . '.pbf';
 
-	    // Cache hit
-	    if (is_file($cacheFile)) {
-	        header('Content-Type: application/x-protobuf');
-	        header('Cache-Control: public, max-age=31536000, immutable');
-	        header('X-Cache: HIT');
-	        readfile($cacheFile);
-	        exit;
-	    }
+		// Cache hit
+		if (is_file($cacheFile)) {
+			header('Content-Type: application/x-protobuf');
+			header('Cache-Control: public, max-age=31536000, immutable');
+			header('X-Cache: HIT');
+			readfile($cacheFile);
+			exit;
+		}
 
-	    // Cache miss : on génère une fois
-	    $pois = new Kabano\Pois();
+		// Création du dossier si nécessaire
+		if (!is_dir($cacheDir)) {
+			if (!@mkdir($cacheDir, 0777, true) && !is_dir($cacheDir)) {
+				http_response_code(500);
+				exit('Tile cache directory not writable');
+			}
+		}
 
-	    try {
-	        $tile = $pois->getVectorTile($z, $x, $y);
-	    } catch (Exception $e) {
-	        http_response_code(500);
-	        echo 'Tile generation failed: ' . $e->getMessage();
-	        exit;
-	    }
+		if (!is_writable($cacheDir)) {
+			http_response_code(500);
+			exit('Tile cache directory is not writable');
+		}
 
-	    if (!is_dir($cacheDir)) {
-	        mkdir($cacheDir, 0777, true);
-	    }
+		$pois = new Kabano\Pois();
 
-	    $tmp = $cacheFile . '.tmp';
-	    file_put_contents($tmp, $tile);
+		try {
+			$tile = $pois->getVectorTile($z, $x, $y);
+		} catch (Exception $e) {
+			http_response_code(500);
+			echo 'Tile generation failed: ' . $e->getMessage();
+			exit;
+		}
 
-	    if (file_exists($tmp)) {
-	        rename($tmp, $cacheFile);
-	    }
+		$tmp = $cacheDir . '/' . uniqid('tile_', true) . '.pbf.tmp';
 
-	    header('Content-Type: application/x-protobuf');
-	    header('Cache-Control: public, max-age=31536000, immutable');
-	    header('X-Cache: MISS');
-	    echo $tile;
-	    break;
+		if (file_put_contents($tmp, $tile) === false) {
+			http_response_code(500);
+			exit('Unable to write tile cache');
+		}
+
+		rename($tmp, $cacheFile);
+
+		header('Content-Type: application/x-protobuf');
+		header('Cache-Control: public, max-age=31536000, immutable');
+		header('X-Cache: MISS');
+		echo $tile;
+		break;
 
 	default:
 		// Affichage / édition / suppression d’un POI
@@ -224,34 +234,34 @@ switch ($controller->splitted_url[1]) {
 
 					foreach ($definition as $key => $label) {
 
-					    if (isset($_POST[$key])) {
-					        $value = $_POST[$key];
+						if (isset($_POST[$key])) {
+							$value = $_POST[$key];
 
 							if (str_starts_with($key, 'b_')) {
-							    if ($value === "0" || $value === "1" || $value === "2") {
-							        $params[$key] = intval($value);
-							    } else {
-							        $params[$key] = -1;
-							    }
+								if ($value === "0" || $value === "1" || $value === "2") {
+									$params[$key] = intval($value);
+								} else {
+									$params[$key] = -1;
+								}
 							}
-					        elseif (str_starts_with($key, 'n_')) {
-					            $params[$key] = is_numeric($value) ? (0 + $value) : null;
-					        }
-					        elseif (str_starts_with($key, 't_') || str_starts_with($key, 'l_')) {
-					            $params[$key] = trim($value);
-					        }
-					        else {
-					            $params[$key] = $value;
-					        }
+							elseif (str_starts_with($key, 'n_')) {
+								$params[$key] = is_numeric($value) ? (0 + $value) : null;
+							}
+							elseif (str_starts_with($key, 't_') || str_starts_with($key, 'l_')) {
+								$params[$key] = trim($value);
+							}
+							else {
+								$params[$key] = $value;
+							}
 
-					    } else {
-					        // Champ absent → booléen = -1 (non renseigné)
-					        if (str_starts_with($key, 'b_')) {
-					            $params[$key] = -1;
-					        } else {
-					            $params[$key] = null;
-					        }
-					    }
+						} else {
+							// Champ absent → booléen = -1 (non renseigné)
+							if (str_starts_with($key, 'b_')) {
+								$params[$key] = -1;
+							} else {
+								$params[$key] = null;
+							}
+						}
 					}
 
 					$poi->parameters = json_encode($params, JSON_UNESCAPED_UNICODE);
@@ -292,64 +302,64 @@ switch ($controller->splitted_url[1]) {
 
 						if (!empty($_FILES['photo']['tmp_name'])) {
 
-						    $tmp = $_FILES['photo']['tmp_name'];
-						    $info = getimagesize($tmp);
-						    if ($info === false) {
-						        die("Fichier non valide");
-						    }
+							$tmp = $_FILES['photo']['tmp_name'];
+							$info = getimagesize($tmp);
+							if ($info === false) {
+								die("Fichier non valide");
+							}
 
-						    $mime = $info['mime'];
-						    switch ($mime) {
-						        case 'image/jpeg':
-						            $src = imagecreatefromjpeg($tmp);
-						            break;
-						        case 'image/png':
-						            $src = imagecreatefrompng($tmp);
-						            break;
-						        case 'image/webp':
-						            $src = imagecreatefromwebp($tmp);
-						            break;
-						        default:
-						            die("Format non supporté");
-						    }
+							$mime = $info['mime'];
+							switch ($mime) {
+								case 'image/jpeg':
+									$src = imagecreatefromjpeg($tmp);
+									break;
+								case 'image/png':
+									$src = imagecreatefrompng($tmp);
+									break;
+								case 'image/webp':
+									$src = imagecreatefromwebp($tmp);
+									break;
+								default:
+									die("Format non supporté");
+							}
 
-						    $width  = imagesx($src);
-						    $height = imagesy($src);
+							$width  = imagesx($src);
+							$height = imagesy($src);
 
-						    // Taille max
-						    $max = 1500;
+							// Taille max
+							$max = 1500;
 
-						    $ratio = min($max / $width, $max / $height, 1);
-						    $newWidth  = (int)($width * $ratio);
-						    $newHeight = (int)($height * $ratio);
-						    $dst = imagecreatetruecolor($newWidth, $newHeight);
-						    imagecopyresampled($dst, $src, 0, 0, 0, 0, $newWidth, $newHeight, $width, $height);
+							$ratio = min($max / $width, $max / $height, 1);
+							$newWidth  = (int)($width * $ratio);
+							$newHeight = (int)($height * $ratio);
+							$dst = imagecreatetruecolor($newWidth, $newHeight);
+							imagecopyresampled($dst, $src, 0, 0, 0, 0, $newWidth, $newHeight, $width, $height);
 
-						    // --- Watermark ---
-						    $watermarkPath = $config['medias_folder'] . '/watermark.png';
+							// --- Watermark ---
+							$watermarkPath = $config['medias_folder'] . '/watermark.png';
 
-						    if (file_exists($watermarkPath)) {
-						        $wm = imagecreatefrompng($watermarkPath);
+							if (file_exists($watermarkPath)) {
+								$wm = imagecreatefrompng($watermarkPath);
 
-						        imagealphablending($wm, true);
-						        imagesavealpha($wm, true);
+								imagealphablending($wm, true);
+								imagesavealpha($wm, true);
 
-						        $wmWidth  = imagesx($wm);
-						        $wmHeight = imagesy($wm);
+								$wmWidth  = imagesx($wm);
+								$wmHeight = imagesy($wm);
 
-						        $x = $newWidth - $wmWidth - 20;
-						        $y = 20;
+								$x = $newWidth - $wmWidth - 20;
+								$y = 20;
 
-						        // Fusion
-						        imagecopy($dst, $wm, $x, $y, 0, 0, $wmWidth, $wmHeight);
-						    }
+								// Fusion
+								imagecopy($dst, $wm, $x, $y, 0, 0, $wmWidth, $wmHeight);
+							}
 
-						    $filename = uniqid('comment_') . '.jpg';
-						    $destination = $config['medias_folder'] . 'comment_photos/' . $filename;
+							$filename = uniqid('comment_') . '.jpg';
+							$destination = $config['medias_folder'] . 'comment_photos/' . $filename;
 
-						    imagejpeg($dst, $destination, 70);
+							imagejpeg($dst, $destination, 70);
 
-						    $Comment->photo = $filename;
+							$Comment->photo = $filename;
 						}
 
 						$Comment->insert();
