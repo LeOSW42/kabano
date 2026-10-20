@@ -1,40 +1,131 @@
 // Carte des POIs et marqueur principal.
 var mymap;
 var poi_layer;
+var poiApiLayer;
 
 $(document).ready(function() {
     // Mode : edit (formulaire) ou view (affichage)
     var isEdit = (typeof poi_mode === "undefined" || poi_mode === "edit");
 
-    // Différentes couches pour la carte.
+    // ---------------------------------------------------------
+    // Fonds de carte
+    // ---------------------------------------------------------
     var topo_maptiler = L.tileLayer(
         'https://api.maptiler.com/maps/topographique/{z}/{x}/{y}.png?key=Sm8M7mJ53GtYdl773rpi',
         {
             tms: false,
-            attribution: 'Carte © <a href="https://www.maptiler.com/copyright/" target="_blank">MapTiler</a>, Données © <a href="http://www.openstreetmap.org/copyright" target="_blank">Contributeurs OpenStreetMap</a>',
+            attribution: 'Carte © <a href="https://www.maptiler.com/copyright/" target="_blank">MapTiler</a>, Données © <a href="http://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a>',
             tileSize: 512,
             zoomOffset: -1,
             minZoom: 1
         }
     );
+
     var ign = L.tileLayer(
-        'https://data.geopf.fr/private/wmts?&REQUEST=GetTile&SERVICE=WMTS&VERSION=1.0.0&STYLE=normal&TILEMATRIXSET=PM&FORMAT=image/jpeg&LAYER=GEOGRAPHICALGRIDSYSTEMS.MAPS&TILEMATRIX={z}&TILEROW={y}&TILECOL={x}&apikey=ign_scan_ws',
+        'https://data.geopf.fr/private/wmts?&REQUEST=GetTile&SERVICE=WMTS&VERSION=1.0.0&STYLE=normal&TILEMATRIXSET=PM&FORMAT=image/jpeg&LAYER=GEOGRAPHICALGRIDSYSTEMS.MAPS&TILEMATRIX={z}&TILEROW={y}&TILECOL={x}',
         {
             attribution: 'Carte & Connées © <a href="http://ign.fr/" target="_blank">IGN-F/Géoportail</a>'
         }
     );
-    // Couches de base.
+
     var baseLayers = {
         "OpenStreetMap": topo_maptiler,
         "IGN France": ign
     };
 
+    // ---------------------------------------------------------
+    // Carte
+    // ---------------------------------------------------------
     mymap = L.map('mapid', {
         zoomControl: false,
-        layers: [topo_maptiler]
+        layers: [topo_maptiler],
+        minZoom: 10
     }).setView([47, 3], 6);
+
     $("#map-credits").html(topo_maptiler.getAttribution());
 
+    // ---------------------------------------------------------
+    // Icônes / markers issus de poi/api_bbox
+    // ---------------------------------------------------------
+    function getMarkerIconFor(type, zoom) {
+        var baseSize = 16;
+        if (window.poi_style_map && window.poi_style_map[type] && window.poi_style_map[type].size) {
+            baseSize = window.poi_style_map[type].size;
+        }
+
+        var size = zoom > 11
+            ? Math.round(baseSize * 2)
+            : Math.round(baseSize * 1.5);
+
+        return L.icon({
+            iconUrl: window.poi_style_map[type].icon || window.poi_style_map["default"].icon,
+            iconSize: [size, size],
+            iconAnchor: [Math.floor(size / 2), Math.floor(size / 2)],
+            popupAnchor: [0, -size]
+        });
+    }
+
+    function refreshPoiApiLayer() {
+        var b = mymap.getBounds();
+
+        $.getJSON(
+            root + "poi/api_bbox",
+            {
+                north: b.getNorth(),
+                south: b.getSouth(),
+                east: b.getEast(),
+                west: b.getWest()
+            },
+            function(pois) {
+                if (poiApiLayer) {
+                    mymap.removeLayer(poiApiLayer);
+                }
+
+                poiApiLayer = L.layerGroup();
+
+                const pathParts = window.location.pathname.split('/');
+                const poiIndex = pathParts.indexOf('poi');
+                const currentPermalink = (poiIndex !== -1 && pathParts[poiIndex + 1])
+                    ? decodeURIComponent(pathParts[poiIndex + 1])
+                    : null;
+
+                pois.forEach(function(poi) {
+                    if (currentPermalink && poi.permalink === currentPermalink) {
+                        return; // ne pas afficher le POI courant
+                    }
+
+                    var markerIcon = getMarkerIconFor(poi.type, mymap.getZoom());
+
+                    var marker = L.marker(
+                        [poi.lat, poi.lon],
+                        { icon: markerIcon }
+                    );
+
+                    marker.bindTooltip(
+                        poi.name,
+                        {
+                            direction: "top",
+                            offset: [0, -10],
+                            opacity: 0.9,
+                            className: "poi-tooltip"
+                        }
+                    );
+
+                    marker.on("click", function() {
+                        window.location = root + "poi/" + poi.permalink;
+                    });
+
+                    poiApiLayer.addLayer(marker);
+                });
+
+                poiApiLayer.addTo(mymap);
+            }
+        );
+    }
+
+    // ---------------------------------------------------------
+    // Contrôles
+    // ---------------------------------------------------------
     L.control.scale({
         position: "bottomleft",
         imperial: false
@@ -70,22 +161,28 @@ $(document).ready(function() {
         poiicon = L.icon({
             iconSize: [24, 24],
             iconAnchor: [12, 12],
- 			iconUrl: root + "views/img/" + poi_type + ".svg"
-         });
+            iconUrl: root + "views/img/" + poi_type + ".svg"
+        });
     }
 
     if (poiicon) {
-        poi_layer = L.marker([startLat, startLon], {draggable: isEdit, icon: poiicon}).addTo(mymap);
+        poi_layer = L.marker([startLat, startLon], { draggable: isEdit, icon: poiicon }).addTo(mymap);
     } else {
-        poi_layer = L.marker([startLat, startLon], {draggable: isEdit}).addTo(mymap);
+        poi_layer = L.marker([startLat, startLon], { draggable: isEdit }).addTo(mymap);
     }
 
     if (isEdit) {
-        // Mise à jour des coordonnées à chaque déplacement.
-        poi_layer.bindTooltip("Glissez moi au bon endroit.", {permanent: true, direction: 'auto'}).openTooltip();
+        poi_layer.bindTooltip("Glissez moi au bon endroit.", { permanent: true, direction: 'auto' }).openTooltip();
     }
 
+    // Centrage sur la cabane actuelle
+    if (typeof poi_lat !== "undefined" && typeof poi_lon !== "undefined") {
+        mymap.setView([poi_lat, poi_lon], 14);
+    }
+
+    // ---------------------------------------------------------
     // Interactions uniquement en mode édition
+    // ---------------------------------------------------------
     if (isEdit) {
         mymap.on('click', function(e){
             poi_layer.setLatLng(e.latlng);
@@ -98,8 +195,7 @@ $(document).ready(function() {
             $("#elevation_icon").show();
         });
 
-        // Si l'utilisateur modifie les champs lat/lon manuellement.
-        $("#lat,#lon").change(function() { // If the user changes the lat/lon input values manualy
+        $("#lat,#lon").change(function() {
             if(isNaN($("#lat").val()) || isNaN($("#lon").val()) || $("#lat").val().length==0 || $("#lon").val()==null)
                 $("#elevation_icon").hide();
             else {
@@ -119,7 +215,6 @@ $(document).ready(function() {
             poi_layer.setIcon(editPoiIcon);
         });
 
-        // Chargement de l'altitude via le proxy.
         $("#elevation_icon").click(function(e) {
             $(this).find($(".fas")).removeClass('fa-search-location').addClass('fa-spinner').addClass('fa-spin');
             $.get(root+"poi/elevation_proxy", {location:$("#lat").val()+","+$("#lon").val()}, function(result){
@@ -127,10 +222,22 @@ $(document).ready(function() {
                 $("#elevation_icon").find($(".fas")).removeClass('fa-spinner').removeClass('fa-spin').addClass('fa-search-location');
             });
         });
-    } else {
-        // Mode affichage : centrer sur le POI si coordonnées présentes
-        if (typeof poi_lat !== "undefined" && typeof poi_lon !== "undefined") {
-            mymap.setView([poi_lat, poi_lon], 14);
-        }
     }
+
+    // ---------------------------------------------------------
+    // Rechargement du calque depuis poi/api_bbox
+    // ---------------------------------------------------------
+    mymap.on("zoomend", function() {
+        if (mymap.getZoom() >= 10) {
+            refreshPoiApiLayer();
+        }
+    });
+
+    mymap.on("moveend", function() {
+        if (mymap.getZoom() >= 10) {
+            refreshPoiApiLayer();
+        }
+    });
+
+    refreshPoiApiLayer();
 });

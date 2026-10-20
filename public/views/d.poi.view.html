@@ -31,8 +31,8 @@
 				<h1 class="flex_line">
 					<span class="poi-icon-wrapper" data-tooltip="<?=htmlspecialchars($poi_types[$poi->poi_type][4] ?? '')?>">
 						<img class="poi-icon"
-						     src="<?=$config['rel_root_folder']?>views/img/<?=$poi->poi_type?>.svg"
-						     alt="">
+							 src="<?=$config['rel_root_folder']?>views/img/<?=$poi->poi_type?>.svg"
+							 alt="">
 					</span>
 					<span><?=$poi->name?></span>
 				</h1>
@@ -100,25 +100,25 @@
 					</span>
 				<?php } ?>
 
-                <br>
-                <br>
+				<br>
+				<br>
 
-                <?php
-                $poiFields = $poi_types[$poi->poi_type][5];
-                $poiValues = $poi->parameters ?? [];
+				<?php
+				$poiFields = $poi_types[$poi->poi_type][5];
+				$poiValues = $poi->parameters ?? [];
 
-                // Séparer les booléens des autres champs
-                $boolFields = [];
-                $otherFields = [];
+				// Séparer les booléens des autres champs
+				$boolFields = [];
+				$otherFields = [];
 
-                foreach ($poiFields as $key => $label) {
-                    if ($key[0] === 'b') {
-                        $boolFields[$key] = $label;
-                    } else {
-                        $otherFields[$key] = $label;
-                    }
-                }
-                ?>
+				foreach ($poiFields as $key => $label) {
+					if ($key[0] === 'b') {
+						$boolFields[$key] = $label;
+					} else {
+						$otherFields[$key] = $label;
+					}
+				}
+				?>
 
 				<div id="specific_form" class="view-mode">
 					<!-- Detail fields -->
@@ -166,13 +166,13 @@
 					?>
 
 						<div class="bool-grid">
-						    <?php foreach ($boolFields as $key => $label): ?>
-						        <?php $icon = $boolIcons[$poiValues[$key] ?? 2]; ?>
-						        <div class="bool-cell">
-						            <div class="bool-label"><?= $label ?></div>
-						            <div class="bool-icon"><?= $icon ?></div>
-						        </div>
-						    <?php endforeach; ?>
+							<?php foreach ($boolFields as $key => $label): ?>
+								<?php $icon = $boolIcons[$poiValues[$key] ?? 2]; ?>
+								<div class="bool-cell">
+									<div class="bool-label"><?= $label ?></div>
+									<div class="bool-icon"><?= $icon ?></div>
+								</div>
+							<?php endforeach; ?>
 						</div>
 					<?php endif; ?>
 				</div>
@@ -183,9 +183,9 @@
 						<div id="comments_photos_gallery" class="gallery">
 							<?php foreach ($poi_comments->objs as $comment) { ?>
 								<?php if (!empty($comment->photo) && $comment->is_archive != 't' && $comment->is_public != 'f') { ?>
-						            <a href="<?=$config['rel_root_folder'].'medias/comment_photos/'.$comment->photo?>">
-						            	<img src="<?=$config['rel_root_folder'].'medias/comment_photos/'.$comment->photo?>" title="<?= (mb_strlen($comment->comment) > 50 ? mb_substr($comment->comment, 0, 50) . '...' : $comment->comment) ?>">
-						            </a>
+									<a href="<?=$config['rel_root_folder'].'medias/comment_photos/'.$comment->photo?>">
+										<img src="<?=$config['rel_root_folder'].'medias/comment_photos/'.$comment->photo?>" title="<?= (mb_strlen($comment->comment) > 50 ? mb_substr($comment->comment, 0, 50) . '...' : $comment->comment) ?>">
+									</a>
 								<?php } ?>
 							<?php } ?>
 						</div>
@@ -212,7 +212,7 @@
 								<textarea id="comment" name="comment" rows="5" placeholder="Votre commentaire"></textarea>
 
 								<label for="photo" id="upload-btn">
-								    <i class="fas fa-file-image"></i> Ajouter une photo
+									<i class="fas fa-file-image"></i> Ajouter une photo
 								</label>
 								<input type="file" id="photo" name="photo" accept="image/*">
 							</div>
@@ -221,9 +221,9 @@
 
 					<script>
 					document.getElementById('photo').addEventListener('change', function() {
-					    document.getElementById('upload-btn').innerHTML = this.files.length
-					        ? "<i class='fas fa-check-square'></i> Photo sélectionnée"
-					        : "<i class='fas fa-file-image'></i> Ajouter une photo";
+						document.getElementById('upload-btn').innerHTML = this.files.length
+							? "<i class='fas fa-check-square'></i> Photo sélectionnée"
+							: "<i class='fas fa-file-image'></i> Ajouter une photo";
 					});
 					</script>
 
@@ -272,11 +272,11 @@
 									<div class="comment_content">
 										<?=$comment->comment_html?>
 
-									    <?php if (!empty($comment->photo)) { ?>
-									        <div class="comment-photo">
-									            <img src="<?=$config['rel_root_folder'].'medias/comment_photos/'.$comment->photo?>" alt="Photo du commentaire">
-									        </div>
-									    <?php } ?>
+										<?php if (!empty($comment->photo)) { ?>
+											<div class="comment-photo">
+												<img src="<?=$config['rel_root_folder'].'medias/comment_photos/'.$comment->photo?>" alt="Photo du commentaire">
+											</div>
+										<?php } ?>
 									</div>
 								</article>
 
@@ -300,7 +300,20 @@
 			var poi_lon = <?=$poi->lon?>;
 			var poi_type = "<?=$poi->poi_type?>";
 			var poi_mode = "view";
-            var root = "<?=$config['rel_root_folder']?>";
+			var root = "<?=$config['rel_root_folder']?>";
+
+		    // POI icons
+			window.poi_style_map = {
+				<?php foreach($poi_types as $k => $t) {
+					$color = isset($t[2]) ? $t[2] : '#ef2929';
+					$size = isset($t[6]) ? (int)$t[6] : 16;
+					$shape = isset($t[7]) ? $t[7] : 'square';
+					$icon = isset($t[3]) ? $config['views_url']."img/".$t[3].".svg" : $config['views_url']."img/default.svg";
+				?>
+					"<?=$k?>": { color: "<?=$color?>", size: <?=$size?>, shape: "<?=$shape?>", icon: "<?=$icon?>" },
+				<?php } ?>
+					"default": { color: "#ef2929", size: 16, shape: "square", icon: "<?=$config['views_url']?>img/default.svg" }
+			};
 		</script>
 
 		<?php if ($canViewHistory) { ?>

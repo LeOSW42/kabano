@@ -104,7 +104,7 @@ $(document).ready(function() {
 		return L.icon({
 			iconUrl: iconUrl,
 			iconSize: [size, size],
-			iconAnchor: [Math.floor(size / 2), size],
+			iconAnchor: [Math.floor(size / 2), Math.floor(size / 2)],
 			popupAnchor: [0, -size]
 		});
 	}
@@ -251,14 +251,21 @@ $(document).ready(function() {
 
 		// helper local : construit un L.Icon en fonction du type et du zoom
 		function getMarkerIconFor(type, zoom) {
-			var size = (zoom > 11) ? 32 : 24;
+		    var baseSize = 16;
+		    if (window.poi_style_map && window.poi_style_map[type] && window.poi_style_map[type].size) {
+		        baseSize = window.poi_style_map[type].size;
+		    }
 
-			return L.icon({
-				iconUrl: window.poi_icons[type],
-				iconSize: [size, size],
-				iconAnchor: [Math.floor(size / 2), size],
-				popupAnchor: [0, -size]
-			});
+		    var size = zoom > 11
+		        ? Math.round(baseSize * 2)
+		        : Math.round(baseSize * 1.5);
+
+		    return L.icon({
+		        iconUrl: window.poi_style_map[type].icon || window.poi_style_map["default"].icon,
+		        iconSize: [size, size],
+		        iconAnchor: [Math.floor(size / 2), Math.floor(size / 2)],
+		        popupAnchor: [0, -size]
+		    });
 		}
 
 		$.getJSON(

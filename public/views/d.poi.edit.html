@@ -44,16 +44,16 @@
 					<!-- Type selector -->
 					<div class="flex_line" id="type_selector">
 						<?php foreach($poi_types as $type) { ?>
-						    <input type="radio" name="poi_type" value="<?=$type[3]?>" id="<?=$type[3]?>" required
-						           <?=$poi->poi_type == $type[3] ? 'checked' : ''?>>
-						    <label for="<?=$type[3]?>"><img src="<?=$config['views_url']?>img/<?=$type[3]?>.svg"><br><?=$type[0]?></label>
+							<input type="radio" name="poi_type" value="<?=$type[3]?>" id="<?=$type[3]?>" required
+								   <?=$poi->poi_type == $type[3] ? 'checked' : ''?>>
+							<label for="<?=$type[3]?>"><img src="<?=$config['views_url']?>img/<?=$type[3]?>.svg"><br><?=$type[0]?></label>
 						<?php } ?>
 					</div>
 
 					<!-- Dynamic form data -->
 <script type="text/javascript">
 <?php
-    $poi_params = $poi->parameters ?? new stdClass();
+	$poi_params = $poi->parameters ?? new stdClass();
 ?>
 
 var poi_params = <?= json_encode($poi_params) ?>;
@@ -63,133 +63,133 @@ var unsaved = false;
 
 // Stocke les abstracts et les squelettes de formulaire
 <?php foreach($poi_types as $type) { ?>
-    window["<?=$type[3]?>_abstract"] = "<?=$type[4]?>";
-    window["<?=$type[3]?>_jsonform"] = <?=json_encode($type[5])?>;
+	window["<?=$type[3]?>_abstract"] = "<?=$type[4]?>";
+	window["<?=$type[3]?>_jsonform"] = <?=json_encode($type[5])?>;
 <?php } ?>
 
 // 3 états : 0 = non, 1 = intermédiaire, 2 = oui
 function update3State(id) {
-    var input = $("input[name="+id+"]");
-    var label = $("label[for="+id+"]");
+	var input = $("input[name="+id+"]");
+	var label = $("label[for="+id+"]");
 
-    var v = parseInt(input.val(), 10);
+	var v = parseInt(input.val(), 10);
 
-    // cycle propre : 0 → 1 → 2 → 0
-    if (v === 0) v = 1;
-    else if (v === 1) v = 2;
-    else v = 0;
+	// cycle propre : 0 → 1 → 2 → 0
+	if (v === 0) v = 1;
+	else if (v === 1) v = 2;
+	else v = 0;
 
-    input.val(v);
+	input.val(v);
 
-    label.removeClass("uncheck intermediate check");
+	label.removeClass("uncheck intermediate check");
 
-    if (v === 0) label.addClass("uncheck");
-    if (v === 1) label.addClass("intermediate");
-    if (v === 2) label.addClass("check");
+	if (v === 0) label.addClass("uncheck");
+	if (v === 1) label.addClass("intermediate");
+	if (v === 2) label.addClass("check");
 
-    unsaved = true;
+	unsaved = true;
 }
 
 // Génère / met à jour le sous-formulaire selon le type
 function updateForm(type) {
-    $("#abstract").html(window[type + '_abstract']);
+	$("#abstract").html(window[type + '_abstract']);
 
-    var html_form = "";
-    var jsonform = window[type + '_jsonform'];
+	var html_form = "";
+	var jsonform = window[type + '_jsonform'];
 
-    $.each(jsonform, function(index, value) {
-        var prefix = index.charAt(0);
-        var existing = (poi_params && typeof poi_params[index] !== 'undefined')
-            ? poi_params[index]
-            : null;
+	$.each(jsonform, function(index, value) {
+		var prefix = index.charAt(0);
+		var existing = (poi_params && typeof poi_params[index] !== 'undefined')
+			? poi_params[index]
+			: null;
 
-        switch (prefix) {
-            case 'b':
-                var cls = 'intermediate';
-                var val = 1;
+		switch (prefix) {
+			case 'b':
+				var cls = 'intermediate';
+				var val = 1;
 
-                if (existing == 0) {
-                    cls = 'uncheck';
-                    val = 0;
-                } else if (existing == 2) {
-                    cls = 'check';
-                    val = 2;
-                } else if (existing == -1 || existing === null) {
-                    cls = 'intermediate';
-                    val = 1;
-                }
-                html_form +=
-                    '<label class="threecb ' + cls + '" for="' + index + '" onclick="update3State(\'' + index + '\')">' +
-                        value +
-                    '</label>' +
-                    '<input value="' + val + '" type="hidden" name="' + index + '" id="' + index + '"><br>';
-                break;
+				if (existing == 0) {
+					cls = 'uncheck';
+					val = 0;
+				} else if (existing == 2) {
+					cls = 'check';
+					val = 2;
+				} else if (existing == -1 || existing === null) {
+					cls = 'intermediate';
+					val = 1;
+				}
+				html_form +=
+					'<label class="threecb ' + cls + '" for="' + index + '" onclick="update3State(\'' + index + '\')">' +
+						value +
+					'</label>' +
+					'<input value="' + val + '" type="hidden" name="' + index + '" id="' + index + '"><br>';
+				break;
 
-            case 'n':
-                html_form +=
-                    '<div class="flex_line">' +
-                        '<label for="' + index + '">' + value + '</label>' +
-                        '<input min="0" type="number" name="' + index + '" id="' + index + '" ' +
-                            (existing !== null ? 'value="' + existing + '"' : '') +
-                        '>' +
-                    '</div>';
-                break;
+			case 'n':
+				html_form +=
+					'<div class="flex_line">' +
+						'<label for="' + index + '">' + value + '</label>' +
+						'<input min="0" type="number" name="' + index + '" id="' + index + '" ' +
+							(existing !== null ? 'value="' + existing + '"' : '') +
+						'>' +
+					'</div>';
+				break;
 
-            case 't':
-                html_form +=
-                    '<label for="' + index + '">' + value + '</label>' +
-                    '<textarea name="' + index + '" id="' + index + '">';
-                if (existing !== null) {
-                    html_form += String(existing)
-                        .replace(/&/g, "&amp;")
-                        .replace(/</g, "&lt;")
-                        .replace(/>/g, "&gt;");
-                }
-                html_form += '</textarea>';
-                break;
+			case 't':
+				html_form +=
+					'<label for="' + index + '">' + value + '</label>' +
+					'<textarea name="' + index + '" id="' + index + '">';
+				if (existing !== null) {
+					html_form += String(existing)
+						.replace(/&/g, "&amp;")
+						.replace(/</g, "&lt;")
+						.replace(/>/g, "&gt;");
+				}
+				html_form += '</textarea>';
+				break;
 
-            case 'l':
-                html_form +=
-                    '<div class="flex_line">' +
-                        '<label for="' + index + '">' + value + '</label>' +
-                        '<input placeholder="https://" type="url" name="' + index + '" id="' + index + '" ' +
-                            (existing ? 'value="' + existing + '"' : '') +
-                        '>' +
-                    '</div>';
-                break;
+			case 'l':
+				html_form +=
+					'<div class="flex_line">' +
+						'<label for="' + index + '">' + value + '</label>' +
+						'<input placeholder="https://" type="url" name="' + index + '" id="' + index + '" ' +
+							(existing ? 'value="' + existing + '"' : '') +
+						'>' +
+					'</div>';
+				break;
 
-            default:
-                console.log("ERROR: " + index + "'s type is not known");
-        }
-    });
+			default:
+				console.log("ERROR: " + index + "'s type is not known");
+		}
+	});
 
-    $("#specific_form").html(html_form);
+	$("#specific_form").html(html_form);
 
-    unsaved = false;
-    $("#specific_form :input").change(function(){
-        unsaved = true;
-    });
+	unsaved = false;
+	$("#specific_form :input").change(function(){
+		unsaved = true;
+	});
 }
 
 $(document).ready(function(){
 		// Au chargement : générer le formulaire du type actuel
-    if (current_poi_type) {
-        updateForm(current_poi_type);
-    }
+	if (current_poi_type) {
+		updateForm(current_poi_type);
+	}
 		unsaved = !is_new;
 
 		$('#type_selector label').click(function(){
 
-		    if (unsaved === true) {
-		        if (!confirm("Des changements ont été apportés et vont être supprimés, voulez-vous continuer ?")) {
-		            return false;
-		        }
-		    }
+			if (unsaved === true) {
+				if (!confirm("Des changements ont été apportés et vont être supprimés, voulez-vous continuer ?")) {
+					return false;
+				}
+			}
 
-		    const type = $(this).attr("for"); // robuste
-		    current_poi_type = type;
+			const type = $(this).attr("for"); // robuste
+			current_poi_type = type;
 
-		    updateForm(type);
+			updateForm(type);
 		});
 });
 </script>
@@ -240,6 +240,19 @@ $( "#name" ).change(function() {
 				var poi_type = "<?=$poi->poi_type?>";
 				var is_new = <?= isset($new) && $new == 1 ? "true" : "false" ?>;
 				var root = "<?=$config['rel_root_folder']?>";
+
+			    // POI icons
+				window.poi_style_map = {
+					<?php foreach($poi_types as $k => $t) {
+						$color = isset($t[2]) ? $t[2] : '#ef2929';
+						$size = isset($t[6]) ? (int)$t[6] : 16;
+						$shape = isset($t[7]) ? $t[7] : 'square';
+						$icon = isset($t[3]) ? $config['views_url']."img/".$t[3].".svg" : $config['views_url']."img/default.svg";
+					?>
+						"<?=$k?>": { color: "<?=$color?>", size: <?=$size?>, shape: "<?=$shape?>", icon: "<?=$icon?>" },
+					<?php } ?>
+						"default": { color: "#ef2929", size: 16, shape: "square", icon: "<?=$config['views_url']?>img/default.svg" }
+				};
 			</script>
 
 

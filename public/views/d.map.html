@@ -32,23 +32,17 @@
 		    var root = "<?=$config['rel_root_folder']?>";
 
 		    // POI icons
-		    window.poi_icons = {
-		        <?php foreach($poi_types as $type) { ?>
-		            "<?=$type[3]?>": "<?=$config['views_url']?>img/<?=$type[3]?>.svg",
-		        <?php } ?>
-		        "default": "<?=$config['views_url']?>img/default.svg"
-		    };
-		    
-		    window.poi_style_map = {
-		        <?php foreach($poi_types as $k => $t) {
-		            $color = isset($t[2]) ? $t[2] : '#ef2929';
-		            // Read size/shape from structure if provided, else fallback to sensible defaults
-		            $size = isset($t[6]) ? (int)$t[6] : 16;
-		            $shape = isset($t[7]) ? $t[7] : 'square';
-		        ?>
-		            "<?=$k?>": { color: "<?=$color?>", size: <?=$size?>, shape: "<?=$shape?>" },
-		        <?php } ?>
-		    };
+			window.poi_style_map = {
+				<?php foreach($poi_types as $k => $t) {
+					$color = isset($t[2]) ? $t[2] : '#ef2929';
+					$size = isset($t[6]) ? (int)$t[6] : 16;
+					$shape = isset($t[7]) ? $t[7] : 'square';
+					$icon = isset($t[3]) ? $config['views_url']."img/".$t[3].".svg" : $config['views_url']."img/default.svg";
+				?>
+					"<?=$k?>": { color: "<?=$color?>", size: <?=$size?>, shape: "<?=$shape?>", icon: "<?=$icon?>" },
+				<?php } ?>
+					"default": { color: "#ef2929", size: 16, shape: "square", icon: "<?=$config['views_url']?>img/default.svg" }
+			};
 		</script>
 
 	</body>
