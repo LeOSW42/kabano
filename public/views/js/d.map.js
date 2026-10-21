@@ -326,8 +326,6 @@ $(document).ready(function() {
 			if (mymap.hasLayer(vectorLayer)) {
 				mymap.removeLayer(vectorLayer);
 			}
-
-			loadVisiblePois();
 		}
 	}
 
