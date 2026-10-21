@@ -225,12 +225,6 @@ $(document).ready(function() {
     // ---------------------------------------------------------
     // Rechargement du calque depuis poi/api_bbox
     // ---------------------------------------------------------
-    mymap.on("zoomend", function() {
-        if (mymap.getZoom() >= 10) {
-            refreshPoiApiLayer();
-        }
-    });
-
     mymap.on("moveend", function() {
         if (mymap.getZoom() >= 10) {
             refreshPoiApiLayer();
